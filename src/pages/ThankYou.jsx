@@ -4,7 +4,6 @@ import {BOX_ITEMS, PRODUCT, PRODUCT_PATH} from '../data/catalog';
 import {go} from '../hooks/useRoute';
 import {format} from '../lib/format';
 import {getOrderReceipt} from '../lib/orderReceipt';
-import {getHandlingOption} from '../data/handling';
 import './ThankYou.css';
 
 export function ThankYou() {
@@ -44,7 +43,7 @@ export function ThankYou() {
           <div className="thank-you-card-head"><div><span>YOUR CONFIRMATION</span><h2 id="thank-you-order-heading">Order details</h2></div><CheckCircle2 size={23} /></div>
           <div className="thank-you-order-id"><span>Order ID</span><div><strong>{receipt.orderId}</strong><button type="button" onClick={copyOrderId} aria-label={copied ? 'Order ID copied' : 'Copy order ID'} title={copied ? 'Copied' : 'Copy order ID'}>{copied ? <Check size={17} /> : <Copy size={17} />}</button></div></div>
           <div className="thank-you-product"><img src={BOX_ITEMS[0].src} alt={PRODUCT.name} /><div><span>{PRODUCT.category}</span><h3>{PRODUCT.name}</h3><p>Quantity: {receipt.quantity}</p></div></div>
-          {getHandlingOption(receipt.handlingOption) && <div className="thank-you-handling"><span>{getHandlingOption(receipt.handlingOption).label}</span><strong>{receipt.handlingFee ? `+${format(receipt.handlingFee)}` : 'FREE'}</strong></div>}
+          {receipt.handlingFee != null && <div className="thank-you-handling"><span>Handling charge</span><strong>{receipt.handlingFee ? format(receipt.handlingFee) : 'FREE'}</strong></div>}
           <div className="thank-you-total"><span>{receipt.demo ? 'Order total' : 'Total paid'}</span><strong>{format(receipt.amount)}</strong></div>
           {!receipt.demo && <p className="thank-you-reference">Transaction reference <b>{receipt.transactionId}</b></p>}
         </section>

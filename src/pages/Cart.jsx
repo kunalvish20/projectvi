@@ -4,11 +4,12 @@ import {useStore} from '../context/StoreContext';
 import {format} from '../lib/format';
 import {go} from '../hooks/useRoute';
 import {ProductArt} from '../components/ProductArt';
+import {HANDLING_FEE} from '../data/handling';
 
 export function Cart() {
   const {cart, setQty, subtotal} = useStore();
   const qty = cart[PRODUCT.id] || 0;
-  const shipping = subtotal >= PRODUCT.price || subtotal === 0 ? 0 : 199;
+  const handlingFee = qty ? HANDLING_FEE : 0;
 
   if (!qty) {
     return (
@@ -41,7 +42,7 @@ export function Cart() {
             </div>
           </div>
         </article>
-        <OrderSummary subtotal={subtotal} shipping={shipping} />
+        <OrderSummary subtotal={subtotal} handlingFee={handlingFee} />
       </section>
     </main>
   );
@@ -58,13 +59,14 @@ function EmptyCart() {
   );
 }
 
-function OrderSummary({subtotal, shipping}) {
+function OrderSummary({subtotal, handlingFee}) {
   return (
     <aside className="summary-card">
       <p className="eyebrow">Order summary</p>
       <div><span>Subtotal</span><b>{format(subtotal)}</b></div>
-      <div><span>Shipping</span><b>{shipping ? format(shipping) : 'FREE'}</b></div>
-      <div className="total"><span>Total</span><b>{format(subtotal + shipping)}</b></div>
+      <div><span>Delivery</span><b>FREE</b></div>
+      <div><span>Handling charge</span><b>{format(handlingFee)}</b></div>
+      <div className="total"><span>Total</span><b>{format(subtotal + handlingFee)}</b></div>
       <button onClick={() => go('/checkout')}>Continue to Checkout <ArrowRight size={18} /></button>
       <a href={PRODUCT_PATH}>Back to product</a>
     </aside>

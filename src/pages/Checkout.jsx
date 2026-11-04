@@ -6,7 +6,7 @@ import {format} from '../lib/format';
 import {go} from '../hooks/useRoute';
 import {startPayUPayment,checkPayUStatus,getPendingPayU,clearPendingPayU} from '../lib/payuCheckout';
 import {createDemoReceipt, isDemoPayment, saveOrderReceipt} from '../lib/orderReceipt';
-import {HANDLING_OPTIONS, getHandlingOption, getOrderTotal} from '../data/handling';
+import {HANDLING_FEE, getOrderTotal} from '../data/handling';
 import './Checkout.css';
 
 const initialForm = {name: '', email: '', phone: '', pincode: '', address: '', city: '', state: ''};
@@ -18,9 +18,8 @@ export function Checkout() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [pendingPayment, setPendingPayment] = useState(() => isDemoPayment ? null : getPendingPayU());
-  const [handlingId, setHandlingId] = useState(() => isDemoPayment ? 'standard' : getPendingPayU()?.handlingOption || 'standard');
-  const handling = getHandlingOption(handlingId) || HANDLING_OPTIONS.standard;
-  const total = pendingPayment?.amount ?? getOrderTotal(PRODUCT.price, qty, handling.id);
+  const handlingFee = pendingPayment ? Number(pendingPayment.handlingFee ?? 0) : HANDLING_FEE;
+  const total = pendingPayment?.amount ?? getOrderTotal(PRODUCT.price, qty);
 
   const completePayment = (receipt) => {
     saveOrderReceipt(receipt);
@@ -39,7 +38,6 @@ export function Checkout() {
       email: stored?.email,
       quantity: stored?.quantity,
       amount: stored?.amount,
-      handlingOption: stored?.handlingOption,
       handlingFee: stored?.handlingFee,
       demo: false
     });
@@ -89,10 +87,10 @@ export function Checkout() {
     setLoading(true);
     try {
       if (isDemoPayment) {
-        completePayment(createDemoReceipt({customer, quantity: qty, amount: total, handlingOption: handling.id, handlingFee: handling.fee}));
+        completePayment(createDemoReceipt({customer, quantity: qty, amount: total, handlingFee}));
         return;
       }
-      await startPayUPayment({quantity: qty, customer, handlingOption: handling.id});
+      await startPayUPayment({quantity: qty, customer});
       setPendingPayment(getPendingPayU());
       // PayU Hosted Checkout navigates away. Never mark an order paid on redirect alone.
     } catch (paymentError) {
@@ -180,20 +178,7 @@ export function Checkout() {
                   <input id="checkout-pincode" name="pincode" value={form.pincode} onChange={update} required inputMode="numeric" pattern="[0-9]{6}" maxLength="6" title="Enter a 6-digit PIN code" autoComplete="postal-code" placeholder="6-digit PIN code" />
                 </label>
               </div>
-              <fieldset className="checkout-handling">
-                <legend>Choose your handling</legend>
-                <div className="checkout-handling-options">
-                  {Object.values(HANDLING_OPTIONS).map(option => (
-                    <label className={`checkout-handling-option ${handling.id === option.id ? 'is-selected' : ''}`} key={option.id}>
-                      <input type="radio" name="handlingOption" value={option.id} checked={handling.id === option.id} onChange={() => setHandlingId(option.id)} disabled={loading || Boolean(pendingPayment)} />
-                      <span><strong>{option.label}</strong><small>{option.description}</small></span>
-                      <b>{option.fee ? `+${format(option.fee)}` : 'FREE'}</b>
-                    </label>
-                  ))}
-                </div>
-                <p>Standard delivery is free with either option. Premium handling adds extra protection, not faster shipping.</p>
-              </fieldset>
-              <div className="checkout-delivery-note"><Truck size={20} aria-hidden="true" /><div><b>Delivery updates</b><span>{isDemoPayment ? 'No shipment is created in preview mode.' : 'Dispatch and tracking updates will be sent to your contact details.'}</span></div></div>
+              <div className="checkout-delivery-note"><Truck size={20} aria-hidden="true" /><div><b>Standard delivery is free</b><span>{isDemoPayment ? 'No shipment is created in preview mode.' : 'Dispatch and tracking updates will be sent to your contact details.'}</span></div></div>
             </section>
 
             <section className="checkout-payment" aria-labelledby="checkout-payment-title">
@@ -231,8 +216,8 @@ export function Checkout() {
             </div>
             <div className="checkout-costs">
               <div><span>Subtotal</span><strong>{format(subtotal)}</strong></div>
-              <div><span>Shipping</span><strong className="checkout-free">FREE</strong></div>
-              <div><span>Handling<small>{handling.label}</small></span><strong className={handling.fee ? '' : 'checkout-free'}>{handling.fee ? format(handling.fee) : 'FREE'}</strong></div>
+              <div><span>Delivery</span><strong className="checkout-free">FREE</strong></div>
+              <div><span>Handling charge</span><strong className={handlingFee ? '' : 'checkout-free'}>{handlingFee ? format(handlingFee) : 'FREE'}</strong></div>
               <div className="checkout-cost-total"><span>Total</span><strong aria-live="polite">{format(total)}</strong></div>
             </div>
             <p className="checkout-order-note"><ShieldCheck size={17} aria-hidden="true" /> No surprise fees at payment.</p>

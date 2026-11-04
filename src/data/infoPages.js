@@ -5,7 +5,7 @@ export const INFO_PAGES = {
     eyebrow: 'Delivery',
     title: 'Shipping & Delivery',
     copy: "The GTA VI Collector's Box is a pre-order. Check the delivery details shown during checkout and keep your contact and shipping information accurate. Contact support with your payment ID if you have a question about dispatch or delivery.",
-    bullets: ["Standard delivery is included with the Collector's Box", 'Review your delivery address before making payment', 'Contact support with your payment ID if an order is delayed or unfulfilled']
+    bullets: ["Standard delivery is free; a ₹299 handling charge is included in the order total", 'Review your delivery address before making payment', 'Contact support with your payment ID if an order is delayed or unfulfilled']
   },
   privacy: {
     eyebrow: 'Policy',

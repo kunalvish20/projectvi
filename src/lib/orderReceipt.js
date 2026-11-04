@@ -26,7 +26,7 @@ export function getOrderReceipt(orderId) {
   }
 }
 
-export function createDemoReceipt({customer, quantity, amount, handlingOption, handlingFee}) {
+export function createDemoReceipt({customer, quantity, amount, handlingFee}) {
   const suffix = Array.from(crypto.getRandomValues(new Uint8Array(5)), byte => byte.toString(16).padStart(2, '0')).join('').toUpperCase();
   return {
     orderId: `PV-${suffix}`,
@@ -34,7 +34,6 @@ export function createDemoReceipt({customer, quantity, amount, handlingOption, h
     email: customer.email,
     quantity,
     amount,
-    handlingOption,
     handlingFee,
     demo: true
   };
