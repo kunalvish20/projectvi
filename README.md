@@ -1,13 +1,13 @@
 # Project VI — React storefront + Supabase Commerce Admin + PayU
 
-A single Vite/React project. Storefront homepage and product page layouts are preserved from your uploaded project. Admin is at **`/admin`** and has a separate, light, responsive Commerce OS UI. Checkout uses PayU India Hosted Checkout with server-side hashes, payment verification, Supabase order storage and inventory updates.
+A single Vite/React project. Storefront homepage and product page layouts are preserved from your uploaded project. Admin is at **`/admin`** and has a separate, light, responsive Commerce OS UI. Checkout defaults to a browser-only video flow: the button waits one second, then opens a checkout summary without collecting payment or placing an order. Set `VITE_PAYMENT_MODE=payu` only after configuring PayU India Hosted Checkout, payment verification, Supabase order storage and inventory updates.
 
 ## Quick setup (one-time)
 
 Requirements: **Node.js 20.19+ / 22+**, npm, Supabase and PayU India credentials for checkout.
 
 1. `npm install`
-2. Copy `.env.example` to ignored `.env.local` and fill the Supabase and PayU values, `PUBLIC_SITE_URL`, and `ADMIN_INITIAL_PASSWORD`. Keep the file private. In Supabase: Project Settings → API → Project URL / anon key / **service_role** key. The service_role key is **server-only**, never set `VITE_` before it. Checkout creates an order only through the PayU server flow; missing configuration returns an error rather than a simulated success.
+2. The browser-only video flow works without payment credentials and does not place an order. To configure real checkout, copy `.env.example` to ignored `.env.local`, set `VITE_PAYMENT_MODE=payu`, and fill the Supabase and PayU values, `PUBLIC_SITE_URL`, and `ADMIN_INITIAL_PASSWORD`. Keep the file private. In Supabase: Project Settings → API → Project URL / anon key / **service_role** key. The service_role key is **server-only**, never set `VITE_` before it.
 3. In **Supabase Dashboard → SQL Editor**, paste and run **`supabase/schema.sql` once**. This creates tables, seeds the initial collector box and enforces Row Level Security with a fixed allowlist. You must do this once: API keys cannot create SQL tables automatically.
 4. Put a unique strong password in `ADMIN_INITIAL_PASSWORD` in the ignored `.env.local` file. Run **`npm run setup:admins`** once. It creates or updates only `workdndstores@gmail.com` in Supabase Auth and confirms that email. For an existing Supabase project, also run **`supabase/only-workdndstores-admin.sql`** in the SQL Editor to replace the old two-email database allowlist. The provisioning script cannot change SQL policies through a service-role API key.
 5. `npm run dev` and open `http://localhost:5173` for store and `http://localhost:5173/admin` for admin. **Admin login accepts ONLY the one confirmed Supabase Auth identity in `public.is_admin()`; a UI-only email check is never considered sufficient.** No registration route exists. `npm run dev` runs the payment server routes locally using the Vite middleware.
@@ -18,6 +18,7 @@ Requirements: **Node.js 20.19+ / 22+**, npm, Supabase and PayU India credentials
 
 | Variable | Where used | Notes |
 |---|---|---|
+| `VITE_PAYMENT_MODE` | Browser | Defaults to `preview` if unset. `payu` enables the real payment flow only after backend configuration. |
 | `VITE_SUPABASE_URL` | Browser | Public Project URL |
 | `VITE_SUPABASE_ANON_KEY` | Browser | Public anon/publishable key. RLS enabled. |
 | `SUPABASE_URL` | Serverless functions & provisioning | Project URL |
@@ -30,7 +31,7 @@ Requirements: **Node.js 20.19+ / 22+**, npm, Supabase and PayU India credentials
 
 ### Deploy to Vercel
 
-Connect repository to Vercel. Set every required variable in **Vercel → Project Settings → Environment Variables**, except `ADMIN_INITIAL_PASSWORD` (only needed during local provisioning). Set `PUBLIC_SITE_URL=https://your-real-domain.com` and use `PAYU_ENV=production` only when live PayU credentials are issued and tested. `vercel.json` maps storefront routes to the SEO HTML files, and `/admin` to `index.html`. `/api/payu-*` use Vercel Node serverless functions. Ensure HTTPS and PayU account merchant/callback domain configuration as applicable.
+Connect repository to Vercel. Without `VITE_PAYMENT_MODE=payu`, checkout uses the browser-only video flow and does not create an order or collect payment. To accept real payments, set every required variable in **Vercel → Project Settings → Environment Variables**, except `ADMIN_INITIAL_PASSWORD` (only needed during local provisioning). Set `VITE_PAYMENT_MODE=payu` and `PUBLIC_SITE_URL=https://your-real-domain.com`; use `PAYU_ENV=production` only when live PayU credentials are issued and tested. `vercel.json` maps storefront routes to the SEO HTML files, and `/admin` to `index.html`. `/api/payu-*` use Vercel Node serverless functions. Ensure HTTPS and PayU account merchant/callback domain configuration as applicable.
 
 ### PayU flow and data integrity
 

@@ -5,7 +5,7 @@ import {useStore} from '../context/StoreContext';
 import {format} from '../lib/format';
 import {go} from '../hooks/useRoute';
 import {startPayUPayment,checkPayUStatus,getPendingPayU,clearPendingPayU} from '../lib/payuCheckout';
-import {saveOrderReceipt} from '../lib/orderReceipt';
+import {createPreviewReceipt, isPreviewCheckout, saveOrderReceipt} from '../lib/orderReceipt';
 import {HANDLING_FEE, getOrderTotal} from '../data/handling';
 import './Checkout.css';
 
@@ -17,7 +17,7 @@ export function Checkout() {
   const [form, setForm] = useState(initialForm);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const [pendingPayment, setPendingPayment] = useState(getPendingPayU);
+  const [pendingPayment, setPendingPayment] = useState(() => isPreviewCheckout ? null : getPendingPayU());
   const handlingFee = pendingPayment ? Number(pendingPayment.handlingFee ?? 0) : HANDLING_FEE;
   const total = pendingPayment?.amount ?? getOrderTotal(PRODUCT.price, qty);
 
@@ -45,7 +45,7 @@ export function Checkout() {
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
-    if (!params.has('payment')) return;
+    if (isPreviewCheckout || !params.has('payment')) return;
     history.replaceState(null, '', '/checkout');
     const stored = getPendingPayU();
     if (!stored || params.get('payment') !== stored.txnid) {
@@ -79,13 +79,18 @@ export function Checkout() {
     if (!qty) return;
     const customer = Object.fromEntries(Object.entries(form).map(([key, value]) => [key, value.trim()]));
     const invalidField = ['name', 'address', 'city', 'state'].find(key => customer[key].length < (key === 'address' ? 5 : 2));
-    if (invalidField) {
+    if (invalidField && !isPreviewCheckout) {
       setError('Please enter a complete name and delivery address.');
       event.currentTarget.elements.namedItem(invalidField)?.focus();
       return;
     }
     setLoading(true);
     try {
+      if (isPreviewCheckout) {
+        await new Promise(resolve => window.setTimeout(resolve, 1000));
+        completePayment(createPreviewReceipt({customer, quantity: qty, amount: total, handlingFee}));
+        return;
+      }
       await startPayUPayment({quantity: qty, customer});
       setPendingPayment(getPendingPayU());
       // PayU Hosted Checkout navigates away. Never mark an order paid on redirect alone.
@@ -136,7 +141,7 @@ export function Checkout() {
         </div>
 
         <div className="checkout-grid">
-          <form className="checkout-form" data-clarity-mask="true" onSubmit={payNow}>
+          <form className="checkout-form" data-clarity-mask="true" onSubmit={payNow} noValidate={isPreviewCheckout}>
             <section className="checkout-section" aria-labelledby="checkout-contact-title">
               <div className="checkout-section-heading">
                 <span className="checkout-section-number">01</span>
@@ -174,13 +179,13 @@ export function Checkout() {
                   <input id="checkout-pincode" name="pincode" value={form.pincode} onChange={update} required inputMode="numeric" pattern="[0-9]{6}" maxLength="6" title="Enter a 6-digit PIN code" autoComplete="postal-code" placeholder="6-digit PIN code" />
                 </label>
               </div>
-              <div className="checkout-delivery-note"><Truck size={20} aria-hidden="true" /><div><b>Standard delivery is free</b><span>Dispatch and tracking updates will be sent to your contact details.</span></div></div>
+              <div className="checkout-delivery-note"><Truck size={20} aria-hidden="true" /><div><b>Standard delivery is free</b><span>{isPreviewCheckout ? 'No shipment is created when you continue.' : 'Dispatch and tracking updates will be sent to your contact details.'}</span></div></div>
             </section>
 
             <section className="checkout-payment" aria-labelledby="checkout-payment-title">
               <div className="checkout-section-heading">
                 <span className="checkout-section-number">03</span>
-                <div><h2 id="checkout-payment-title">Secure payment</h2><p>Review your order total before opening secure PayU checkout.</p></div>
+                <div><h2 id="checkout-payment-title">{isPreviewCheckout ? 'Review checkout' : 'Secure payment'}</h2><p>{isPreviewCheckout ? 'Review your order total before continuing.' : 'Review your order total before opening secure PayU checkout.'}</p></div>
               </div>
               <div className="checkout-pay-total"><span>Total to pay</span><strong aria-live="polite">{format(total)}</strong></div>
               {error && <p className="checkout-error" role="alert">{error}</p>}
@@ -188,10 +193,10 @@ export function Checkout() {
                 {loading ? <><Loader2 className="spin" size={18} /> Checking payment…</> : <>Check payment status <ArrowRight size={18} /></>}
               </button>}
               {!pendingPayment && <button className="pay-now-btn" type="submit" disabled={loading}>
-                {loading ? <><Loader2 className="spin" size={19} /> Redirecting to PayU…</> : <><LockKeyhole size={18} /> Pay {format(total)} securely <ArrowRight size={18} /></>}
+                {loading ? <><Loader2 className="spin" size={19} /> {isPreviewCheckout ? 'Processing...' : 'Redirecting to PayU…'}</> : <><LockKeyhole size={18} /> Pay {format(total)} securely <ArrowRight size={18} /></>}
               </button>}
-              <p className="checkout-payment-help"><ShieldCheck size={16} aria-hidden="true" /> Payments are handled by PayU. We don’t store your card or UPI details.</p>
-              <p className="checkout-terms">By paying, you agree to our <a href="/terms">Terms of Service</a> and <a href="/privacy">Privacy Policy</a>.</p>
+              <p className="checkout-payment-help"><ShieldCheck size={16} aria-hidden="true" /> {isPreviewCheckout ? 'No payment will be collected or order placed.' : 'Payments are handled by PayU. We don’t store your card or UPI details.'}</p>
+              <p className="checkout-terms">{isPreviewCheckout ? 'By continuing' : 'By paying'}, you agree to our <a href="/terms">Terms of Service</a> and <a href="/privacy">Privacy Policy</a>.</p>
             </section>
           </form>
 

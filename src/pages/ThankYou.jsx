@@ -9,6 +9,7 @@ import './ThankYou.css';
 export function ThankYou() {
   const orderId = new URLSearchParams(window.location.search).get('order');
   const receipt = getOrderReceipt(orderId);
+  const isPreview = receipt?.kind === 'preview';
   const [copied, setCopied] = useState(false);
 
   useEffect(() => {
@@ -32,26 +33,33 @@ export function ThankYou() {
     <div className="thank-you-shell">
       <div className="thank-you-confirmation">
         <div className="thank-you-icon"><Check size={34} strokeWidth={3} /></div>
-        <span className="thank-you-eyebrow">PAYMENT VERIFIED</span>
+        <span className="thank-you-eyebrow">{isPreview ? 'CHECKOUT DETAILS READY' : 'PAYMENT VERIFIED'}</span>
         <h1>Thank you, {receipt.customerName?.split(' ')[0] || 'collector'}.</h1>
-        <p className="thank-you-lead">Your pre-order is confirmed. We’re getting your Collector’s Box ready.</p>
+        <p className="thank-you-lead">{isPreview ? 'Your checkout details are ready to review.' : 'Your pre-order is confirmed. We’re getting your Collector’s Box ready.'}</p>
+        {isPreview && <p className="thank-you-no-payment">No payment was collected and no order was placed. This reference is saved only in this browser.</p>}
       </div>
 
       <div className="thank-you-grid">
         <section className="thank-you-card thank-you-details" aria-labelledby="thank-you-order-heading">
           <div className="thank-you-card-head"><div><span>YOUR CONFIRMATION</span><h2 id="thank-you-order-heading">Order details</h2></div><CheckCircle2 size={23} /></div>
-          <div className="thank-you-order-id"><span>Order ID</span><div><strong>{receipt.orderId}</strong><button type="button" onClick={copyOrderId} aria-label={copied ? 'Order ID copied' : 'Copy order ID'} title={copied ? 'Copied' : 'Copy order ID'}>{copied ? <Check size={17} /> : <Copy size={17} />}</button></div></div>
+          <div className="thank-you-order-id"><span>{isPreview ? 'Reference ID' : 'Order ID'}</span><div><strong>{receipt.orderId}</strong><button type="button" onClick={copyOrderId} aria-label={copied ? 'Reference copied' : 'Copy reference'} title={copied ? 'Copied' : 'Copy reference'}>{copied ? <Check size={17} /> : <Copy size={17} />}</button></div></div>
           <div className="thank-you-product"><img src={BOX_ITEMS[0].src} alt={PRODUCT.name} /><div><span>{PRODUCT.category}</span><h3>{PRODUCT.name}</h3><p>Quantity: {receipt.quantity}</p></div></div>
           {receipt.handlingFee != null && <div className="thank-you-handling"><span>Handling charge</span><strong>{receipt.handlingFee ? format(receipt.handlingFee) : 'FREE'}</strong></div>}
-          <div className="thank-you-total"><span>Total paid</span><strong>{format(receipt.amount)}</strong></div>
-          <p className="thank-you-reference">Transaction reference <b>{receipt.transactionId}</b></p>
+          <div className="thank-you-total"><span>{isPreview ? 'Order total' : 'Total paid'}</span><strong>{format(receipt.amount)}</strong></div>
+          {!isPreview && <p className="thank-you-reference">Transaction reference <b>{receipt.transactionId}</b></p>}
         </section>
 
         <aside className="thank-you-next" aria-labelledby="thank-you-next-heading">
-          <span className="thank-you-next-label">WHAT HAPPENS NEXT</span><h2 id="thank-you-next-heading">You’re all set.</h2>
-          <div className="thank-you-timeline"><span><Mail size={19} /></span><div><h3>Order confirmation</h3><p>We’ll send order updates to <b>{receipt.email}</b>.</p></div></div>
-          <div className="thank-you-timeline"><span><PackageCheck size={19} /></span><div><h3>Preparing your box</h3><p>Our team will prepare your Collector’s Box.</p></div></div>
-          <div className="thank-you-timeline"><span><Truck size={19} /></span><div><h3>Delivery updates</h3><p>Tracking details will follow after dispatch.</p></div></div>
+          <span className="thank-you-next-label">{isPreview ? 'YOUR SUMMARY' : 'WHAT HAPPENS NEXT'}</span><h2 id="thank-you-next-heading">{isPreview ? 'All details in one place.' : 'You’re all set.'}</h2>
+          {isPreview ? <>
+            <div className="thank-you-timeline"><span><CheckCircle2 size={19} /></span><div><h3>Details saved</h3><p>Your reference is available in this browser session.</p></div></div>
+            <div className="thank-you-timeline"><span><Mail size={19} /></span><div><h3>Contact</h3><p>{receipt.email || 'Not provided'}</p></div></div>
+            <div className="thank-you-timeline"><span><PackageCheck size={19} /></span><div><h3>Your box</h3><p>{receipt.quantity} Collector’s {receipt.quantity === 1 ? 'Box' : 'Boxes'} in your summary.</p></div></div>
+          </> : <>
+            <div className="thank-you-timeline"><span><Mail size={19} /></span><div><h3>Order confirmation</h3><p>We’ll send order updates to <b>{receipt.email}</b>.</p></div></div>
+            <div className="thank-you-timeline"><span><PackageCheck size={19} /></span><div><h3>Preparing your box</h3><p>Our team will prepare your Collector’s Box.</p></div></div>
+            <div className="thank-you-timeline"><span><Truck size={19} /></span><div><h3>Delivery updates</h3><p>Tracking details will follow after dispatch.</p></div></div>
+          </>}
         </aside>
       </div>
 
