@@ -4,6 +4,7 @@ import {Faq} from '../components/Faq';
 import {ProductArt} from '../components/ProductArt';
 import {ProductStorySections} from '../components/ProductStorySections';
 import {BOX_ITEMS, MAX_ORDER_QUANTITY, PRODUCT, REVIEWS, SITE} from '../data/catalog';
+import {HANDLING_OPTIONS} from '../data/handling';
 import {useStore} from '../context/StoreContext';
 import {format} from '../lib/format';
 import {go} from '../hooks/useRoute';
@@ -18,6 +19,9 @@ export function ProductPage() {
   const thumbnailRail = useRef(null);
   const touchStart = useRef(null);
   const current = BOX_ITEMS[active];
+  const discountPercent = PRODUCT.oldPrice > PRODUCT.price
+    ? Math.round((1 - PRODUCT.price / PRODUCT.oldPrice) * 100)
+    : 0;
 
   useEffect(() => {
     if (!purchaseActions.current || !('IntersectionObserver' in window)) return;
@@ -116,8 +120,16 @@ export function ProductPage() {
             </a>
 
             <div className="product-price-block">
-              <div className="product-price-line"><b>{format(PRODUCT.price)}</b><s>{format(PRODUCT.oldPrice)}</s><span>Free standard delivery</span></div>
+              <div className="product-price-line">
+                <div className="product-price-main">
+                  <b>{format(PRODUCT.price)}</b>
+                  {discountPercent > 0 && <s>{format(PRODUCT.oldPrice)}</s>}
+                  {discountPercent > 0 && <span className="product-discount-badge">{discountPercent}% OFF</span>}
+                </div>
+                <span className="product-delivery-badge">Free standard delivery</span>
+              </div>
               <p>One Collector's Box. All 11 items included.</p>
+              <p className="product-handling-hint">Optional premium handling: +{format(HANDLING_OPTIONS.premium.fee)} at checkout.</p>
             </div>
             <p className="product-intro">Bring the Vice City mood to your setup and beyond with this <strong>unofficial, fan-made 10-piece collector’s box</strong>, featuring apparel, accessories, artwork, and a display lamp. <strong>More than just a collection, it’s a purchase with a purpose — 50% of all profits will be donated to charity.</strong></p>
 

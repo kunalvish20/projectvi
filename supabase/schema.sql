@@ -24,7 +24,7 @@ create table if not exists public.products (
  created_at timestamptz not null default now(),updated_at timestamptz not null default now()
 );
 insert into public.products(id,name,short_name,description,category,sku,image_url,price,compare_at_price,inventory,active,featured)
-values ('gta-collector-box', 'GTA VI Collector''s Box', 'Collector''s Box', 'An 11-piece pre-order collection of Vice-inspired apparel, accessories, artwork, and display pieces in one Collector''s Box.', 'Collector''s Edition', 'PROJECTVI-BOX', '/assets/collector-box.webp', 6499,9999,100,true,true)
+values ('gta-collector-box', 'GTA VI Collector''s Box', 'Collector''s Box', 'An 11-piece pre-order collection of Vice-inspired apparel, accessories, artwork, and display pieces in one Collector''s Box.', 'Collector''s Edition', 'PROJECTVI-BOX', '/assets/collector-box.webp', 6999,9999,100,true,true)
 on conflict(id) do nothing;
 
 create table if not exists public.orders (

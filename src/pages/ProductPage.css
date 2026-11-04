@@ -212,11 +212,14 @@
 .product-rating strong { margin-left: 3px; color: #eee7ed; font-weight: 700; }
 .product-rating:hover { color: #fff; }
 .product-price-block { margin-top: 23px; padding-top: 21px; border-top: 1px solid #ffffff1c; }
-.product-price-line { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; }
-.product-price-line > b { font-size: 36px; font-weight: 800; letter-spacing: -.05em; line-height: 1; }
-.product-price-line > s { color: #a59ba3; font-size: 20px; }
-.product-price-line > span { padding: 6px 8px; border-radius: 3px; background: #9df0b410; color: #a7e8bc; font-size: 10px; font-weight: 700; }
+.product-price-line { display: flex; align-items: center; flex-wrap: wrap; gap: 10px 12px; }
+.product-price-main { display: flex; align-items: center; flex-wrap: wrap; gap: 8px 10px; min-width: 0; }
+.product-price-main > b { font-size: 36px; font-weight: 800; letter-spacing: -.05em; line-height: 1; }
+.product-price-main > s { color: #a59ba3; font-size: 20px; }
+.product-discount-badge { display: inline-flex; align-items: center; min-height: 29px; padding: 5px 10px; border: 1px solid #ff88c499; border-radius: 6px; background: linear-gradient(120deg, #ff2a9a38, #a8147629); box-shadow: inset 0 1px #ffffff1c; color: #ff9bcd; font-size: 11px; font-weight: 800; letter-spacing: .04em; white-space: nowrap; }
+.product-delivery-badge { display: inline-flex; align-items: center; min-height: 29px; padding: 6px 9px; border-radius: 4px; background: #9df0b410; color: #a7e8bc; font-size: 10px; font-weight: 700; white-space: nowrap; }
 .product-price-block > p { margin: 9px 0 0; color: #a59ba3; font-size: 11px; line-height: 1.5; }
+.product-price-block > .product-handling-hint { margin-top: 4px; color: #d7b3cc; }
 .product-intro { margin: 21px 0 16px; color: #c2b8c0; font-size: 14px; line-height: 1.7; }
 .product-buy-benefits { display: grid; gap: 9px; list-style: none; padding: 0; margin: 20px 0; }
 .product-buy-benefits li { display: flex; align-items: center; gap: 9px; color: #ded6dc; font-size: 12px; line-height: 1.5; }
@@ -303,7 +306,9 @@
   .product-rating-stars { gap: 1px; }
   .product-rating-stars svg { width: 12px; }
   .product-price-block { margin-top: 19px; padding-top: 18px; }
-  .product-price-line > b { font-size: 33px; }
+  .product-price-main > b { font-size: 33px; }
+  .product-price-main > s { font-size: 17px; }
+  .product-discount-badge { min-height: 27px; padding: 4px 8px; font-size: 10px; }
   .product-intro { margin-top: 18px; font-size: 13px; }
   .product-buy-benefits { gap: 8px; margin-bottom: 20px; }
   .product-buy-benefits li { font-size: 11px; }

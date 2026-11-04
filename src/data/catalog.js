@@ -13,7 +13,7 @@ export const PRODUCT = {
   name: "GTA VI Collector's Box",
   shortName: "Collector's Box",
   category: "11 Item Collector's Edition",
-  price: 6499,
+  price: 6999,
   oldPrice: 9999,
   rating: 4.9,
   reviews: 128,
@@ -94,7 +94,7 @@ export const BOX_ITEMS = [
     src: '/assets/sticker-pack.webp'
   },
   {
-    name: 'GTA VI Map (Londia Map)',
+    name: 'GTA VI Map (Leonida Map)',
     heading: 'Explore the world beyond the box.',
     detail: 'A GTA VI map to unfold and explore. The design is revealed when you open the box.',
     placeholderLabel: 'Map Revealing in Box'
