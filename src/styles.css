@@ -74,14 +74,8 @@ img { max-width: 100%; }
   text-decoration: none;
 }
 
-.brand-mark {
-  padding-right: .08em;
-  font-family: Outfit, Arial, Helvetica, sans-serif;
-  font-size: 1.08em;
-  font-weight: 900;
-  font-style: italic;
-  letter-spacing: -.07em;
-}
+.brand-logo-frame { display: block; width: 170px; height: 68px; overflow: hidden; }
+.brand-logo-frame img { display: block; width: 100%; max-width: none; height: auto; transform: translateY(-9px); mix-blend-mode: screen; }
 
 .brand:focus-visible {
   outline: 2px solid #fff;
@@ -1074,8 +1068,8 @@ img { max-width: 100%; }
 .site-footer p { line-height: 1.55; }
 .site-footer a { color: #fff; text-decoration: none; }
 .footer-brand { min-width: 0; }
-.footer-brand .brand { gap: 9px; color: #fff; font-family: Outfit, Arial, sans-serif; font-size: 20px; }
-.footer-brand .brand-mark { font-family: Outfit, Arial, sans-serif; font-style: normal; letter-spacing: -.06em; }
+.footer-brand .brand-logo-frame { width: 240px; height: 100px; }
+.footer-brand .brand-logo-frame img { transform: translateY(-12px); }
 .footer-brand h2 {
   margin: 22px 0 0;
   font-size: clamp(32px, 3.5vw, 52px);
@@ -1219,7 +1213,6 @@ img { max-width: 100%; }
 .footer-meta small { color: #ffe8ed; font-size: 12px; line-height: 1.5; }
 
 @media (max-width: 980px) {
-  .brand-mark { font-style: normal; }
   .site-header nav, .buy-link { display: none; }
   .menu-btn { display: grid; }
   .hero, .home-product, .buy-section, .box-grid, .faq, .cart-layout, .checkout-layout {
@@ -1236,6 +1229,8 @@ img { max-width: 100%; }
 @media (max-width: 640px) {
   .site-header { height: 64px; padding: 0 14px; }
   .brand { gap: 12px; font-size: 26px; }
+  .site-header .brand-logo-frame { width: 145px; height: 60px; }
+  .site-header .brand-logo-frame img { transform: translateY(-8px); }
   .mobile-menu { inset-block-start: 64px; max-height: calc(100dvh - 64px); }
   .hero, .buy-section { padding-top: 86px; }
   .hero h1 { font-size: clamp(52px, 17vw, 84px); }

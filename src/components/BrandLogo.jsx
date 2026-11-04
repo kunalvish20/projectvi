@@ -8,7 +8,9 @@ export function BrandLogo() {
       event.preventDefault();
       go('/');
     }}>
-      <span className="brand-mark">{SITE.shortName}</span>
+      <span className="brand-logo-frame">
+        <img src="/assets/project-vi-neon-logo.png" alt={SITE.name} width="1724" height="912" decoding="async" />
+      </span>
     </a>
   );
 }
