@@ -5,7 +5,7 @@ import {useStore} from '../context/StoreContext';
 import {format} from '../lib/format';
 import {go} from '../hooks/useRoute';
 import {startPayUPayment,checkPayUStatus,getPendingPayU,clearPendingPayU} from '../lib/payuCheckout';
-import {createDemoReceipt, isDemoPayment, saveOrderReceipt} from '../lib/orderReceipt';
+import {saveOrderReceipt} from '../lib/orderReceipt';
 import {HANDLING_FEE, getOrderTotal} from '../data/handling';
 import './Checkout.css';
 
@@ -17,7 +17,7 @@ export function Checkout() {
   const [form, setForm] = useState(initialForm);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const [pendingPayment, setPendingPayment] = useState(() => isDemoPayment ? null : getPendingPayU());
+  const [pendingPayment, setPendingPayment] = useState(getPendingPayU);
   const handlingFee = pendingPayment ? Number(pendingPayment.handlingFee ?? 0) : HANDLING_FEE;
   const total = pendingPayment?.amount ?? getOrderTotal(PRODUCT.price, qty);
 
@@ -39,13 +39,13 @@ export function Checkout() {
       quantity: stored?.quantity,
       amount: stored?.amount,
       handlingFee: stored?.handlingFee,
-      demo: false
+      paymentVerified: true
     });
   };
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
-    if (isDemoPayment || !params.has('payment')) return;
+    if (!params.has('payment')) return;
     history.replaceState(null, '', '/checkout');
     const stored = getPendingPayU();
     if (!stored || params.get('payment') !== stored.txnid) {
@@ -86,10 +86,6 @@ export function Checkout() {
     }
     setLoading(true);
     try {
-      if (isDemoPayment) {
-        completePayment(createDemoReceipt({customer, quantity: qty, amount: total, handlingFee}));
-        return;
-      }
       await startPayUPayment({quantity: qty, customer});
       setPendingPayment(getPendingPayU());
       // PayU Hosted Checkout navigates away. Never mark an order paid on redirect alone.
@@ -136,7 +132,7 @@ export function Checkout() {
           <button className="checkout-back" type="button" onClick={() => go('/cart')}><ArrowLeft size={16} /> Back to cart</button>
           <p className="checkout-step">ONE STEP CHECKOUT</p>
           <h1>Almost yours.</h1>
-          <p>{isDemoPayment ? 'Enter your details to preview the checkout confirmation.' : 'Enter your details, review your total, and pay securely.'}</p>
+          <p>Enter your details, review your total, and pay securely.</p>
         </div>
 
         <div className="checkout-grid">
@@ -144,7 +140,7 @@ export function Checkout() {
             <section className="checkout-section" aria-labelledby="checkout-contact-title">
               <div className="checkout-section-heading">
                 <span className="checkout-section-number">01</span>
-                <div><h2 id="checkout-contact-title">Contact details</h2><p>{isDemoPayment ? 'These details appear in your browser-only preview.' : 'We’ll use these for your order and delivery updates.'}</p></div>
+                <div><h2 id="checkout-contact-title">Contact details</h2><p>We’ll use these for your order and delivery updates.</p></div>
               </div>
               <div className="checkout-fields">
                 <label className="checkout-field checkout-field-wide" htmlFor="checkout-name">Full name
@@ -162,7 +158,7 @@ export function Checkout() {
             <section className="checkout-section" aria-labelledby="checkout-delivery-title">
               <div className="checkout-section-heading">
                 <span className="checkout-section-number">02</span>
-                <div><h2 id="checkout-delivery-title">Delivery address</h2><p>{isDemoPayment ? 'Enter an address to preview the full checkout.' : 'Where should we send your Collector’s Box?'}</p></div>
+                <div><h2 id="checkout-delivery-title">Delivery address</h2><p>Where should we send your Collector’s Box?</p></div>
               </div>
               <div className="checkout-fields">
                 <label className="checkout-field checkout-field-wide" htmlFor="checkout-address">House number, street and area
@@ -178,25 +174,24 @@ export function Checkout() {
                   <input id="checkout-pincode" name="pincode" value={form.pincode} onChange={update} required inputMode="numeric" pattern="[0-9]{6}" maxLength="6" title="Enter a 6-digit PIN code" autoComplete="postal-code" placeholder="6-digit PIN code" />
                 </label>
               </div>
-              <div className="checkout-delivery-note"><Truck size={20} aria-hidden="true" /><div><b>Standard delivery is free</b><span>{isDemoPayment ? 'No shipment is created in preview mode.' : 'Dispatch and tracking updates will be sent to your contact details.'}</span></div></div>
+              <div className="checkout-delivery-note"><Truck size={20} aria-hidden="true" /><div><b>Standard delivery is free</b><span>Dispatch and tracking updates will be sent to your contact details.</span></div></div>
             </section>
 
             <section className="checkout-payment" aria-labelledby="checkout-payment-title">
               <div className="checkout-section-heading">
                 <span className="checkout-section-number">03</span>
-                <div><h2 id="checkout-payment-title">{isDemoPayment ? 'Order preview' : 'Secure payment'}</h2><p>{isDemoPayment ? 'Review your order, then open the confirmation preview.' : 'Review your order total before opening secure PayU checkout.'}</p></div>
+                <div><h2 id="checkout-payment-title">Secure payment</h2><p>Review your order total before opening secure PayU checkout.</p></div>
               </div>
-              {isDemoPayment && <div className="checkout-preview-notice"><strong>Preview mode</strong><span>No payment will be collected. This creates a browser-only reference, not a placed order.</span></div>}
-              <div className="checkout-pay-total"><span>{isDemoPayment ? 'Order total' : 'Total to pay'}</span><strong aria-live="polite">{format(total)}</strong></div>
+              <div className="checkout-pay-total"><span>Total to pay</span><strong aria-live="polite">{format(total)}</strong></div>
               {error && <p className="checkout-error" role="alert">{error}</p>}
               {pendingPayment && <button className="checkout-retry-btn" type="button" onClick={retryConfirmation} disabled={loading}>
                 {loading ? <><Loader2 className="spin" size={18} /> Checking payment…</> : <>Check payment status <ArrowRight size={18} /></>}
               </button>}
               {!pendingPayment && <button className="pay-now-btn" type="submit" disabled={loading}>
-                {loading ? <><Loader2 className="spin" size={19} /> {isDemoPayment ? 'Preparing confirmation…' : 'Redirecting to PayU…'}</> : <><LockKeyhole size={18} /> {isDemoPayment ? `Preview confirmation · ${format(total)}` : `Pay ${format(total)} securely`} <ArrowRight size={18} /></>}
+                {loading ? <><Loader2 className="spin" size={19} /> Redirecting to PayU…</> : <><LockKeyhole size={18} /> Pay {format(total)} securely <ArrowRight size={18} /></>}
               </button>}
-              <p className="checkout-payment-help"><ShieldCheck size={16} aria-hidden="true" /> {isDemoPayment ? 'No card or UPI details are required for this preview.' : 'Payments are handled by PayU. We don’t store your card or UPI details.'}</p>
-              <p className="checkout-terms">{isDemoPayment ? 'By continuing, you agree to our' : 'By paying, you agree to our'} <a href="/terms">Terms of Service</a> and <a href="/privacy">Privacy Policy</a>.</p>
+              <p className="checkout-payment-help"><ShieldCheck size={16} aria-hidden="true" /> Payments are handled by PayU. We don’t store your card or UPI details.</p>
+              <p className="checkout-terms">By paying, you agree to our <a href="/terms">Terms of Service</a> and <a href="/privacy">Privacy Policy</a>.</p>
             </section>
           </form>
 

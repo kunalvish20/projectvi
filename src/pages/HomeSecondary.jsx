@@ -7,27 +7,6 @@ import {useStore} from '../context/StoreContext';
 import {go} from '../hooks/useRoute';
 import {useStickyReveal} from '../hooks/useStickyReveal';
 
-const TESTIMONIAL_PREVIEW = [
-  {
-    topic: 'THE BOX',
-    quote: 'I wanted to see exactly what came in the box before ordering. The gallery made it easy to look through every piece.',
-    name: 'Aarav M.',
-    initials: 'AM'
-  },
-  {
-    topic: 'THE CHECKOUT',
-    quote: 'The price and order summary were easy to find. I could check the quantity and delivery details before moving to payment.',
-    name: 'Riya S.',
-    initials: 'RS'
-  },
-  {
-    topic: 'THE DETAILS',
-    quote: 'The lamp and poster caught my eye first. Seeing how the items fit together made the drop feel thoughtfully put together.',
-    name: 'Dev K.',
-    initials: 'DK'
-  }
-];
-
 const MARQUEE_ITEMS = ['LIMITED BOX', "EXCLUSIVE COLLECTOR'S BOX"];
 const SHOW_TRUST_BAND = false;
 
@@ -363,34 +342,6 @@ export function HomeSecondary() {
             ))}
           </div>
         </div>
-      </section>
-
-      <section className="secondary-testimonials" id="reviews" aria-labelledby="secondary-testimonials-title">
-        <div className="secondary-testimonials-heading">
-          <div>
-            <p className="secondary-kicker">TESTIMONIAL PREVIEW // THE DROP</p>
-            <h2 id="secondary-testimonials-title">THE DROP,<br /><em>IN THEIR WORDS.</em></h2>
-          </div>
-          <p>From the first look at the box to the final checkout step, the small details shape the whole experience.</p>
-        </div>
-
-        <div className="secondary-testimonials-grid">
-          {TESTIMONIAL_PREVIEW.map((review, index) => (
-            <article className="secondary-testimonial-card" key={review.topic}>
-              <div className="secondary-testimonial-topline">
-                <span>0{index + 1} / 03</span>
-                <span>{review.topic}</span>
-              </div>
-              <span className="secondary-testimonial-quote" aria-hidden="true">“</span>
-              <blockquote>{review.quote}</blockquote>
-              <div className="secondary-testimonial-footer">
-                <span className="secondary-testimonial-mark" aria-hidden="true">{review.initials}</span>
-                <span><strong>{review.name}</strong><small>Sample review</small></span>
-              </div>
-            </article>
-          ))}
-        </div>
-        <p className="secondary-testimonials-note">Preview testimonials for layout. Replace with customer-submitted reviews before publishing.</p>
       </section>
 
       <Faq />

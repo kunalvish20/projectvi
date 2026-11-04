@@ -31,7 +31,7 @@ export function getSeoPage(path) {
 
   if (path === '/') {
     title = "GTA VI Collector's Box Pre-Order | Project VI";
-    description = "Explore the 11-item GTA VI Collector's Box, preview featured collectibles, and pre-order with secure PayU checkout and free standard delivery.";
+    description = "Explore the 11-item GTA VI Collector's Box and pre-order with secure PayU checkout and free standard delivery.";
     heading = "GTA VI Collector's Edition";
   } else if (path === PRODUCT_PATH) {
     title = `${PRODUCT.name} | Pre-Order for ${format(PRODUCT.price)} | ${SITE.name}`;

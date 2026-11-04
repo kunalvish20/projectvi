@@ -1,5 +1,5 @@
-import {ArrowRight, Check, ShieldCheck, ShoppingBag, Star, Truck} from 'lucide-react';
-import {BOX_ITEMS, PRODUCT, PRODUCT_PATH, REVIEWS, SITE} from '../data/catalog';
+import {ArrowRight, Check, ShieldCheck, ShoppingBag, Truck} from 'lucide-react';
+import {BOX_ITEMS, PRODUCT, PRODUCT_PATH, SITE} from '../data/catalog';
 import {useStore} from '../context/StoreContext';
 import {format} from '../lib/format';
 import {go} from '../hooks/useRoute';
@@ -80,17 +80,8 @@ export function Home() {
       <section className="trust-band">
         <div><Truck /><b>Delivery updates</b><span>Tracking details are shared after dispatch.</span></div>
         <div><ShieldCheck /><b>Secure checkout</b><span>Payment is handled by PayU.</span></div>
-        <div><Star /><b>{PRODUCT.rating}/5 rating</b><span>{PRODUCT.reviews} buyer reviews.</span></div>
       </section>
 
-      <section className="reviews-preview">
-        {REVIEWS.map(review => (
-          <article key={review}>
-            <div>{[1, 2, 3, 4, 5].map(star => <Star key={star} size={14} fill="currentColor" />)}</div>
-            <p>{review}</p>
-          </article>
-        ))}
-      </section>
     </main>
   );
 }

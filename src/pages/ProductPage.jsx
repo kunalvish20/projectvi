@@ -1,9 +1,9 @@
-import {ArrowRight, Check, ChevronLeft, ChevronRight, LockKeyhole, Minus, PackageCheck, Plus, ShieldCheck, ShoppingBag, Star, Truck} from 'lucide-react';
+import {ArrowRight, Check, ChevronLeft, ChevronRight, LockKeyhole, Minus, PackageCheck, Plus, ShieldCheck, ShoppingBag, Truck} from 'lucide-react';
 import {useEffect, useRef, useState} from 'react';
 import {Faq} from '../components/Faq';
 import {ProductArt} from '../components/ProductArt';
 import {ProductStorySections} from '../components/ProductStorySections';
-import {BOX_ITEMS, MAX_ORDER_QUANTITY, PRODUCT, REVIEWS, SITE} from '../data/catalog';
+import {BOX_ITEMS, MAX_ORDER_QUANTITY, PRODUCT, SITE} from '../data/catalog';
 import {HANDLING_FEE} from '../data/handling';
 import {useStore} from '../context/StoreContext';
 import {format} from '../lib/format';
@@ -104,7 +104,7 @@ export function ProductPage() {
             <div className="product-gallery-thumbnails" ref={thumbnailRail} role="group" aria-label="Choose a product image">
               {BOX_ITEMS.map((item, index) => (
                 <button key={item.name} className={active === index ? 'active' : ''} onClick={() => setActive(index)} aria-label={`Show ${item.name}`} aria-pressed={active === index}>
-                  {item.src ? <img src={item.src} alt="" className={item.contain ? 'contain' : ''} loading={index < 2 ? 'eager' : 'lazy'} decoding="async" /> : <span className="product-thumb-pending" aria-hidden="true">Preview soon</span>}
+                  {item.src ? <img src={item.src} alt="" className={item.contain ? 'contain' : ''} loading={index < 2 ? 'eager' : 'lazy'} decoding="async" /> : <span className="product-thumb-pending" aria-hidden="true">{item.placeholderLabel || item.name}</span>}
                 </button>
               ))}
             </div>
@@ -113,11 +113,6 @@ export function ProductPage() {
           <div className="product-purchase-panel">
             <div className="product-edition"><span>{SITE.shortName} COLLECTOR'S EDITION</span><span className="product-preorder-tag">PRE-ORDER</span></div>
             <h1 id="product-title">{PRODUCT.name}</h1>
-            <a className="product-rating" href="#reviews" onClick={event => { event.preventDefault(); document.getElementById('reviews')?.scrollIntoView({behavior: 'smooth'}); }}>
-              <span className="product-rating-stars" aria-hidden="true">{[1, 2, 3, 4, 5].map(star => <Star key={star} size={14} fill="currentColor" />)}</span>
-              <strong>{PRODUCT.rating} / 5</strong><span>({PRODUCT.reviews} reviews)</span>
-              <ChevronRight size={13} />
-            </a>
 
             <div className="product-price-block">
               <div className="product-price-line">
@@ -178,16 +173,6 @@ export function ProductPage() {
         <article><span>01</span><b>See every piece</b><p>Browse images and details for all 11 pieces in the Collector's Box.</p></article>
         <article><span>02</span><b>Review before payment</b><p>Check your quantity, subtotal, and free standard delivery in your cart before checkout.</p></article>
         <article><span>03</span><b>Support for your order</b><p>Delivery updates and clear support links keep you informed from pre-order to dispatch.</p></article>
-      </section>
-
-      <section className="reviews-preview store-reviews product-reviews" id="reviews">
-        {REVIEWS.map(review => (
-          <article key={review}>
-            <div>{[1, 2, 3, 4, 5].map(star => <Star key={star} size={14} fill="currentColor" />)}</div>
-            <p>{review}</p>
-            <b>Verified preorder signal</b>
-          </article>
-        ))}
       </section>
 
       <Faq />

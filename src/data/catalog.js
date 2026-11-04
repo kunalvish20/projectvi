@@ -15,8 +15,6 @@ export const PRODUCT = {
   category: "11 Item Collector's Edition",
   price: 6999,
   oldPrice: 9999,
-  rating: 4.9,
-  reviews: 128,
   tag: 'Pre-Order Drop',
   description:
     "An 11-piece pre-order collection of Vice-inspired apparel, accessories, artwork, and display pieces in one Collector's Box.",
@@ -99,12 +97,6 @@ export const BOX_ITEMS = [
     detail: 'A GTA VI map to unfold and explore. The design is revealed when you open the box.',
     placeholderLabel: 'Map Revealing in Box'
   }
-];
-
-export const REVIEWS = [
-  'The box presentation feels premium and the included items make the drop feel complete.',
-  'Checkout was clear, payment felt safe, and the order summary was easy to review.',
-  'The product images, packaging details, and support links made the store feel reliable.'
 ];
 
 export const HERO_PRODUCT = PRODUCT;

@@ -18,8 +18,6 @@
 .thank-you-eyebrow, .thank-you-card-head span, .thank-you-next-label { color: #ff8dc7; font-size: 11px; font-weight: 900; letter-spacing: .16em; }
 .thank-you-confirmation h1 { margin: 11px 0 8px; font-size: clamp(39px, 6vw, 65px); font-weight: 900; letter-spacing: -.055em; line-height: 1.08; }
 .thank-you-lead { margin: 0; color: #d3c3cf; font-size: clamp(15px, 2vw, 18px); line-height: 1.55; }
-.thank-you-preview-note { display: flex; flex-direction: column; gap: 3px; max-width: 570px; margin: 23px auto 0; padding: 13px 17px; border: 1px solid #ffb36655; border-radius: 11px; background: #ff9b2714; color: #f5dcc4; font-size: 13px; line-height: 1.45; }
-.thank-you-preview-note strong { color: #ffbc78; text-transform: uppercase; font-size: 11px; letter-spacing: .11em; }
 .thank-you-grid { display: grid; grid-template-columns: 1.12fr .88fr; gap: 20px; align-items: stretch; }
 .thank-you-card, .thank-you-next { min-width: 0; padding: 30px; border: 1px solid #ffffff21; border-radius: 19px; background: #121014; box-shadow: 0 20px 60px #0005; }
 .thank-you-card-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
