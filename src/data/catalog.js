@@ -96,7 +96,8 @@ export const BOX_ITEMS = [
   {
     name: 'GTA VI Map (Londia Map)',
     heading: 'Explore the world beyond the box.',
-    detail: 'A GTA VI map to unfold and explore. Product image and final design details are coming soon.'
+    detail: 'A GTA VI map to unfold and explore. The design is revealed when you open the box.',
+    placeholderLabel: 'Map Revealing in Box'
   }
 ];
 

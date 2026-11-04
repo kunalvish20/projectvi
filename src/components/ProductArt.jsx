@@ -1,4 +1,5 @@
 export function ProductArt({item, large = false, priority = false, className = ''}) {
+  const placeholderLabel = item.placeholderLabel || 'Image coming soon';
   return (
     <div className={`product-art ${large ? 'large' : ''} ${className}`}>
       {item.src ? (
@@ -11,8 +12,8 @@ export function ProductArt({item, large = false, priority = false, className = '
           className={item.contain ? 'contain' : ''}
         />
       ) : (
-        <div className="product-art-placeholder" role="img" aria-label={`${item.name} image coming soon`}>
-          <span>IMAGE COMING SOON</span>
+        <div className="product-art-placeholder" role="img" aria-label={`${item.name}: ${placeholderLabel}`}>
+          <span>{placeholderLabel}</span>
           <strong>{item.name}</strong>
         </div>
       )}
