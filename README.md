@@ -18,7 +18,7 @@ Requirements: **Node.js 20.19+ / 22+**, npm. Supabase and PayU India credentials
 
 | Variable | Where used | Notes |
 |---|---|---|
-| `VITE_PAYMENT_MODE` | Browser | `demo` for local simulated success; `payu` for real PayU flow. Demo mode never calls payment APIs or records orders. |
+| `VITE_PAYMENT_MODE` | Browser | Defaults to `demo` when unset. Set explicitly to `payu` only for the real PayU flow. Demo mode never calls payment APIs or records orders. |
 | `VITE_SUPABASE_URL` | Browser | Public Project URL |
 | `VITE_SUPABASE_ANON_KEY` | Browser | Public anon/publishable key. RLS enabled. |
 | `SUPABASE_URL` | Serverless functions & provisioning | Project URL |

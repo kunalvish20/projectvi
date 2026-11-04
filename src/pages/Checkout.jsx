@@ -193,7 +193,7 @@ export function Checkout() {
                 {loading ? <><Loader2 className="spin" size={19} /> {isDemoPayment ? 'Completing test…' : 'Redirecting to PayU…'}</> : <><LockKeyhole size={18} /> {isDemoPayment ? `Complete demo payment · ${format(total)}` : `Pay ${format(total)} securely`} <ArrowRight size={18} /></>}
               </button>}
               <p className="checkout-payment-help"><ShieldCheck size={16} aria-hidden="true" /> {isDemoPayment ? 'Demo checkout requires no card or UPI details.' : 'Payments are handled by PayU. We don’t store your card or UPI details.'}</p>
-              <p className="checkout-terms">By paying, you agree to our <a href="/terms">Terms of Service</a> and <a href="/privacy">Privacy Policy</a>.</p>
+              <p className="checkout-terms">{isDemoPayment ? 'By continuing, you agree to our' : 'By paying, you agree to our'} <a href="/terms">Terms of Service</a> and <a href="/privacy">Privacy Policy</a>.</p>
             </section>
           </form>
 
