@@ -212,7 +212,7 @@ export function Checkout() {
             <div className="checkout-costs">
               <div><span>Subtotal</span><strong>{format(subtotal)}</strong></div>
               <details className="checkout-price-details">
-                <summary>Delivery &amp; handling <span>View details <ChevronDown size={16} aria-hidden="true" /></span></summary>
+                <summary>View price breakdown <ChevronDown size={15} aria-hidden="true" /></summary>
                 <div className="checkout-price-details-rows">
                   <div><span>Delivery</span><strong className="checkout-free">FREE</strong></div>
                   <div><span>Handling charge</span><strong className={handlingFee ? '' : 'checkout-free'}>{handlingFee ? format(handlingFee) : 'FREE'}</strong></div>
