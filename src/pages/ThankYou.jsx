@@ -6,6 +6,8 @@ import {format} from '../lib/format';
 import {getOrderReceipt} from '../lib/orderReceipt';
 import './ThankYou.css';
 
+const CONTACT_EMAIL = 'workdndstores@gmail.com';
+
 export function ThankYou() {
   const orderId = new URLSearchParams(window.location.search).get('order');
   const receipt = getOrderReceipt(orderId);
@@ -53,7 +55,7 @@ export function ThankYou() {
           <span className="thank-you-next-label">{isPreview ? 'YOUR SUMMARY' : 'WHAT HAPPENS NEXT'}</span><h2 id="thank-you-next-heading">{isPreview ? 'All details in one place.' : 'You’re all set.'}</h2>
           {isPreview ? <>
             <div className="thank-you-timeline"><span><CheckCircle2 size={19} /></span><div><h3>Details saved</h3><p>Your reference is available in this browser session.</p></div></div>
-            <div className="thank-you-timeline"><span><Mail size={19} /></span><div><h3>Contact</h3><p>{receipt.email || 'Not provided'}</p></div></div>
+            <div className="thank-you-timeline"><span><Mail size={19} /></span><div><h3>Contact</h3><p><a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a></p></div></div>
             <div className="thank-you-timeline"><span><PackageCheck size={19} /></span><div><h3>Your box</h3><p>{receipt.quantity} Collector’s {receipt.quantity === 1 ? 'Box' : 'Boxes'} in your summary.</p></div></div>
           </> : <>
             <div className="thank-you-timeline"><span><Mail size={19} /></span><div><h3>Order confirmation</h3><p>We’ll send order updates to <b>{receipt.email}</b>.</p></div></div>

@@ -49,6 +49,7 @@
 .thank-you-timeline h3 { margin: 1px 0 4px; font-size: 15px; }
 .thank-you-timeline p { margin: 0; color: #b7aab5; font-size: 13px; line-height: 1.45; overflow-wrap: anywhere; }
 .thank-you-timeline p b { color: #e6d7e4; font-weight: 600; }
+.thank-you-timeline p a { color: #e6d7e4; text-decoration: underline; text-underline-offset: 3px; }
 .thank-you-actions { display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 18px; margin-top: 31px; }
 .thank-you-actions button, .thank-you-missing button { display: inline-flex; min-height: 48px; align-items: center; justify-content: center; gap: 8px; padding: 0 21px; border: 0; border-radius: 10px; background: #ed1682; color: #fff; font-weight: 800; box-shadow: 0 12px 28px #ed16823d; }
 .thank-you-actions button:hover, .thank-you-missing button:hover { filter: brightness(1.12); }
