@@ -1,5 +1,5 @@
 import {useState} from 'react';
-import {ArrowUpRight, Mail} from 'lucide-react';
+import {ArrowUpRight, Camera, Mail} from 'lucide-react';
 import {PRODUCT_PATH, SITE} from '../data/catalog';
 import {BrandLogo} from './BrandLogo';
 
@@ -99,8 +99,11 @@ export function Footer() {
       </nav>
 
       <div className="footer-meta">
-        <small>&copy; {new Date().getFullYear()} {SITE.name}.</small>
-        {SITE.supportEmail && <a href={`mailto:${SITE.supportEmail}`}><Mail size={16} aria-hidden="true" /> {SITE.supportEmail}</a>}
+        <small>&copy; {new Date().getFullYear()} {SITE.name}. All rights reserved.</small>
+        <div className="footer-meta-links">
+          <a href="https://www.instagram.com/projectvi.in/" target="_blank" rel="noopener noreferrer" aria-label="Project VI on Instagram"><Camera size={17} aria-hidden="true" /> Instagram</a>
+          {SITE.supportEmail && <a href={`mailto:${SITE.supportEmail}`}><Mail size={16} aria-hidden="true" /> {SITE.supportEmail}</a>}
+        </div>
       </div>
     </footer>
   );

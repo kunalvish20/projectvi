@@ -1198,6 +1198,7 @@ img { max-width: 100%; }
   gap: 10px 24px;
   padding-top: 18px;
 }
+.footer-meta-links { display: flex; align-items: center; flex-wrap: wrap; gap: 8px 24px; }
 .footer-meta a {
   display: inline-flex;
   align-items: center;
@@ -1292,7 +1293,6 @@ img { max-width: 100%; }
   .footer-links section:last-child ul { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 2px 12px; }
   .footer-links a { min-height: 38px; }
   .footer-meta { align-items: flex-start; flex-direction: column; gap: 6px; padding-top: 14px; }
-  .footer-meta a { order: -1; }
   .info-actions { display: grid; }
 }
 
