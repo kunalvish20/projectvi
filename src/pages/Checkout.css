@@ -197,6 +197,16 @@
 .checkout-costs > div { display: flex; justify-content: space-between; gap: 10px; padding-top: 14px; color: #c6bbc6; font-size: 13px; }
 .checkout-costs strong { color: #fff; font-weight: 800; }
 .checkout-costs .checkout-free { color: #9df0b4; }
+.checkout-price-details { margin-top: 14px; border: 1px solid #ffffff29; border-radius: 10px; background: #ffffff06; }
+.checkout-price-details summary { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 44px; padding: 10px 13px; color: #eee4ec; font-size: 13px; font-weight: 700; cursor: pointer; list-style: none; }
+.checkout-price-details summary::-webkit-details-marker { display: none; }
+.checkout-price-details summary > span { display: inline-flex; align-items: center; gap: 5px; color: #ff9dcc; font-size: 12px; white-space: nowrap; }
+.checkout-price-details summary svg { transition: transform .18s ease; }
+.checkout-price-details[open] summary svg { transform: rotate(180deg); }
+.checkout-price-details summary:hover { background: #ffffff0a; }
+.checkout-price-details summary:focus-visible { outline: 2px solid #ff9dcc; outline-offset: 2px; border-radius: 8px; }
+.checkout-price-details-rows { display: grid; gap: 12px; padding: 13px; border-top: 1px solid #ffffff20; }
+.checkout-price-details-rows > div { display: flex; justify-content: space-between; gap: 10px; color: #c6bbc6; font-size: 13px; }
 .checkout-costs .checkout-cost-total { align-items: baseline; margin-top: 16px; padding-top: 17px; border-top: 1px solid #ffffff2c; color: #fff; font-size: 16px; font-weight: 800; }
 .checkout-cost-total strong { font-size: 22px; }
 .checkout-order-note { display: flex; align-items: center; gap: 7px; margin: 19px 0 0; color: #aa9daa; font-size: 12px; }
@@ -226,6 +236,7 @@
   .checkout-order-product img { width: 66px; height: 66px; }
   .checkout-quantity-row { padding: 13px 0; }
   .checkout-costs > div { padding-top: 9px; }
+  .checkout-price-details { margin-top: 10px; }
   .checkout-costs .checkout-cost-total { margin-top: 9px; padding-top: 11px; }
   .checkout-order-note { margin-top: 13px; }
   .checkout-form { border-radius: 14px; }

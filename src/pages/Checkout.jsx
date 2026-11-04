@@ -1,4 +1,4 @@
-import {ArrowLeft, ArrowRight, LockKeyhole, Loader2, Minus, Plus, ShieldCheck, ShoppingBag, Truck} from 'lucide-react';
+import {ArrowLeft, ArrowRight, ChevronDown, LockKeyhole, Loader2, Minus, Plus, ShieldCheck, ShoppingBag, Truck} from 'lucide-react';
 import {useEffect, useState} from 'react';
 import {BOX_ITEMS, MAX_ORDER_QUANTITY, PRODUCT, PRODUCT_PATH} from '../data/catalog';
 import {useStore} from '../context/StoreContext';
@@ -211,8 +211,13 @@ export function Checkout() {
             </div>
             <div className="checkout-costs">
               <div><span>Subtotal</span><strong>{format(subtotal)}</strong></div>
-              <div><span>Delivery</span><strong className="checkout-free">FREE</strong></div>
-              <div><span>Handling charge</span><strong className={handlingFee ? '' : 'checkout-free'}>{handlingFee ? format(handlingFee) : 'FREE'}</strong></div>
+              <details className="checkout-price-details">
+                <summary>Delivery &amp; handling <span>View details <ChevronDown size={16} aria-hidden="true" /></span></summary>
+                <div className="checkout-price-details-rows">
+                  <div><span>Delivery</span><strong className="checkout-free">FREE</strong></div>
+                  <div><span>Handling charge</span><strong className={handlingFee ? '' : 'checkout-free'}>{handlingFee ? format(handlingFee) : 'FREE'}</strong></div>
+                </div>
+              </details>
               <div className="checkout-cost-total"><span>Total</span><strong aria-live="polite">{format(total)}</strong></div>
             </div>
             <p className="checkout-order-note"><ShieldCheck size={17} aria-hidden="true" /> No surprise fees at payment.</p>
