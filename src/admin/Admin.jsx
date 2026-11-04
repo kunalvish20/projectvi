@@ -1,7 +1,7 @@
 import {useEffect,useMemo,useState} from 'react';
 import {
  LayoutDashboard,ShoppingBag,Package,Boxes,Users,CreditCard,Truck,RotateCcw,TicketPercent,Megaphone,
- ChartNoAxesCombined,PanelsTopLeft,Star,Receipt,Headset,Bell,Plug,ShieldCheck,Settings,Tags,
+ ChartNoAxesCombined,PanelsTopLeft,Star,Headset,Bell,Plug,ShieldCheck,Settings,Tags,
  Search,ChevronDown,ChevronRight,Plus,ArrowUpRight,Menu,X,LogOut,Check,AlertTriangle,
  TrendingUp,Wallet,PackageCheck,Activity,Download,RefreshCw,Trash2,PenLine,ExternalLink,
  Eye,Filter,CheckCircle2,Clock3,Mail,KeyRound,LockKeyhole,PanelLeftClose,CalendarDays,
@@ -14,7 +14,7 @@ import './Admin.css';
 const menus = [
  {label:'Workspace',items:[['overview','Overview',LayoutDashboard],['orders','Orders',ShoppingBag],['products','Products',Package],['collections','Collections',Tags],['inventory','Inventory',Boxes],['customers','Customers',Users]]},
  {label:'Operations',items:[['payments','Payments',CreditCard],['shipping','Shipping',Truck],['returns','Returns & exchanges',RotateCcw],['discounts','Discounts',TicketPercent],['marketing','Marketing',Megaphone],['reviews','Reviews',Star],['support','Customer support',Headset]]},
- {label:'Insights & management',items:[['analytics','Analytics',ChartNoAxesCombined],['content','Website content',PanelsTopLeft],['taxes','Taxes & invoices',Receipt],['notifications','Notifications',Bell],['integrations','Integrations',Plug],['staff','Staff & access',ShieldCheck],['settings','Store settings',Settings]]}
+ {label:'Insights & management',items:[['analytics','Analytics',ChartNoAxesCombined],['content','Website content',PanelsTopLeft],['notifications','Notifications',Bell],['integrations','Integrations',Plug],['staff','Staff & access',ShieldCheck],['settings','Store settings',Settings]]}
 ];
 const sections=Object.fromEntries(menus.flatMap(g=>g.items.map(([id,name,Icon])=>[id,{name,Icon}])));
 const getSection=route=>{const candidate=route.split('/')[2]||'overview';return sections[candidate]?candidate:'overview';};
