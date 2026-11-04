@@ -74,8 +74,8 @@ img { max-width: 100%; }
   text-decoration: none;
 }
 
-.brand-logo-frame { display: block; width: 170px; height: 68px; overflow: hidden; }
-.brand-logo-frame img { display: block; width: 100%; max-width: none; height: auto; transform: translateY(-9px); mix-blend-mode: screen; }
+.brand-logo-frame { display: block; width: 155px; height: 68px; overflow: hidden; }
+.brand-logo-frame img { display: block; width: 100%; max-width: none; height: auto; transform: translateY(-7px); }
 
 .brand:focus-visible {
   outline: 2px solid #fff;
@@ -1068,8 +1068,8 @@ img { max-width: 100%; }
 .site-footer p { line-height: 1.55; }
 .site-footer a { color: #fff; text-decoration: none; }
 .footer-brand { min-width: 0; }
-.footer-brand .brand-logo-frame { width: 240px; height: 100px; }
-.footer-brand .brand-logo-frame img { transform: translateY(-12px); }
+.footer-brand .brand-logo-frame { width: 230px; height: 105px; }
+.footer-brand .brand-logo-frame img { transform: translateY(-10px); }
 .footer-brand h2 {
   margin: 22px 0 0;
   font-size: clamp(32px, 3.5vw, 52px);
@@ -1229,8 +1229,8 @@ img { max-width: 100%; }
 @media (max-width: 640px) {
   .site-header { height: 64px; padding: 0 14px; }
   .brand { gap: 12px; font-size: 26px; }
-  .site-header .brand-logo-frame { width: 145px; height: 60px; }
-  .site-header .brand-logo-frame img { transform: translateY(-8px); }
+  .site-header .brand-logo-frame { width: 135px; height: 60px; }
+  .site-header .brand-logo-frame img { transform: translateY(-6px); }
   .mobile-menu { inset-block-start: 64px; max-height: calc(100dvh - 64px); }
   .hero, .buy-section { padding-top: 86px; }
   .hero h1 { font-size: clamp(52px, 17vw, 84px); }

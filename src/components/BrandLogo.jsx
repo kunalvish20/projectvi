@@ -9,7 +9,7 @@ export function BrandLogo() {
       go('/');
     }}>
       <span className="brand-logo-frame">
-        <img src="/assets/project-vi-neon-logo.png" alt={SITE.name} width="1724" height="912" decoding="async" />
+        <img src="/assets/mainlogo.png" alt={SITE.name} width="1774" height="887" decoding="async" />
       </span>
     </a>
   );
