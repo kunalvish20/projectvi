@@ -1,4 +1,4 @@
-import {ArrowRight, Minus, Plus, X} from 'lucide-react';
+import {ArrowRight, ChevronDown, Minus, Plus, X} from 'lucide-react';
 import {useEffect} from 'react';
 import {BOX_ITEMS, PRODUCT} from '../data/catalog';
 import {useStore} from '../context/StoreContext';
@@ -53,15 +53,22 @@ export function CartDrawer() {
 
             <div className="cart-drawer-summary">
               <div><span>Subtotal</span><b>{format(subtotal)}</b></div>
-              <div><span>Delivery</span><b>FREE</b></div>
-              <div><span>Handling charge</span><b>{format(handlingFee)}</b></div>
+              <div className="cart-drawer-charge-row"><span>Delivery</span><b>FREE</b></div>
+              <div className="cart-drawer-charge-row"><span>Handling charge</span><b>{format(handlingFee)}</b></div>
+              <details className="cart-drawer-charge-details">
+                <summary>View delivery &amp; handling <ChevronDown size={16} aria-hidden="true" /></summary>
+                <div><span>Delivery</span><b>FREE</b></div>
+                <div><span>Handling charge</span><b>{format(handlingFee)}</b></div>
+              </details>
               <div className="total"><span>Total</span><b>{format(total)}</b></div>
             </div>
 
-            <button className="secondary-preorder-btn cart-drawer-checkout" onClick={checkout}>
-              CHECKOUT NOW <ArrowRight size={20} />
-            </button>
-            <button className="cart-drawer-soft" onClick={closeCartDrawer}>Keep exploring</button>
+            <div className="cart-drawer-actions">
+              <button className="secondary-preorder-btn cart-drawer-checkout" onClick={checkout}>
+                CHECKOUT NOW <ArrowRight size={20} />
+              </button>
+              <button className="cart-drawer-soft" onClick={closeCartDrawer}>Keep exploring</button>
+            </div>
           </>
         ) : (
           <div className="cart-drawer-empty">
