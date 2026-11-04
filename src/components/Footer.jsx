@@ -78,11 +78,14 @@ export function Footer() {
 
       <div className="footer-creator">
         <div>
-          <span>CREATE WITH PROJECT VI</span>
-          <h3>Have an audience? Let's make something together.</h3>
-          <p>Creators, promoters, and sellers can share their Instagram or YouTube links with us.</p>
+          <span>FOLLOW & CREATE</span>
+          <h3>Follow the drop. Create the next one.</h3>
+          <p>See updates on Instagram. Have an audience? Create with Project VI.</p>
         </div>
-        <a href="/join-as-a-creator">Join as a Creator <ArrowUpRight size={19} aria-hidden="true" /></a>
+        <div className="footer-creator-actions">
+          <a className="footer-instagram" href="https://www.instagram.com/projectvi.in/" target="_blank" rel="noopener noreferrer"><Camera size={18} aria-hidden="true" /> Follow us on Instagram <ArrowUpRight size={18} aria-hidden="true" /></a>
+          <a href="/join-as-a-creator">Become a Creator <ArrowUpRight size={19} aria-hidden="true" /></a>
+        </div>
       </div>
 
       <nav className="footer-links" aria-label="Footer navigation">
@@ -100,10 +103,7 @@ export function Footer() {
 
       <div className="footer-meta">
         <small>&copy; {new Date().getFullYear()} {SITE.name}. All rights reserved.</small>
-        <div className="footer-meta-links">
-          <a href="https://www.instagram.com/projectvi.in/" target="_blank" rel="noopener noreferrer" aria-label="Project VI on Instagram"><Camera size={17} aria-hidden="true" /> Instagram</a>
-          {SITE.supportEmail && <a href={`mailto:${SITE.supportEmail}`}><Mail size={16} aria-hidden="true" /> {SITE.supportEmail}</a>}
-        </div>
+        {SITE.supportEmail && <div className="footer-meta-links"><a href={`mailto:${SITE.supportEmail}`}><Mail size={16} aria-hidden="true" /> {SITE.supportEmail}</a></div>}
       </div>
     </footer>
   );
