@@ -119,7 +119,7 @@ export function ProductPage() {
               <div className="product-price-line"><b>{format(PRODUCT.price)}</b><s>{format(PRODUCT.oldPrice)}</s><span>Free standard delivery</span></div>
               <p>One Collector's Box. All 11 items included.</p>
             </div>
-            <p className="product-intro">Bring the Vice City mood to your setup and beyond with this <strong>unofficial, fan-inspired 11-piece collector’s box</strong>, featuring apparel, accessories, artwork, and a display lamp. <strong>More than just a collection, it’s a purchase with a purpose — 50% of all profits will be donated to charity.</strong></p>
+            <p className="product-intro">Bring the Vice City mood to your setup and beyond with this <strong>unofficial, fan-made 10-piece collector’s box</strong>, featuring apparel, accessories, artwork, and a display lamp. <strong>More than just a collection, it’s a purchase with a purpose — 50% of all profits will be donated to charity.</strong></p>
 
             <div className="product-quantity-row">
               <label htmlFor="product-quantity">Quantity<small id="product-quantity-limit">Max {MAX_ORDER_QUANTITY} per order</small></label>
