@@ -30,6 +30,12 @@ const TESTIMONIAL_PREVIEW = [
 
 const MARQUEE_ITEMS = ['LIMITED BOX', "EXCLUSIVE COLLECTOR'S BOX"];
 
+const CREATOR_PATHS = [
+  ['01', 'Create content', 'Make reels, unboxings, and setup stories in your own style.'],
+  ['02', 'Promote the drop', 'Introduce the collection to the community you have built.'],
+  ['03', 'Sell with us', 'Explore a seller partnership for the Collector\'s Box.']
+];
+
 function applyBoxRotation(element, {pitch, yaw}) {
   element.style.transform = `rotateX(${pitch}deg) rotateY(${yaw}deg)`;
 }
@@ -276,6 +282,27 @@ export function HomeSecondary() {
           <button className="secondary-preorder-btn" onClick={openProduct}>
             PRE-ORDER BOX <ArrowRight size={20} />
           </button>
+        </div>
+      </section>
+
+      <section className="secondary-creator" aria-labelledby="secondary-creator-title">
+        <div className="secondary-creator-inner">
+          <div className="secondary-creator-copy">
+            <p className="secondary-kicker">PROJECT VI / CREATOR PROGRAM</p>
+            <h2 id="secondary-creator-title">MAKE THE NEXT DROP <em>YOURS.</em></h2>
+            <p className="secondary-creator-lead">Have an Instagram or YouTube audience? Share your work and explore a partnership as a creator, promoter, or seller.</p>
+            <a className="secondary-creator-link" href="/join-as-a-creator">JOIN AS A CREATOR <ArrowRight size={19} aria-hidden="true" /></a>
+            <p className="secondary-creator-note">One social link is enough to get started.</p>
+          </div>
+          <div className="secondary-creator-paths" aria-label="Ways to collaborate">
+            {CREATOR_PATHS.map(([number, title, description]) => (
+              <div className="secondary-creator-path" key={number}>
+                <span>{number}</span>
+                <h3>{title}</h3>
+                <p>{description}</p>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
