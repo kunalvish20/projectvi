@@ -46,7 +46,6 @@ export function ThankYou() {
           <div className="thank-you-card-head"><div><span>YOUR CONFIRMATION</span><h2 id="thank-you-order-heading">Order details</h2></div><CheckCircle2 size={23} /></div>
           <div className="thank-you-order-id"><span>{isPreview ? 'Reference ID' : 'Order ID'}</span><div><strong>{receipt.orderId}</strong><button type="button" onClick={copyOrderId} aria-label={copied ? 'Reference copied' : 'Copy reference'} title={copied ? 'Copied' : 'Copy reference'}>{copied ? <Check size={17} /> : <Copy size={17} />}</button></div></div>
           <div className="thank-you-product"><img src={BOX_ITEMS[0].src} alt={PRODUCT.name} /><div><span>{PRODUCT.category}</span><h3>{PRODUCT.name}</h3><p>Quantity: {receipt.quantity}</p></div></div>
-          {receipt.handlingFee != null && <div className="thank-you-handling"><span>Handling charge</span><strong>{receipt.handlingFee ? format(receipt.handlingFee) : 'FREE'}</strong></div>}
           <div className="thank-you-total"><span>{isPreview ? 'Order total' : 'Total paid'}</span><strong>{format(receipt.amount)}</strong></div>
           {!isPreview && <p className="thank-you-reference">Transaction reference <b>{receipt.transactionId}</b></p>}
         </section>

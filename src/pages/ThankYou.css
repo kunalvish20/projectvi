@@ -35,8 +35,6 @@
 .thank-you-product span { color: #ff8dc7; font-size: 10px; font-weight: 800; text-transform: uppercase; }
 .thank-you-product h3 { margin: 5px 0; font-size: 17px; line-height: 1.25; }
 .thank-you-product p { margin: 0; color: #bbafbb; font-size: 13px; }
-.thank-you-handling { display: flex; justify-content: space-between; gap: 12px; padding-top: 16px; color: #bbafbb; font-size: 13px; }
-.thank-you-handling strong { color: #fff; font-weight: 700; }
 .thank-you-total { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; padding-top: 20px; font-size: 15px; font-weight: 700; }
 .thank-you-total strong { font-size: 25px; }
 .thank-you-reference { margin: 17px 0 0; color: #9e929d; font-size: 12px; line-height: 1.5; overflow-wrap: anywhere; }
