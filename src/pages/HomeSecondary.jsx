@@ -29,6 +29,7 @@ const TESTIMONIAL_PREVIEW = [
 ];
 
 const MARQUEE_ITEMS = ['LIMITED BOX', "EXCLUSIVE COLLECTOR'S BOX"];
+const SHOW_TRUST_BAND = false;
 
 const CREATOR_PATHS = [
   ['01', 'Create content', 'Make reels, unboxings, and setup stories in your own style.'],
@@ -285,7 +286,7 @@ export function HomeSecondary() {
         </div>
       </section>
 
-      <section className="store-trust-band secondary-quality" aria-label="Trusted store details">
+      {SHOW_TRUST_BAND && <section className="store-trust-band secondary-quality" aria-label="Trusted store details">
         <article>
           <Lock />
           <b>Verified checkout</b>
@@ -301,7 +302,7 @@ export function HomeSecondary() {
           <b>Customer support</b>
           <p>Support links, policy pages, and contact details stay visible in the footer across the whole store.</p>
         </article>
-      </section>
+      </section>}
 
       <section className="secondary-marquee" aria-label="Drop highlights">
         <div className="secondary-marquee-track">
