@@ -33,7 +33,7 @@ const MARQUEE_ITEMS = ['LIMITED BOX', "EXCLUSIVE COLLECTOR'S BOX"];
 const CREATOR_PATHS = [
   ['01', 'Create content', 'Make reels, unboxings, and setup stories in your own style.'],
   ['02', 'Promote the drop', 'Introduce the collection to the community you have built.'],
-  ['03', 'Sell with us', 'Explore a seller partnership for the Collector\'s Box.']
+  ['03', 'Be an Exclusive Partner', 'Explore a seller partnership for the Collector\'s Box.']
 ];
 
 function applyBoxRotation(element, {pitch, yaw}) {
@@ -285,25 +285,22 @@ export function HomeSecondary() {
         </div>
       </section>
 
-      <section className="secondary-creator" aria-labelledby="secondary-creator-title">
-        <div className="secondary-creator-inner">
-          <div className="secondary-creator-copy">
-            <p className="secondary-kicker">PROJECT VI / CREATOR PROGRAM</p>
-            <h2 id="secondary-creator-title">MAKE THE NEXT DROP <em>YOURS.</em></h2>
-            <p className="secondary-creator-lead">Have an Instagram or YouTube audience? Share your work and explore a partnership as a creator, promoter, or seller.</p>
-            <a className="secondary-creator-link" href="/join-as-a-creator">JOIN AS A CREATOR <ArrowRight size={19} aria-hidden="true" /></a>
-            <p className="secondary-creator-note">One social link is enough to get started.</p>
-          </div>
-          <div className="secondary-creator-paths" aria-label="Ways to collaborate">
-            {CREATOR_PATHS.map(([number, title, description]) => (
-              <div className="secondary-creator-path" key={number}>
-                <span>{number}</span>
-                <h3>{title}</h3>
-                <p>{description}</p>
-              </div>
-            ))}
-          </div>
-        </div>
+      <section className="store-trust-band secondary-quality" aria-label="Trusted store details">
+        <article>
+          <Lock />
+          <b>Verified checkout</b>
+          <p>PayU payment opens only after the cart total, quantity, and delivery details are reviewed.</p>
+        </article>
+        <article>
+          <Truck />
+          <b>Delivery updates</b>
+          <p>Pre-order status, dispatch, and tracking updates are shared through the contact details used at checkout.</p>
+        </article>
+        <article>
+          <BadgeCheck />
+          <b>Customer support</b>
+          <p>Support links, policy pages, and contact details stay visible in the footer across the whole store.</p>
+        </article>
       </section>
 
       <section className="secondary-marquee" aria-label="Drop highlights">
@@ -346,22 +343,25 @@ export function HomeSecondary() {
         </button>
       </section>
 
-      <section className="store-trust-band secondary-quality" aria-label="Trusted store details">
-        <article>
-          <Lock />
-          <b>Verified checkout</b>
-          <p>PayU payment opens only after the cart total, quantity, and delivery details are reviewed.</p>
-        </article>
-        <article>
-          <Truck />
-          <b>Delivery updates</b>
-          <p>Pre-order status, dispatch, and tracking updates are shared through the contact details used at checkout.</p>
-        </article>
-        <article>
-          <BadgeCheck />
-          <b>Customer support</b>
-          <p>Support links, policy pages, and contact details stay visible in the footer across the whole store.</p>
-        </article>
+      <section className="secondary-creator" aria-labelledby="secondary-creator-title">
+        <div className="secondary-creator-inner">
+          <div className="secondary-creator-copy">
+            <p className="secondary-kicker">PROJECT VI / CREATOR PROGRAM</p>
+            <h2 id="secondary-creator-title">MAKE THE NEXT DROP <em>YOURS.</em></h2>
+            <p className="secondary-creator-lead">Have an Instagram or YouTube audience? Share your work and explore a partnership as a creator, promoter, or seller.</p>
+            <a className="secondary-creator-link" href="/join-as-a-creator">JOIN AS A CREATOR <ArrowRight size={19} aria-hidden="true" /></a>
+            <p className="secondary-creator-note">One social link is enough to get started.</p>
+          </div>
+          <div className="secondary-creator-paths" aria-label="Ways to collaborate">
+            {CREATOR_PATHS.map(([number, title, description]) => (
+              <div className="secondary-creator-path" key={number}>
+                <span>{number}</span>
+                <h3>{title}</h3>
+                <p>{description}</p>
+              </div>
+            ))}
+          </div>
+        </div>
       </section>
 
       <section className="secondary-testimonials" id="reviews" aria-labelledby="secondary-testimonials-title">
