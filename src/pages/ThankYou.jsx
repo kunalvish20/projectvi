@@ -1,5 +1,5 @@
-import {ArrowRight, Check, CheckCircle2, Copy, Mail, PackageCheck, ShoppingBag, Truck} from 'lucide-react';
-import {useState} from 'react';
+import {ArrowRight, Check, CheckCircle2, Copy, LockKeyhole, Mail, PackageCheck, ShoppingBag, Truck} from 'lucide-react';
+import {useEffect, useState} from 'react';
 import {BOX_ITEMS, PRODUCT, PRODUCT_PATH} from '../data/catalog';
 import {go} from '../hooks/useRoute';
 import {format} from '../lib/format';
@@ -10,6 +10,12 @@ export function ThankYou() {
   const orderId = new URLSearchParams(window.location.search).get('order');
   const receipt = getOrderReceipt(orderId);
   const [copied, setCopied] = useState(false);
+
+  useEffect(() => {
+    if (receipt && orderId !== receipt.orderId) {
+      history.replaceState(null, '', `/thank-you?order=${encodeURIComponent(receipt.orderId)}`);
+    }
+  }, [orderId, receipt?.orderId]);
 
   const copyOrderId = async () => {
     try {
@@ -26,10 +32,10 @@ export function ThankYou() {
     <div className="thank-you-shell">
       <div className="thank-you-confirmation">
         <div className="thank-you-icon"><Check size={34} strokeWidth={3} /></div>
-        <span className="thank-you-eyebrow">{receipt.demo ? 'DEMO CHECKOUT COMPLETE' : 'PAYMENT VERIFIED'}</span>
+        <span className="thank-you-eyebrow">{receipt.demo ? 'ORDER PREVIEW READY' : 'PAYMENT VERIFIED'}</span>
         <h1>Thank you, {receipt.customerName?.split(' ')[0] || 'collector'}.</h1>
-        <p className="thank-you-lead">{receipt.demo ? 'Your test checkout worked from cart to confirmation.' : 'Your pre-order is confirmed. We’re getting your Collector’s Box ready.'}</p>
-        {receipt.demo && <div className="thank-you-demo-note"><strong>Test payment only</strong><span>No money was charged and no real order was placed. This confirmation is saved in this browser session.</span></div>}
+        <p className="thank-you-lead">{receipt.demo ? 'Your checkout confirmation preview is ready.' : 'Your pre-order is confirmed. We’re getting your Collector’s Box ready.'}</p>
+        {receipt.demo && <div className="thank-you-preview-note"><strong>Preview only</strong><span>No payment was collected and no order was placed. This reference is saved only in this browser session.</span></div>}
       </div>
 
       <div className="thank-you-grid">
@@ -37,15 +43,21 @@ export function ThankYou() {
           <div className="thank-you-card-head"><div><span>YOUR CONFIRMATION</span><h2 id="thank-you-order-heading">Order details</h2></div><CheckCircle2 size={23} /></div>
           <div className="thank-you-order-id"><span>Order ID</span><div><strong>{receipt.orderId}</strong><button type="button" onClick={copyOrderId} aria-label={copied ? 'Order ID copied' : 'Copy order ID'} title={copied ? 'Copied' : 'Copy order ID'}>{copied ? <Check size={17} /> : <Copy size={17} />}</button></div></div>
           <div className="thank-you-product"><img src={BOX_ITEMS[0].src} alt={PRODUCT.name} /><div><span>{PRODUCT.category}</span><h3>{PRODUCT.name}</h3><p>Quantity: {receipt.quantity}</p></div></div>
-          <div className="thank-you-total"><span>Total {receipt.demo ? 'simulated' : 'paid'}</span><strong>{format(receipt.amount)}</strong></div>
-          <p className="thank-you-reference">Transaction reference <b>{receipt.transactionId}</b></p>
+          <div className="thank-you-total"><span>{receipt.demo ? 'Order total' : 'Total paid'}</span><strong>{format(receipt.amount)}</strong></div>
+          {!receipt.demo && <p className="thank-you-reference">Transaction reference <b>{receipt.transactionId}</b></p>}
         </section>
 
         <aside className="thank-you-next" aria-labelledby="thank-you-next-heading">
-          <span className="thank-you-next-label">WHAT HAPPENS NEXT</span><h2 id="thank-you-next-heading">You’re all set.</h2>
-          <div className="thank-you-timeline"><span><Mail size={19} /></span><div><h3>{receipt.demo ? 'Demo confirmation' : 'Order confirmation'}</h3><p>{receipt.demo ? 'This preview shows how the confirmation experience looks.' : <>We’ll send order updates to <b>{receipt.email}</b>.</>}</p></div></div>
-          <div className="thank-you-timeline"><span><PackageCheck size={19} /></span><div><h3>Preparing your box</h3><p>{receipt.demo ? 'No box will be prepared for a test order.' : 'Our team will prepare your Collector’s Box.'}</p></div></div>
-          <div className="thank-you-timeline"><span><Truck size={19} /></span><div><h3>Delivery updates</h3><p>{receipt.demo ? 'Shipping is not started in demo mode.' : 'Tracking details will follow after dispatch.'}</p></div></div>
+          <span className="thank-you-next-label">{receipt.demo ? 'YOUR CHECKOUT PREVIEW' : 'WHAT HAPPENS NEXT'}</span><h2 id="thank-you-next-heading">{receipt.demo ? 'Preview complete.' : 'You’re all set.'}</h2>
+          {receipt.demo ? <>
+            <div className="thank-you-timeline"><span><CheckCircle2 size={19} /></span><div><h3>Confirmation preview</h3><p>Your reference is available in this browser session.</p></div></div>
+            <div className="thank-you-timeline"><span><LockKeyhole size={19} /></span><div><h3>Payment status</h3><p>No charge was made for this preview.</p></div></div>
+            <div className="thank-you-timeline"><span><Truck size={19} /></span><div><h3>Delivery status</h3><p>No shipment is scheduled.</p></div></div>
+          </> : <>
+            <div className="thank-you-timeline"><span><Mail size={19} /></span><div><h3>Order confirmation</h3><p>We’ll send order updates to <b>{receipt.email}</b>.</p></div></div>
+            <div className="thank-you-timeline"><span><PackageCheck size={19} /></span><div><h3>Preparing your box</h3><p>Our team will prepare your Collector’s Box.</p></div></div>
+            <div className="thank-you-timeline"><span><Truck size={19} /></span><div><h3>Delivery updates</h3><p>Tracking details will follow after dispatch.</p></div></div>
+          </>}
         </aside>
       </div>
 
