@@ -169,12 +169,6 @@ export function ProductPage() {
         <article><Check /><b>Clear policy links</b><p>Shipping, terms, payment, and contact details remain available before checkout.</p></article>
       </section>
 
-      <section className="product-detail-band">
-        <article><span>01</span><b>See every piece</b><p>Browse images and details for all 11 pieces in the Collector's Box.</p></article>
-        <article><span>02</span><b>Review before payment</b><p>Check your quantity, subtotal, and free standard delivery in your cart before checkout.</p></article>
-        <article><span>03</span><b>Support for your order</b><p>Delivery updates and clear support links keep you informed from pre-order to dispatch.</p></article>
-      </section>
-
       <Faq />
 
       <div className={`product-purchase-sticky ${stickyVisible ? 'is-visible' : ''}`} aria-hidden={!stickyVisible}>
