@@ -1,5 +1,5 @@
 -- PROJECT VI — Run once in Supabase SQL Editor. Run in a new project or review existing objects first.
--- Admin identities: exactly the two verified email addresses below; passwords are stored ONLY in Supabase Auth.
+-- Admin identity: only the verified email address below; passwords are stored ONLY in Supabase Auth.
 create extension if not exists pgcrypto;
 
 create or replace function public.is_admin() returns boolean
@@ -8,7 +8,7 @@ language sql stable security definer set search_path = '' as $$
   select 1 from auth.users u
   where u.id = (select auth.uid())
     and u.email_confirmed_at is not null
-    and lower(u.email) in ('workdndstores@gmail.com','kunalvishwakarmaa20@gmail.com')
+    and lower(u.email) = 'workdndstores@gmail.com'
  );
 $$;
 revoke all on function public.is_admin() from public;

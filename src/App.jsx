@@ -14,6 +14,7 @@ import {Home} from './pages/Home';
 import {HomeSecondary} from './pages/HomeSecondary';
 import {InfoPage} from './pages/InfoPage';
 import {ProductPage} from './pages/ProductPage';
+import {ThankYou} from './pages/ThankYou';
 const AdminApp = lazy(() => import('./admin/Admin').then(module => ({default: module.AdminApp})));
 
 function RouteView() {
@@ -24,6 +25,7 @@ function RouteView() {
   if (route === PRODUCT_PATH || route.startsWith('/product/')) return <ProductPage />;
   if (route === '/cart') return <Cart />;
   if (route === '/checkout') return <Checkout />;
+  if (route === '/thank-you') return <ThankYou />;
   if (route === '/join-as-a-creator') return <CreatorPage />;
   if (route === '/returns' || route === '/cancellation') return <InfoPage type="terms" />;
   if (['/shipping', '/privacy', '/contact', '/terms', '/payment', '/order-status', '/warranty'].includes(route)) return <InfoPage type={route.slice(1)} />;
@@ -32,7 +34,6 @@ function RouteView() {
 }
 
 export function App() {
-  const [showContent, setShowContent] = useState(false);
   const [isAdminRoute, setIsAdminRoute] = useState(() => window.location.pathname.startsWith('/admin'));
 
   useEffect(() => {
@@ -47,15 +48,13 @@ export function App() {
   return (
     <>
       <SeoHead />
-      <IntroLoader onComplete={() => setShowContent(true)} />
-      {showContent && (
-        <StoreProvider>
-          <Header />
-          <RouteView />
-          <Footer />
-          <CartDrawer />
-        </StoreProvider>
-      )}
+      <IntroLoader />
+      <StoreProvider>
+        <Header />
+        <RouteView />
+        <Footer />
+        <CartDrawer />
+      </StoreProvider>
     </>
   );
 }

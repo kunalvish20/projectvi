@@ -7,7 +7,7 @@ export async function startPayUPayment({quantity,customer}){
  const resp=await fetch('/api/payu-create',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({quantity,customer})});
  const payu=await parseJson(resp);
  if(!payu?.fields?.hash||!/^https:\/\/(test\.payu\.in|secure\.payu\.in)\/_payment$/.test(payu.gateway))throw new Error('Invalid gateway configuration.');
- sessionStorage.setItem(STORAGE,JSON.stringify({txnid:payu.txnid,accessToken:payu.accessToken}));
+ sessionStorage.setItem(STORAGE,JSON.stringify({txnid:payu.txnid,accessToken:payu.accessToken,customerName:customer.name,email:customer.email,quantity,amount:Number(payu.fields.amount)}));
  const form=document.createElement('form');form.method='POST';form.action=payu.gateway;form.style.display='none';
  for(const [name,value] of Object.entries(payu.fields)){const field=document.createElement('input');field.type='hidden';field.name=name;field.value=String(value??'');form.appendChild(field)}
  document.body.appendChild(form);form.submit();

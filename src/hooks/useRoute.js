@@ -11,10 +11,9 @@ const getRoute = () => {
 };
 
 export function go(path) {
-  const target = path.split('?')[0];
-  if (target === getRoute()) return;
-  if (target === '/checkout') window.clarity?.('event', 'checkout_started');
-  history.pushState(null, '', target);
+  if (path === `${getRoute()}${location.search}`) return;
+  if (path.split('?')[0] === '/checkout') window.clarity?.('event', 'checkout_started');
+  history.pushState(null, '', path);
   dispatchEvent(new Event('store:navigate'));
 }
 

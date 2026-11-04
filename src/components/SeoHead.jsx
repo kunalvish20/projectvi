@@ -1,4 +1,5 @@
-import {useEffect} from 'react';
+import {useEffect, useState} from 'react';
+import {PRODUCT_PATH, SITE} from '../data/catalog';
 import {getSeoPage} from '../data/seo';
 import {useRoute} from '../hooks/useRoute';
 
@@ -14,21 +15,32 @@ function setMeta(attribute, name, content) {
 
 export function SeoHead() {
   const route = useRoute();
+  const [catalogRevision, setCatalogRevision] = useState(0);
+
+  useEffect(() => {
+    const update = () => setCatalogRevision(value => value + 1);
+    window.addEventListener('store:catalog-updated', update);
+    return () => window.removeEventListener('store:catalog-updated', update);
+  }, []);
 
   useEffect(() => {
     const page = getSeoPage(route);
     document.title = page.title;
     setMeta('name', 'description', page.description);
     setMeta('name', 'robots', page.robots);
+    setMeta('property', 'og:site_name', SITE.name);
+    setMeta('property', 'og:locale', 'en_IN');
     setMeta('property', 'og:title', page.title);
     setMeta('property', 'og:description', page.description);
-    setMeta('property', 'og:type', route.includes('/product/') ? 'product' : 'website');
+    setMeta('property', 'og:type', route === PRODUCT_PATH ? 'product' : 'website');
     setMeta('property', 'og:url', page.url);
     setMeta('property', 'og:image', page.image);
+    setMeta('property', 'og:image:alt', page.imageAlt);
     setMeta('name', 'twitter:card', 'summary_large_image');
     setMeta('name', 'twitter:title', page.title);
     setMeta('name', 'twitter:description', page.description);
     setMeta('name', 'twitter:image', page.image);
+    setMeta('name', 'twitter:image:alt', page.imageAlt);
 
     let canonical = document.head.querySelector('link[rel="canonical"]');
     if (!canonical) {
@@ -45,8 +57,9 @@ export function SeoHead() {
       structuredData.type = 'application/ld+json';
       document.head.appendChild(structuredData);
     }
-    structuredData.textContent = JSON.stringify({'@context': 'https://schema.org', '@graph': page.graph});
-  }, [route]);
+    if (page.robots.startsWith('index')) structuredData.textContent = JSON.stringify({'@context': 'https://schema.org', '@graph': page.graph});
+    else structuredData.remove();
+  }, [route, catalogRevision]);
 
   return null;
 }

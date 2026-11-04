@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "node ./node_modules/vite/bin/vite.js build && node scripts/build-seo.mjs",
     "preview": "vite preview",
-    "setup:admins": "node --env-file=.env scripts/setup-admins.mjs",
+    "setup:admins": "node --env-file=.env.local scripts/setup-admins.mjs",
     "check": "node --test tests/*.test.mjs"
   },
   "dependencies": {

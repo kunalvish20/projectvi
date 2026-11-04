@@ -1,10 +1,11 @@
-import {ArrowLeft, ArrowRight, CheckCircle, LockKeyhole, Loader2, Minus, Plus, ShieldCheck, ShoppingBag, Truck} from 'lucide-react';
+import {ArrowLeft, ArrowRight, LockKeyhole, Loader2, Minus, Plus, ShieldCheck, ShoppingBag, Truck} from 'lucide-react';
 import {useEffect, useState} from 'react';
-import {BOX_ITEMS, MAX_ORDER_QUANTITY, PRODUCT, PRODUCT_PATH, SITE} from '../data/catalog';
+import {BOX_ITEMS, MAX_ORDER_QUANTITY, PRODUCT, PRODUCT_PATH} from '../data/catalog';
 import {useStore} from '../context/StoreContext';
 import {format} from '../lib/format';
 import {go} from '../hooks/useRoute';
 import {startPayUPayment,checkPayUStatus,getPendingPayU,clearPendingPayU} from '../lib/payuCheckout';
+import {createDemoReceipt, isDemoPayment, saveOrderReceipt} from '../lib/orderReceipt';
 import './Checkout.css';
 
 const initialForm = {name: '', email: '', phone: '', pincode: '', address: '', city: '', state: ''};
@@ -16,12 +17,32 @@ export function Checkout() {
   const [form, setForm] = useState(initialForm);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const [success, setSuccess] = useState(null);
-  const [pendingPayment, setPendingPayment] = useState(() => getPendingPayU());
+  const [pendingPayment, setPendingPayment] = useState(() => isDemoPayment ? null : getPendingPayU());
+
+  const completePayment = (receipt) => {
+    saveOrderReceipt(receipt);
+    clearCart();
+    go(`/thank-you?order=${encodeURIComponent(receipt.orderId)}`);
+  };
+
+  const completePayU = (result, stored) => {
+    clearPendingPayU();
+    setPendingPayment(null);
+    window.clarity?.('event', 'purchase_verified');
+    completePayment({
+      orderId: result.orderNumber ? `PV-${result.orderNumber}` : result.txnid,
+      transactionId: result.txnid,
+      customerName: stored?.customerName,
+      email: stored?.email,
+      quantity: stored?.quantity,
+      amount: stored?.amount,
+      demo: false
+    });
+  };
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
-    if (!params.has('payment')) return;
+    if (isDemoPayment || !params.has('payment')) return;
     history.replaceState(null, '', '/checkout');
     const stored = getPendingPayU();
     if (!stored || params.get('payment') !== stored.txnid) {
@@ -31,9 +52,7 @@ export function Checkout() {
     setPendingPayment(stored);
     checkPayUStatus().then(result => {
       if (result.status === 'paid') {
-        clearPendingPayU();clearCart();setPendingPayment(null);
-        window.clarity?.('event', 'purchase_verified');
-        setSuccess({paymentId: result.txnid, orderNumber: result.orderNumber});
+        completePayU(result, stored);
       } else if (result.status === 'failed') {
         clearPendingPayU();setPendingPayment(null);
         setError('PayU reported a failed payment. You can try again with a new transaction.');
@@ -64,6 +83,10 @@ export function Checkout() {
     }
     setLoading(true);
     try {
+      if (isDemoPayment) {
+        completePayment(createDemoReceipt({customer, quantity: qty, amount: total}));
+        return;
+      }
       await startPayUPayment({quantity: qty, customer});
       setPendingPayment(getPendingPayU());
       // PayU Hosted Checkout navigates away. Never mark an order paid on redirect alone.
@@ -81,9 +104,7 @@ export function Checkout() {
     try {
       const verified = await checkPayUStatus();
       if (verified.status === 'paid') {
-        clearPendingPayU();clearCart();setPendingPayment(null);
-        window.clarity?.('event', 'purchase_verified');
-        setSuccess({paymentId: verified.txnid, orderNumber: verified.orderNumber});
+        completePayU(verified, pendingPayment);
       } else if (verified.status === 'failed') {
         clearPendingPayU();setPendingPayment(null);
         setError('The payment failed. You can place a new payment attempt.');
@@ -91,20 +112,6 @@ export function Checkout() {
     } catch (e) {setError(e.message || 'Unable to check payment status. Please retry.');}
     finally {setLoading(false);}
   };
-
-  if (success) {
-    return (
-      <main className="page checkout-success-page">
-        <section className="checkout-success-card" data-clarity-mask="true">
-          <CheckCircle />
-          <p className="secondary-kicker">PAYMENT VERIFIED</p>
-          <h1>Pre-order confirmed.</h1>
-          <p>Your payment is verified successfully. Transaction ID: <b>{success.paymentId}</b></p>
-          <button className="secondary-preorder-btn" onClick={() => go('/')}>BACK TO DROP <ArrowRight size={19} /></button>
-        </section>
-      </main>
-    );
-  }
 
   if (!qty) {
     return (
@@ -126,7 +133,7 @@ export function Checkout() {
           <button className="checkout-back" type="button" onClick={() => go('/cart')}><ArrowLeft size={16} /> Back to cart</button>
           <p className="checkout-step">ONE STEP CHECKOUT</p>
           <h1>Almost yours.</h1>
-          <p>Enter your details, review your total, and pay securely.</p>
+          <p>{isDemoPayment ? 'Enter your details and complete a test checkout.' : 'Enter your details, review your total, and pay securely.'}</p>
         </div>
 
         <div className="checkout-grid">
@@ -174,17 +181,18 @@ export function Checkout() {
             <section className="checkout-payment" aria-labelledby="checkout-payment-title">
               <div className="checkout-section-heading">
                 <span className="checkout-section-number">03</span>
-                <div><h2 id="checkout-payment-title">Secure payment</h2><p>Review your order total before opening secure PayU checkout.</p></div>
+                <div><h2 id="checkout-payment-title">{isDemoPayment ? 'Demo payment' : 'Secure payment'}</h2><p>{isDemoPayment ? 'Review your order, then simulate a successful payment.' : 'Review your order total before opening secure PayU checkout.'}</p></div>
               </div>
+              {isDemoPayment && <div className="checkout-demo-notice"><strong>Testing mode</strong><span>No money will be charged. Demo orders stay in this browser and will not appear in admin.</span></div>}
               <div className="checkout-pay-total"><span>Total to pay</span><strong>{format(total)}</strong></div>
               {error && <p className="checkout-error" role="alert">{error}</p>}
               {pendingPayment && <button className="checkout-retry-btn" type="button" onClick={retryConfirmation} disabled={loading}>
                 {loading ? <><Loader2 className="spin" size={18} /> Checking payment…</> : <>Check payment status <ArrowRight size={18} /></>}
               </button>}
               {!pendingPayment && <button className="pay-now-btn" type="submit" disabled={loading}>
-                {loading ? <><Loader2 className="spin" size={19} /> Redirecting to PayU…</> : <><LockKeyhole size={18} /> Pay {format(total)} securely <ArrowRight size={18} /></>}
+                {loading ? <><Loader2 className="spin" size={19} /> {isDemoPayment ? 'Completing test…' : 'Redirecting to PayU…'}</> : <><LockKeyhole size={18} /> {isDemoPayment ? `Complete demo payment · ${format(total)}` : `Pay ${format(total)} securely`} <ArrowRight size={18} /></>}
               </button>}
-              <p className="checkout-payment-help"><ShieldCheck size={16} aria-hidden="true" /> Payments are handled by PayU. We don’t store your card or UPI details.</p>
+              <p className="checkout-payment-help"><ShieldCheck size={16} aria-hidden="true" /> {isDemoPayment ? 'Demo checkout requires no card or UPI details.' : 'Payments are handled by PayU. We don’t store your card or UPI details.'}</p>
               <p className="checkout-terms">By paying, you agree to our <a href="/terms">Terms of Service</a> and <a href="/privacy">Privacy Policy</a>.</p>
             </section>
           </form>

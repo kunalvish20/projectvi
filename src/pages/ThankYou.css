@@ -1,0 +1,62 @@
+.thank-you-page {
+  position: relative;
+  min-height: 100vh;
+  overflow: hidden;
+  background: #070609;
+  font-family: Outfit, Arial, sans-serif;
+}
+.thank-you-glow {
+  position: absolute;
+  inset: 0 0 auto;
+  height: 660px;
+  pointer-events: none;
+  background: radial-gradient(ellipse at 50% 8%, #e23b9440, transparent 54%), radial-gradient(ellipse at 83% 48%, #5933772b, transparent 42%);
+}
+.thank-you-shell { position: relative; width: min(1050px, 100%); margin: auto; padding: 125px 24px 90px; }
+.thank-you-confirmation { max-width: 710px; margin: 0 auto 42px; text-align: center; }
+.thank-you-icon { display: grid; width: 74px; height: 74px; place-items: center; margin: 0 auto 23px; border: 1px solid #b9f2c990; border-radius: 50%; background: linear-gradient(145deg, #a3ecc0, #69bd8a); color: #092b1a; box-shadow: 0 0 0 9px #9df0b410, 0 20px 55px #4cbb7e3a; }
+.thank-you-eyebrow, .thank-you-card-head span, .thank-you-next-label { color: #ff8dc7; font-size: 11px; font-weight: 900; letter-spacing: .16em; }
+.thank-you-confirmation h1 { margin: 11px 0 8px; font-size: clamp(39px, 6vw, 65px); font-weight: 900; letter-spacing: -.055em; line-height: 1.08; }
+.thank-you-lead { margin: 0; color: #d3c3cf; font-size: clamp(15px, 2vw, 18px); line-height: 1.55; }
+.thank-you-demo-note { display: flex; flex-direction: column; gap: 3px; max-width: 570px; margin: 23px auto 0; padding: 13px 17px; border: 1px solid #ffb36655; border-radius: 11px; background: #ff9b2714; color: #f5dcc4; font-size: 13px; line-height: 1.45; }
+.thank-you-demo-note strong { color: #ffbc78; text-transform: uppercase; font-size: 11px; letter-spacing: .11em; }
+.thank-you-grid { display: grid; grid-template-columns: 1.12fr .88fr; gap: 20px; align-items: stretch; }
+.thank-you-card, .thank-you-next { min-width: 0; padding: 30px; border: 1px solid #ffffff21; border-radius: 19px; background: #121014; box-shadow: 0 20px 60px #0005; }
+.thank-you-card-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+.thank-you-card-head h2, .thank-you-next h2 { margin: 5px 0 0; font-size: 24px; letter-spacing: -.035em; }
+.thank-you-card-head svg { color: #9df0b4; }
+.thank-you-order-id { padding: 16px 18px; border: 1px solid #ff8dc743; border-radius: 11px; background: #ff6ab50b; }
+.thank-you-order-id > span { display: block; margin-bottom: 6px; color: #bdaebc; font-size: 12px; }
+.thank-you-order-id > div { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+.thank-you-order-id strong { overflow-wrap: anywhere; font-size: clamp(17px, 2.4vw, 22px); letter-spacing: .01em; }
+.thank-you-order-id button { display: grid; flex: 0 0 auto; width: 34px; height: 34px; place-items: center; border: 1px solid #ffffff36; border-radius: 8px; background: #ffffff0b; }
+.thank-you-order-id button:hover { background: #ffffff1d; }
+.thank-you-product { display: grid; grid-template-columns: 88px minmax(0, 1fr); gap: 15px; align-items: center; padding: 24px 0; border-bottom: 1px solid #ffffff1d; }
+.thank-you-product img { width: 88px; height: 88px; object-fit: cover; border: 1px solid #ffffff29; border-radius: 10px; }
+.thank-you-product span { color: #ff8dc7; font-size: 10px; font-weight: 800; text-transform: uppercase; }
+.thank-you-product h3 { margin: 5px 0; font-size: 17px; line-height: 1.25; }
+.thank-you-product p { margin: 0; color: #bbafbb; font-size: 13px; }
+.thank-you-total { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; padding-top: 20px; font-size: 15px; font-weight: 700; }
+.thank-you-total strong { font-size: 25px; }
+.thank-you-reference { margin: 17px 0 0; color: #9e929d; font-size: 12px; line-height: 1.5; overflow-wrap: anywhere; }
+.thank-you-reference b { color: #cbbcca; font-weight: 600; }
+.thank-you-next { background: linear-gradient(145deg, #1c1420, #100e12); }
+.thank-you-next h2 { margin-bottom: 27px; }
+.thank-you-timeline { display: grid; grid-template-columns: 38px minmax(0, 1fr); gap: 13px; position: relative; padding-bottom: 22px; }
+.thank-you-timeline:not(:last-child):before { content: ''; position: absolute; top: 38px; bottom: 3px; left: 18px; width: 1px; background: #ffffff28; }
+.thank-you-timeline > span { display: grid; width: 38px; height: 38px; place-items: center; border: 1px solid #ff83c04d; border-radius: 10px; background: #ff5daa15; color: #ff8dc7; }
+.thank-you-timeline h3 { margin: 1px 0 4px; font-size: 15px; }
+.thank-you-timeline p { margin: 0; color: #b7aab5; font-size: 13px; line-height: 1.45; overflow-wrap: anywhere; }
+.thank-you-timeline p b { color: #e6d7e4; font-weight: 600; }
+.thank-you-actions { display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 18px; margin-top: 31px; }
+.thank-you-actions button, .thank-you-missing button { display: inline-flex; min-height: 48px; align-items: center; justify-content: center; gap: 8px; padding: 0 21px; border: 0; border-radius: 10px; background: #ed1682; color: #fff; font-weight: 800; box-shadow: 0 12px 28px #ed16823d; }
+.thank-you-actions button:hover, .thank-you-missing button:hover { filter: brightness(1.12); }
+.thank-you-actions a { color: #d1c1d0; font-size: 13px; text-underline-offset: 3px; }
+.thank-you-page button:focus-visible, .thank-you-page a:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+.thank-you-missing { width: min(520px, calc(100% - 36px)); margin: auto; padding: 150px 0 90px; text-align: center; }
+.thank-you-missing > svg { color: #ff8dc7; }
+.thank-you-missing h1 { margin: 14px 0 8px; font-size: 35px; }
+.thank-you-missing p { color: #c8bac5; line-height: 1.55; }
+.thank-you-missing button { margin-top: 13px; }
+@media (max-width: 760px) { .thank-you-grid { grid-template-columns: 1fr; } .thank-you-shell { padding-top: 110px; } }
+@media (max-width: 520px) { .thank-you-shell { padding: 104px 15px 60px; } .thank-you-confirmation { margin-bottom: 27px; } .thank-you-icon { width: 62px; height: 62px; margin-bottom: 19px; } .thank-you-card, .thank-you-next { padding: 22px 18px; border-radius: 15px; } .thank-you-product { grid-template-columns: 70px minmax(0, 1fr); } .thank-you-product img { width: 70px; height: 70px; } }

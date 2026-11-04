@@ -178,6 +178,20 @@
 .checkout-terms { margin: 15px 0 0; color: #9f929f; font-size: 12px; line-height: 1.5; text-align: center; }
 .checkout-terms a { color: #e8d1e1; text-underline-offset: 2px; }
 .checkout-page .checkout-error { margin: 5px 0 8px; }
+.checkout-demo-notice {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  margin-bottom: 17px;
+  padding: 12px 15px;
+  border: 1px solid #ffb36655;
+  border-radius: 10px;
+  background: #ff9b2714;
+  color: #f9debf;
+  font-size: 13px;
+  line-height: 1.45;
+}
+.checkout-demo-notice strong { color: #ffbc78; font-size: 12px; text-transform: uppercase; letter-spacing: .08em; }
 
 .checkout-order { position: sticky; top: 92px; padding: 23px; }
 .checkout-order-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 19px; }

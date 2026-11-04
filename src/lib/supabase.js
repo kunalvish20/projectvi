@@ -5,7 +5,7 @@ const url = (import.meta.env.VITE_SUPABASE_URL || '').replace(/\/$/, '');
 const anonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
 const SESSION = 'projectvi_admin_session';
 export const isConfigured = Boolean(url && anonKey);
-export const allowedEmails = ['workdndstores@gmail.com', 'kunalvishwakarmaa20@gmail.com'];
+export const allowedEmails = ['workdndstores@gmail.com'];
 const toQuery = query => Object.entries(query).map(([k,v])=> `${encodeURIComponent(k)}=${encodeURIComponent(v)}`).join('&');
 const readSession = () => { try { return JSON.parse(sessionStorage.getItem(SESSION) || 'null'); } catch { return null; } };
 export const clearAdminSession = () => { sessionStorage.removeItem(SESSION); window.dispatchEvent(new Event('pv:auth')); };

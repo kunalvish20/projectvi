@@ -54,21 +54,27 @@ export function Header() {
     if (path.includes('reviews')) setTimeout(() => document.getElementById('reviews')?.scrollIntoView({behavior: 'smooth'}), 80);
   };
 
+  const followLink = (event, path) => {
+    if (event.button || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+    event.preventDefault();
+    navigate(path);
+  };
+
   return (
     <>
       <header className="site-header">
         <BrandLogo />
         <nav>
           {links.slice(0, 3).map(([label, path]) => (
-            <button key={label} onClick={() => navigate(path)}>{label}</button>
+            <a key={label} href={path} onClick={event => followLink(event, path)}>{label}</a>
           ))}
         </nav>
         <div className="header-actions">
-          <button className="cart-icon" aria-label="Open cart" onClick={() => go('/cart')}>
+          <a className="cart-icon" href="/cart" aria-label="Open cart" onClick={event => followLink(event, '/cart')}>
             <ShoppingBag size={19} />
             {count > 0 && <b>{count}</b>}
-          </button>
-          <button className="buy-link" onClick={() => go(PRODUCT_PATH)}>{isPreorderRoute ? 'Pre-Order' : 'Buy Now'}</button>
+          </a>
+          <a className="buy-link" href={PRODUCT_PATH} onClick={event => followLink(event, PRODUCT_PATH)}>{isPreorderRoute ? 'Pre-Order' : 'Buy Now'}</a>
           <button
             ref={menuButtonRef}
             type="button"
@@ -86,7 +92,7 @@ export function Header() {
       <nav id="site-mobile-menu" className={`mobile-menu ${open ? 'is-open' : ''}`} aria-label="Mobile navigation" aria-hidden={!open} inert={!open}>
         <b>{PRODUCT.name}</b>
         {links.map(([label, path]) => (
-          <button key={label} type="button" onClick={() => navigate(path)}>{label}</button>
+          <a key={label} href={path} onClick={event => followLink(event, path)}>{label}</a>
         ))}
       </nav>
     </>

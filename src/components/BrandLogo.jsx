@@ -3,10 +3,12 @@ import {go} from '../hooks/useRoute';
 
 export function BrandLogo() {
   return (
-    <button className="brand" type="button" aria-label={`${SITE.name} home`} onClick={() => go('/')}>
+    <a className="brand" href="/" aria-label={`${SITE.name} home`} onClick={event => {
+      if (event.button || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+      event.preventDefault();
+      go('/');
+    }}>
       <span className="brand-mark">{SITE.shortName}</span>
-      <span className="brand-divider" aria-hidden="true" />
-      <span className="brand-label">Store</span>
-    </button>
+    </a>
   );
 }

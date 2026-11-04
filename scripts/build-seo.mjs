@@ -18,6 +18,11 @@ for (const path of INDEXABLE_PATHS) {
     throw new Error(`Sitemap is missing ${path}`);
   }
 }
+const sitemapPaths = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map(([, url]) => url);
+const expectedUrls = INDEXABLE_PATHS.map(path => `${SITE.origin}${path}`);
+if (sitemapPaths.length !== expectedUrls.length || sitemapPaths.some(url => !expectedUrls.includes(url))) {
+  throw new Error('Sitemap must contain only the current indexable canonical URLs.');
+}
 
 const escapeHtml = value => String(value).replace(/[&<>"']/g, character => ({
   '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
@@ -35,10 +40,12 @@ function renderHead(page) {
     tag('og:description', page.description, 'property'),
     tag('og:url', page.url, 'property'),
     tag('og:image', page.image, 'property'),
+    tag('og:image:alt', page.imageAlt, 'property'),
     tag('twitter:card', 'summary_large_image'),
     tag('twitter:title', page.title),
     tag('twitter:description', page.description),
     tag('twitter:image', page.image),
+    tag('twitter:image:alt', page.imageAlt),
     `<link rel="canonical" href="${escapeHtml(page.url)}" />`
   ];
   if (page.robots.startsWith('index')) {
@@ -57,30 +64,45 @@ function renderFaq() {
 function renderFallback(page) {
   let content = `<h1>${escapeHtml(page.heading)}</h1><p>${escapeHtml(page.description)}</p>`;
   if (page.path === '/' || page.path === PRODUCT_PATH) {
+    content += `<img src="/assets/Gta-box.webp" alt="${escapeHtml(page.imageAlt)}" width="640" height="640" />`;
     content += `<p>Pre-order price: ${escapeHtml(format(PRODUCT.price))}. The box includes 11 Collector's Edition items. Standard delivery is free.</p>`;
     content += `<a href="${PRODUCT_PATH}">Explore the Collector's Box</a>`;
     if (page.path === PRODUCT_PATH) {
       content += `<h2>Inside the box</h2><ul>${PRODUCT.highlights.map(item => `<li>${escapeHtml(item)}</li>`).join('')}</ul>`;
     }
     content += renderFaq();
+  } else if (page.path === '/join-as-a-creator') {
+    content += '<p>Explore a Project VI partnership as a creator, promoter, or seller. Share an Instagram or YouTube link and tell us about your work.</p>';
+    content += '<h2>Ways to work together</h2><ul><li>Create videos, reels, and unboxing content.</li><li>Promote the collection to your community.</li><li>Discuss selling the Collector’s Box with us.</li></ul>';
   } else if (INFO_PAGES[page.path.slice(1)]) {
     const info = INFO_PAGES[page.path.slice(1)];
     content += `<ul>${info.bullets.map(item => `<li>${escapeHtml(item)}</li>`).join('')}</ul>`;
+    content += (info.sections || []).map(section => `<section><h2>${escapeHtml(section.heading)}</h2><p>${escapeHtml(section.copy)}</p></section>`).join('');
   }
+  if (page.robots.startsWith('index')) content += `<nav aria-label="Explore Project VI">${['/', PRODUCT_PATH, '/join-as-a-creator', '/shipping', '/contact'].filter(path => path !== page.path).map(path => `<a href="${path}">${escapeHtml(getSeoPage(path).heading)}</a>`).join(' ')}</nav>`;
   return `<main class="seo-fallback">${content}</main>`;
 }
 
 function renderPage(path) {
   const page = getSeoPage(path);
-  return shell
+  const html = shell
     .replace(/<title>.*?<\/title>/s, `<title>${escapeHtml(page.title)}</title>`)
     .replace('<!-- SEO_HEAD -->', renderHead(page))
     .replace('<!-- SEO_FALLBACK -->', renderFallback(page));
+  for (const required of [
+    `<title>${escapeHtml(page.title)}</title>`,
+    `name="description" content="${escapeHtml(page.description)}"`,
+    `name="robots" content="${page.robots}"`,
+    `<link rel="canonical" href="${escapeHtml(page.url)}" />`,
+    `property="og:image" content="${escapeHtml(page.image)}"`,
+    `class="seo-fallback"`
+  ]) if (!html.includes(required)) throw new Error(`Missing SEO output on ${path}: ${required}`);
+  return html;
 }
 
 await writeFile(join(dist, 'index.html'), renderPage('/'));
 await mkdir(join(dist, '_seo'), {recursive: true});
-for (const path of [...INDEXABLE_PATHS.filter(path => path !== '/'), '/cart', '/checkout', '/admin']) {
+for (const path of [...INDEXABLE_PATHS.filter(path => path !== '/'), '/cart', '/checkout', '/thank-you', '/admin']) {
   const file = path === PRODUCT_PATH ? 'product' : path.slice(1);
   await writeFile(join(dist, '_seo', `${file}.html`), renderPage(path));
 }

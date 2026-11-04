@@ -46,6 +46,7 @@ export function StoreProvider({children}) {
       p.price=Number(remote.price);
       p.oldPrice=Number(remote.compare_at_price)||p.oldPrice;
       setCatalogRevision(i=>i+1);
+      window.dispatchEvent(new Event('store:catalog-updated'));
     }).catch(()=>{});
     return ()=>{active=false};
   }, []);

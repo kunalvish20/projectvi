@@ -8,6 +8,7 @@ export const INDEXABLE_PATHS = ['/', PRODUCT_PATH, '/join-as-a-creator', ...Obje
 export function getSeoPage(path) {
   const url = `${SITE.origin}${path}`;
   const image = `${SITE.origin}/assets/Gta-box.webp`;
+  const imageAlt = `${PRODUCT.name} by ${SITE.name}`;
   const organization = {
     '@type': 'Organization',
     '@id': `${SITE.origin}/#organization`,
@@ -43,15 +44,24 @@ export function getSeoPage(path) {
       description: PRODUCT.description,
       image: [image],
       sku: PRODUCT.id,
+      brand: {'@type': 'Brand', name: SITE.name},
       category: PRODUCT.category,
       offers: {
         '@type': 'Offer',
         url,
         price: PRODUCT.price,
         priceCurrency: 'INR',
+        itemCondition: 'https://schema.org/NewCondition',
         availability: 'https://schema.org/PreOrder',
         seller: {'@id': organization['@id']}
       }
+    });
+    graph.push({
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        {'@type': 'ListItem', position: 1, name: 'Home', item: `${SITE.origin}/`},
+        {'@type': 'ListItem', position: 2, name: PRODUCT.name, item: url}
+      ]
     });
     graph.push({
       '@type': 'FAQPage',
@@ -65,6 +75,11 @@ export function getSeoPage(path) {
     title = `${SITE.name} | Admin Sign In`;
     description = 'Private administrative workspace for Project VI.';
     heading = 'Administrator sign-in';
+    robots = 'noindex,nofollow';
+  } else if (path === '/thank-you') {
+    title = `Order confirmation | ${SITE.name}`;
+    description = 'Your Project VI checkout confirmation.';
+    heading = 'Order confirmation';
     robots = 'noindex,nofollow';
   } else if (path === '/join-as-a-creator') {
     title = `Join as a Creator | ${SITE.name}`;
@@ -93,5 +108,5 @@ export function getSeoPage(path) {
     });
   }
 
-  return {path, url, image, title, description, heading, robots, graph};
+  return {path, url, image, imageAlt, title, description, heading, robots, graph};
 }

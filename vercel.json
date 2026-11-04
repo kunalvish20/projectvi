@@ -81,6 +81,10 @@
       "destination": "/_seo/checkout.html"
     },
     {
+      "source": "/thank-you",
+      "destination": "/_seo/thank-you.html"
+    },
+    {
       "source": "/old-homepage",
       "destination": "/index.html"
     },
