@@ -1,18 +1,18 @@
 # Project VI — React storefront + Supabase Commerce Admin + PayU
 
-A single Vite/React project. Admin is at **`/admin`**. Checkout defaults to a preview flow: submitting saves customer contact and delivery details privately to Supabase and opens a summary, without collecting payment or placing an order. Set `VITE_PAYMENT_MODE=payu` only after configuring PayU India Hosted Checkout, payment verification, Supabase order storage and inventory updates.
+A single Vite/React project. Admin is at **`/admin`**. Checkout currently opens a prefilled WhatsApp order request because online payment is unavailable. No payment is collected or paid order created on the site. Customer details are also saved to the private admin dashboard when Supabase is configured. Set `VITE_CHECKOUT_MODE=payu` only after the PayU gateway and server verification are ready.
 
 ## Quick setup (one-time)
 
-Requirements: **Node.js 20.19+ / 22+**, npm, Supabase and PayU India credentials for checkout.
+Requirements: **Node.js 20.19+ / 22+** and npm. Supabase is required for dashboard tracking; PayU credentials are only required when online payment is enabled.
 
 1. `npm install`
-2. Copy `.env.example` to ignored `.env.local` and fill the Supabase URL, public anon key, and server-only service role key. Creator submissions and preview checkout details require Supabase. For real checkout, also set `VITE_PAYMENT_MODE=payu` and fill the PayU values and `PUBLIC_SITE_URL`. Keep the file private. The service role key is **server-only**, never set `VITE_` before it.
-3. In **Supabase Dashboard → SQL Editor**, paste and run **`supabase/schema.sql` once** for a new database. For an existing Project VI database, run **`supabase/track-submissions.sql`** to add creator applications and preview checkout submissions. This creates private tables and admin-only read policies. API keys cannot create SQL tables automatically.
+2. Copy `.env.example` to ignored `.env.local` and fill the Supabase URL, public anon key, and server-only service role key. Creator submissions and WhatsApp checkout tracking require Supabase; the WhatsApp chat can still open if the database is temporarily unavailable. For real online payment later, set `VITE_CHECKOUT_MODE=payu` and fill the PayU values and `PUBLIC_SITE_URL`. Keep the file private. The service role key is **server-only**, never set `VITE_` before it.
+3. In **Supabase Dashboard → SQL Editor**, paste and run **`supabase/schema.sql` once** for a new database. For an existing Project VI database, run **`supabase/track-submissions.sql`** to add creator applications and WhatsApp checkout submissions. This creates private tables and admin-only read policies. API keys cannot create SQL tables automatically.
 4. Put a unique strong password in `ADMIN_INITIAL_PASSWORD` in the ignored `.env.local` file. Run **`npm run setup:admins`** once. It creates or updates only `workdndstores@gmail.com` in Supabase Auth and confirms that email. For an existing Supabase project, also run **`supabase/only-workdndstores-admin.sql`** in the SQL Editor to replace the old two-email database allowlist. The provisioning script cannot change SQL policies through a service-role API key.
 5. `npm run dev` and open `http://localhost:5173` for store and `http://localhost:5173/admin` for admin. **Admin login accepts ONLY the one confirmed Supabase Auth identity in `public.is_admin()`; a UI-only email check is never considered sufficient.** No registration route exists. `npm run dev` runs the payment server routes locally using the Vite middleware.
 
-After configuring the database, run `node --env-file=.env.local scripts/check-submissions.mjs` to verify both new tables are reachable. Submit one creator application and one preview checkout, then sign in at `/admin/creator-applications` and `/admin/checkout-details`. Real PayU attempts also appear in Checkout details and Orders.
+After configuring the database, run `node --env-file=.env.local scripts/check-submissions.mjs` to verify both new tables are reachable. Submit one creator application and one WhatsApp checkout enquiry, then sign in at `/admin/creator-applications` and `/admin/checkout-details`. Opening WhatsApp does not prove the customer sent the message; the team must confirm the request in chat. Real PayU attempts, if enabled later, also appear in Checkout details and Orders.
 
 > Admin login, creator/checkout submission capture, and PayU checkout require the SQL schema and server secrets. PayU redirects cannot call back to plain localhost. For testing a PayU transaction locally, expose Vite through a HTTPS tunnel (e.g. ngrok) and set `PUBLIC_SITE_URL` to the externally reachable HTTPS origin, or deploy the application on Vercel.
 
@@ -20,7 +20,7 @@ After configuring the database, run `node --env-file=.env.local scripts/check-su
 
 | Variable | Where used | Notes |
 |---|---|---|
-| `VITE_PAYMENT_MODE` | Browser and server | Defaults to `preview` if unset. Preview submissions are saved without payment or an order; `payu` enables the real payment flow only after backend configuration. |
+| `VITE_CHECKOUT_MODE` | Browser and server | Defaults to WhatsApp if unset. Set `payu` only when the gateway is ready. |
 | `VITE_SUPABASE_URL` | Browser | Public Project URL |
 | `VITE_SUPABASE_ANON_KEY` | Browser | Public anon/publishable key. RLS enabled. |
 | `SUPABASE_URL` | Serverless functions & provisioning | Project URL |
@@ -33,7 +33,7 @@ After configuring the database, run `node --env-file=.env.local scripts/check-su
 
 ### Deploy to Vercel
 
-Connect repository to Vercel. Without `VITE_PAYMENT_MODE=payu`, checkout saves a preview submission but does not create an order or collect payment. Set `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`, `SUPABASE_URL`, and `SUPABASE_SERVICE_ROLE_KEY` in **Vercel → Project Settings → Environment Variables** for both forms and admin. To accept real payments, also set the PayU variables, `VITE_PAYMENT_MODE=payu`, and `PUBLIC_SITE_URL=https://your-real-domain.com`; use `PAYU_ENV=production` only when live PayU credentials are issued and tested. `/api/*` routes use Vercel Node serverless functions.
+Connect repository to Vercel. With `VITE_CHECKOUT_MODE=whatsapp` or unset, checkout opens a WhatsApp order request and does not create a paid order or collect payment. Set `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`, `SUPABASE_URL`, and `SUPABASE_SERVICE_ROLE_KEY` in **Vercel → Project Settings → Environment Variables** for forms, dashboard tracking and admin. To accept real payments later, also set the PayU variables, `VITE_CHECKOUT_MODE=payu`, and `PUBLIC_SITE_URL=https://your-real-domain.com`; use `PAYU_ENV=production` only when live PayU credentials are issued and tested. `/api/*` routes use Vercel Node serverless functions.
 
 ### PayU flow and data integrity
 
@@ -43,7 +43,7 @@ The customer submits contact and address details. Delivery is free, and a fixed 
 
 ## Admin modules
 
-Overview, Creator applications, Checkout details, Products, Collections, Inventory, Orders, Customers, Payments, Shipping, Returns, Discounts, Marketing drafts, Reviews, Customer Support, Analytics, Content drafts, Taxes, Notifications, Integrations, Staff Access, Settings. Creator applications and preview checkouts are saved through server routes. Checkout details combines preview submissions and PayU order attempts, with search and CSV export. Orders and verified payment statuses use specialized controls.
+Overview, Creator applications, Checkout details, Products, Collections, Inventory, Orders, Customers, Payments, Shipping, Returns, Discounts, Marketing drafts, Reviews, Customer Support, Analytics, Content drafts, Taxes, Notifications, Integrations, Staff Access, Settings. Creator applications and WhatsApp checkout enquiries are saved through server routes when Supabase is configured. Checkout details combines these enquiries and PayU order attempts, with search and CSV export. Orders and verified payment statuses use specialized controls.
 
 **Important feature boundaries**: The uploaded storefront currently sells the original **single Collector's Box**. Editing its title, description and price in Admin syncs back to its existing storefront content (layout unchanged); other products and collections are **admin data records** until new public listing pages are developed. Discounts, content blocks, marketing campaigns, reviews and tax rates are **admin-managed data**, not automatically wired to live checkout or static homepage. Marketing sending, courier label generation, automatic refunds, GST tax invoices, Google Analytics and third-party services **require separate live credentials and provider-specific integrations**. The UI describes these boundaries, rather than pretending they're implemented.
 

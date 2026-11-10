@@ -1,4 +1,5 @@
 import {SITE} from './catalog.js';
+import {isPayUCheckout} from './checkoutMode.js';
 
 export const INFO_PAGES = {
   shipping: {
@@ -10,8 +11,8 @@ export const INFO_PAGES = {
   privacy: {
     eyebrow: 'Policy',
     title: 'Privacy Policy',
-    copy: `${SITE.name} saves submitted creator applications and checkout contact and delivery details for review in a private admin dashboard. Real PayU orders are used to verify payments, arrange delivery, provide support, and communicate with customers. Preview checkout submissions do not collect payment or create an order. We also use Microsoft Clarity to understand how visitors use this website.`,
-    bullets: ['Cart data stays in your browser until you submit checkout', 'Submitted creator applications and checkout details are stored for admin review', 'Payment is handled through PayU when live checkout is enabled', 'Microsoft Clarity collects usage data such as page visits, clicks, scrolling, and session recordings; checkout and creator form content is masked'],
+    copy: `${SITE.name} saves submitted creator applications and checkout contact and delivery details for review in a private admin dashboard. WhatsApp order requests share the prepared customer message with WhatsApp only when the customer sends it; our team confirms payment and fulfilment separately. Real PayU orders, when enabled, are used to verify payments and arrange delivery. We also use Microsoft Clarity to understand how visitors use this website.`,
+    bullets: ['Cart data stays in your browser until you submit checkout', 'Submitted creator applications and checkout details are stored for admin review when the database is configured', 'WhatsApp order requests do not collect payment on this site', 'Microsoft Clarity collects usage data such as page visits, clicks, scrolling, and session recordings; checkout and creator form content is masked'],
     sections: [{
       heading: 'Website analytics',
       copy: 'Microsoft Clarity may use cookies and similar technologies to measure website use. Clarity recordings help us improve the site. Form entries and payment IDs are masked from recordings. Microsoft processes the analytics data under its own privacy terms.'
@@ -34,8 +35,8 @@ export const INFO_PAGES = {
   payment: {
     eyebrow: 'Security',
     title: 'Payment Security',
-    copy: 'Checkout is powered by PayU. The browser receives a short-lived order ID and public key, while payment verification happens through server APIs.',
-    bullets: ['No card details are stored by the React storefront', 'Payment signature is verified after checkout', 'Order totals are shown before payment opens']
+    copy: isPayUCheckout ? 'Checkout is powered by PayU. Payment verification happens through server APIs.' : 'Online payment is temporarily unavailable. Send an order request on WhatsApp; our team will confirm availability, total and payment instructions in chat. No payment is collected on this site.',
+    bullets: isPayUCheckout ? ['No card details are stored by the React storefront', 'Payment signature is verified after checkout', 'Order totals are shown before payment opens'] : ['The checkout shows an estimated total before WhatsApp opens', 'Sending the WhatsApp message requests an order; it is not a payment confirmation', 'Do not send card or UPI credentials in chat']
   },
   'order-status': {
     eyebrow: 'Orders',

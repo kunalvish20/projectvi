@@ -1,11 +1,12 @@
-import {ArrowLeft, ArrowRight, ChevronDown, LockKeyhole, Loader2, Minus, Plus, ShieldCheck, ShoppingBag, Truck} from 'lucide-react';
+import {ArrowLeft, ArrowRight, ChevronDown, LockKeyhole, Loader2, MessageCircle, Minus, Plus, ShieldCheck, ShoppingBag, Truck} from 'lucide-react';
 import {useEffect, useState} from 'react';
-import {BOX_ITEMS, MAX_ORDER_QUANTITY, PRODUCT, PRODUCT_PATH} from '../data/catalog';
+import {BOX_ITEMS, MAX_ORDER_QUANTITY, PRODUCT, PRODUCT_PATH, SITE} from '../data/catalog';
 import {useStore} from '../context/StoreContext';
 import {format} from '../lib/format';
 import {go} from '../hooks/useRoute';
 import {startPayUPayment,checkPayUStatus,getPendingPayU,clearPendingPayU} from '../lib/payuCheckout';
-import {createPreviewReceipt, isPreviewCheckout, saveOrderReceipt} from '../lib/orderReceipt';
+import {isPreviewCheckout, saveOrderReceipt} from '../lib/orderReceipt';
+import {buildWhatsAppOrderUrl} from '../lib/whatsappOrder';
 import {HANDLING_FEE, getOrderTotal} from '../data/handling';
 import './Checkout.css';
 
@@ -17,6 +18,8 @@ export function Checkout() {
   const [form, setForm] = useState(initialForm);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [whatsappUrl, setWhatsappUrl] = useState('');
+  const [whatsappStatus, setWhatsappStatus] = useState('');
   const [pendingPayment, setPendingPayment] = useState(() => isPreviewCheckout ? null : getPendingPayU());
   const handlingFee = pendingPayment ? Number(pendingPayment.handlingFee ?? 0) : HANDLING_FEE;
   const total = pendingPayment?.amount ?? getOrderTotal(PRODUCT.price, qty);
@@ -69,6 +72,8 @@ export function Checkout() {
     const {name, value} = event.target;
     const nextValue = name === 'phone' || name === 'pincode' ? value.replace(/\D/g, '') : value;
     setForm(current => ({...current, [name]: nextValue}));
+    setWhatsappUrl('');
+    setWhatsappStatus('');
     if (error && !pendingPayment) setError('');
   };
 
@@ -79,7 +84,7 @@ export function Checkout() {
     if (!qty) return;
     const customer = Object.fromEntries(Object.entries(form).map(([key, value]) => [key, value.trim()]));
     const invalidField = ['name', 'address', 'city', 'state'].find(key => customer[key].length < (key === 'address' ? 5 : 2));
-    if (invalidField && !isPreviewCheckout) {
+    if (invalidField) {
       setError('Please enter a complete name and delivery address.');
       event.currentTarget.elements.namedItem(invalidField)?.focus();
       return;
@@ -87,10 +92,23 @@ export function Checkout() {
     setLoading(true);
     try {
       if (isPreviewCheckout) {
-        const response = await fetch('/api/checkout-preview', {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({quantity: qty, customer})});
-        const result = await response.json().catch(() => ({}));
-        if (!response.ok) throw new Error(result.error || 'Could not save your checkout details.');
-        completePayment(createPreviewReceipt({customer, quantity: qty, amount: result.amount, handlingFee: result.handlingFee, orderId: result.reference}));
+        const url = buildWhatsAppOrderUrl(SITE.orderWhatsApp, {customer, productName: PRODUCT.name, quantity: qty, amount: total});
+        setWhatsappUrl(url);
+        setWhatsappStatus('Your message is ready. Send it in WhatsApp to request your order.');
+        const saveRequest = fetch('/api/checkout-preview', {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({quantity: qty, customer}), signal: AbortSignal.timeout(10000)});
+        const link = document.createElement('a');
+        link.href = url;
+        link.target = '_blank';
+        link.rel = 'noopener noreferrer';
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        try {
+          const response = await saveRequest;
+          if (!response.ok) throw new Error('Could not save checkout enquiry.');
+        } catch {
+          setError('WhatsApp is ready, but dashboard tracking could not be saved. Please send the prepared message so our team receives your details.');
+        }
         return;
       }
       await startPayUPayment({quantity: qty, customer});
@@ -139,7 +157,7 @@ export function Checkout() {
           <button className="checkout-back" type="button" onClick={() => go('/cart')}><ArrowLeft size={16} /> Back to cart</button>
           <p className="checkout-step">ONE STEP CHECKOUT</p>
           <h1>Almost yours.</h1>
-          <p>{isPreviewCheckout ? 'Enter your details and save this checkout enquiry. No payment is collected.' : 'Enter your details, review your total, and pay securely.'}</p>
+          <p>{isPreviewCheckout ? 'Enter your details, then send your order request on WhatsApp. Our team will confirm payment and delivery.' : 'Enter your details, review your total, and pay securely.'}</p>
         </div>
 
         <div className="checkout-grid">
@@ -181,23 +199,26 @@ export function Checkout() {
                   <input id="checkout-pincode" name="pincode" value={form.pincode} onChange={update} required inputMode="numeric" pattern="[0-9]{6}" maxLength="6" title="Enter a 6-digit PIN code" autoComplete="postal-code" placeholder="6-digit PIN code" />
                 </label>
               </div>
-              <div className="checkout-delivery-note"><Truck size={20} aria-hidden="true" /><div><b>Standard delivery is free</b><span>{isPreviewCheckout ? 'No shipment is created when you continue.' : 'Dispatch and tracking updates will be sent to your contact details.'}</span></div></div>
+              <div className="checkout-delivery-note"><Truck size={20} aria-hidden="true" /><div><b>Standard delivery is free</b><span>{isPreviewCheckout ? 'We will confirm your address and dispatch details on WhatsApp.' : 'Dispatch and tracking updates will be sent to your contact details.'}</span></div></div>
             </section>
 
             <section className="checkout-payment" aria-labelledby="checkout-payment-title">
               <div className="checkout-section-heading">
                 <span className="checkout-section-number">03</span>
-                <div><h2 id="checkout-payment-title">{isPreviewCheckout ? 'Review checkout' : 'Secure payment'}</h2><p>{isPreviewCheckout ? 'Review your order total before continuing.' : 'Review your order total before opening secure PayU checkout.'}</p></div>
+                <div><h2 id="checkout-payment-title">{isPreviewCheckout ? 'Order on WhatsApp' : 'Secure payment'}</h2><p>{isPreviewCheckout ? 'Review your estimated total before sending the request.' : 'Review your order total before opening secure PayU checkout.'}</p></div>
               </div>
-              <div className="checkout-pay-total"><span>Total to pay</span><strong aria-live="polite">{format(total)}</strong></div>
+              {isPreviewCheckout && <div className="checkout-gateway-notice"><MessageCircle size={19} aria-hidden="true" /><span>Online payment is temporarily unavailable. Continue on WhatsApp and we will confirm your order and payment details there.</span></div>}
+              <div className="checkout-pay-total"><span>{isPreviewCheckout ? 'Estimated total' : 'Total to pay'}</span><strong aria-live="polite">{format(total)}</strong></div>
               {error && <p className="checkout-error" role="alert">{error}</p>}
+              {isPreviewCheckout && whatsappStatus && <p className="checkout-whatsapp-status" role="status">{whatsappStatus}</p>}
               {pendingPayment && <button className="checkout-retry-btn" type="button" onClick={retryConfirmation} disabled={loading}>
                 {loading ? <><Loader2 className="spin" size={18} /> Checking payment…</> : <>Check payment status <ArrowRight size={18} /></>}
               </button>}
-              {!pendingPayment && <button className="pay-now-btn" type="submit" disabled={loading}>
-                {loading ? <><Loader2 className="spin" size={19} /> {isPreviewCheckout ? 'Saving...' : 'Redirecting to PayU…'}</> : <><LockKeyhole size={18} /> {isPreviewCheckout ? 'Save checkout details' : `Pay ${format(total)} securely`} <ArrowRight size={18} /></>}
+              {!pendingPayment && <button className={`pay-now-btn ${isPreviewCheckout ? 'checkout-whatsapp-btn' : ''}`} type="submit" disabled={loading}>
+                {loading ? <><Loader2 className="spin" size={19} /> {isPreviewCheckout ? 'Saving details...' : 'Redirecting to PayU…'}</> : <>{isPreviewCheckout ? <MessageCircle size={19} /> : <LockKeyhole size={18} />} {isPreviewCheckout ? 'Continue on WhatsApp' : `Pay ${format(total)} securely`} <ArrowRight size={18} /></>}
               </button>}
-              <p className="checkout-payment-help"><ShieldCheck size={16} aria-hidden="true" /> {isPreviewCheckout ? 'No payment will be collected or order placed.' : 'Payments are handled by PayU. We don’t store your card or UPI details.'}</p>
+              {isPreviewCheckout && whatsappUrl && <a className="checkout-whatsapp-fallback" href={whatsappUrl} target="_blank" rel="noopener noreferrer">WhatsApp did not open? Open the message here <ArrowRight size={15} /></a>}
+              <p className="checkout-payment-help"><ShieldCheck size={16} aria-hidden="true" /> {isPreviewCheckout ? 'Send the message in WhatsApp to request your order. No payment is collected on this page.' : 'Payments are handled by PayU. We don’t store your card or UPI details.'}</p>
               <p className="checkout-terms">{isPreviewCheckout ? 'By continuing' : 'By paying'}, you agree to our <a href="/terms">Terms of Service</a> and <a href="/privacy">Privacy Policy</a>.</p>
             </section>
           </form>
@@ -211,9 +232,9 @@ export function Checkout() {
             <div className="checkout-quantity-row">
               <span>Quantity</span>
               <div className="checkout-quantity" role="group" aria-label="Quantity">
-                <button type="button" aria-label="Decrease quantity" disabled={loading || Boolean(pendingPayment) || qty <= 1} onClick={() => setQty(PRODUCT.id, qty - 1)}><Minus size={15} /></button>
+                <button type="button" aria-label="Decrease quantity" disabled={loading || Boolean(pendingPayment) || qty <= 1} onClick={() => {setQty(PRODUCT.id, qty - 1); setWhatsappUrl(''); setWhatsappStatus('');}}><Minus size={15} /></button>
                 <span>{qty}</span>
-                <button type="button" aria-label="Increase quantity" disabled={loading || Boolean(pendingPayment) || qty >= MAX_ORDER_QUANTITY} onClick={() => setQty(PRODUCT.id, qty + 1)}><Plus size={15} /></button>
+                <button type="button" aria-label="Increase quantity" disabled={loading || Boolean(pendingPayment) || qty >= MAX_ORDER_QUANTITY} onClick={() => {setQty(PRODUCT.id, qty + 1); setWhatsappUrl(''); setWhatsappStatus('');}}><Plus size={15} /></button>
               </div>
             </div>
             <div className="checkout-costs">
@@ -227,7 +248,7 @@ export function Checkout() {
               </details>
               <div className="checkout-cost-total"><span>Total</span><strong aria-live="polite">{format(total)}</strong></div>
             </div>
-            <p className="checkout-order-note"><ShieldCheck size={17} aria-hidden="true" /> No surprise fees at payment.</p>
+            <p className="checkout-order-note"><ShieldCheck size={17} aria-hidden="true" /> {isPreviewCheckout ? 'Includes handling. We will confirm payment on WhatsApp.' : 'No surprise fees at payment.'}</p>
           </aside>
         </div>
       </div>

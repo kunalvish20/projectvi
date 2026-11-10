@@ -6,6 +6,7 @@ import {HANDLING_FEE,getOrderTotal} from '../src/data/handling.js';
 const PRODUCT_ID='gta-collector-box';
 export default async function handler(req,res){
  if(req.method!=='POST')return json(res,405,{error:'Method not allowed'});
+ if(process.env.VITE_CHECKOUT_MODE!=='payu')return json(res,409,{error:'Online payment is temporarily unavailable. Please order on WhatsApp.'});
  try{
   const body=await readBody(req);const customer=body.customer||{};
   const quantity=Number(body.quantity);

@@ -133,6 +133,10 @@
   font-size: 15px;
 }
 .checkout-pay-total strong { color: #fff; font-size: 25px; font-weight: 900; }
+.checkout-gateway-notice { display: flex; align-items: flex-start; gap: 10px; padding: 13px 14px; margin: 0 0 16px; border: 1px solid #f7ca8d70; border-radius: 10px; background: #a7651b24; color: #ffe5bd; font-size: 12px; line-height: 1.5; }
+.checkout-gateway-notice svg { flex: 0 0 auto; margin-top: 1px; }
+.checkout-whatsapp-status { margin: 5px 0 8px; color: #b9f0ce; font-size: 12px; line-height: 1.5; }
+.checkout-whatsapp-fallback { display: inline-flex; align-items: center; justify-content: center; gap: 6px; width: 100%; margin-top: 10px; color: #c7f5d9; font-size: 12px; text-decoration: underline; text-underline-offset: 3px; }
 .checkout-page .pay-now-btn {
   min-height: 54px;
   margin-top: 8px;
@@ -144,6 +148,7 @@
   box-shadow: 0 13px 28px #e7007960;
 }
 .checkout-page .pay-now-btn:not(:disabled):hover { filter: brightness(1.12); transform: translateY(-1px); }
+.checkout-page .pay-now-btn.checkout-whatsapp-btn { border-color: #56dc8e; background: linear-gradient(98deg, #0a9f59, #16bd68 56%, #0b9e59); box-shadow: 0 13px 28px #07844c55; }
 .checkout-retry-btn {
   display: inline-flex;
   width: 100%;

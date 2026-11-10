@@ -1,4 +1,5 @@
 import {PRODUCT, PRODUCT_PATH, SITE} from './catalog.js';
+import {isPayUCheckout} from './checkoutMode.js';
 import {FAQ_ITEMS} from './faq.js';
 import {INFO_PAGES} from './infoPages.js';
 import {format} from '../lib/format.js';
@@ -31,11 +32,11 @@ export function getSeoPage(path) {
 
   if (path === '/') {
     title = "GTA VI Collector's Box Pre-Order | Project VI";
-    description = "Explore the 11-item GTA VI Collector's Box and pre-order with secure PayU checkout and free standard delivery.";
+    description = `Explore the 11-item GTA VI Collector's Box and ${isPayUCheckout ? 'pre-order with secure PayU checkout' : 'request an order on WhatsApp'} with free standard delivery.`;
     heading = "GTA VI Collector's Edition";
   } else if (path === PRODUCT_PATH) {
     title = `${PRODUCT.name} | Pre-Order for ${format(PRODUCT.price)} | ${SITE.name}`;
-    description = `Pre-order the 11-item ${PRODUCT.name} for ${format(PRODUCT.price)}. Explore the featured items, review delivery details, and check out securely with PayU.`;
+    description = `Pre-order the 11-item ${PRODUCT.name} for ${format(PRODUCT.price)}. Explore the featured items, review delivery details, and ${isPayUCheckout ? 'check out securely with PayU' : 'send your order request on WhatsApp'}.`;
     heading = PRODUCT.name;
     graph.push({
       '@type': 'Product',
@@ -91,8 +92,8 @@ export function getSeoPage(path) {
     description = page.copy;
     heading = page.title;
   } else {
-    title = `${SITE.name} | Secure Checkout`;
-    description = 'Review your order and complete your pre-order securely.';
+    title = `${SITE.name} | Checkout`;
+    description = isPayUCheckout ? 'Review your order and complete your pre-order securely.' : 'Review your order details and request confirmation on WhatsApp.';
     heading = path === '/cart' ? 'Your cart' : 'Checkout';
     robots = 'noindex,follow';
   }

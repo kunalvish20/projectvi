@@ -1,9 +1,12 @@
+import {isPayUCheckout} from './checkoutMode.js';
+
 export const SITE = {
   name: 'Project VI',
   shortName: 'Project VI',
   origin: 'https://dndstores.com',
   supportEmail: '',
   creatorEmail: 'workdndstores@gmail.com',
+  orderWhatsApp: '919187220230',
   supportPhone: '',
   supportHours: 'Mon-Sat, 10 AM-7 PM IST'
 };
@@ -20,7 +23,7 @@ export const PRODUCT = {
     "An 11-piece pre-order collection of Vice-inspired apparel, accessories, artwork, and display pieces in one Collector's Box.",
   highlights: [
     "11 Collector's Edition items",
-    'Secure PayU checkout',
+    isPayUCheckout ? 'Secure PayU checkout' : 'Order via WhatsApp',
     'Protective gift-ready packing',
     'Tracked delivery updates after dispatch'
   ]

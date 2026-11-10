@@ -1,5 +1,6 @@
 import {ArrowRight, Check, ShieldCheck, ShoppingBag, Truck} from 'lucide-react';
 import {BOX_ITEMS, PRODUCT, PRODUCT_PATH, SITE} from '../data/catalog';
+import {isPayUCheckout} from '../data/checkoutMode';
 import {useStore} from '../context/StoreContext';
 import {format} from '../lib/format';
 import {go} from '../hooks/useRoute';
@@ -79,7 +80,7 @@ export function Home() {
 
       <section className="trust-band">
         <div><Truck /><b>Delivery updates</b><span>Tracking details are shared after dispatch.</span></div>
-        <div><ShieldCheck /><b>Secure checkout</b><span>Payment is handled by PayU.</span></div>
+        <div><ShieldCheck /><b>{isPayUCheckout ? 'Secure checkout' : 'Order on WhatsApp'}</b><span>{isPayUCheckout ? 'Payment is handled by PayU.' : 'Our team confirms your order and payment details in chat.'}</span></div>
       </section>
 
     </main>

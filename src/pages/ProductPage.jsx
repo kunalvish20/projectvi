@@ -1,9 +1,10 @@
-import {ArrowRight, Check, ChevronLeft, ChevronRight, LockKeyhole, Minus, PackageCheck, Plus, ShieldCheck, ShoppingBag, Truck} from 'lucide-react';
+import {ArrowRight, Check, ChevronLeft, ChevronRight, LockKeyhole, MessageCircle, Minus, PackageCheck, Plus, ShieldCheck, ShoppingBag, Truck} from 'lucide-react';
 import {useEffect, useRef, useState} from 'react';
 import {Faq} from '../components/Faq';
 import {ProductArt} from '../components/ProductArt';
 import {ProductStorySections} from '../components/ProductStorySections';
 import {BOX_ITEMS, MAX_ORDER_QUANTITY, PRODUCT, SITE} from '../data/catalog';
+import {isPayUCheckout} from '../data/checkoutMode';
 import {HANDLING_FEE} from '../data/handling';
 import {useStore} from '../context/StoreContext';
 import {format} from '../lib/format';
@@ -144,7 +145,7 @@ export function ProductPage() {
             </div>
             <p className="product-preorder-note">This is a pre-order. Dispatch updates are shared by email and SMS.</p>
 
-            <div className="product-payment-proof"><LockKeyhole size={14} /><span>Secure checkout with PayU</span><span className="product-payment-methods">UPI · Cards · Netbanking</span></div>
+            <div className="product-payment-proof">{isPayUCheckout ? <LockKeyhole size={14} /> : <MessageCircle size={14} />}<span>{isPayUCheckout ? 'Secure checkout with PayU' : 'Order request via WhatsApp'}</span><span className="product-payment-methods">{isPayUCheckout ? 'UPI · Cards · Netbanking' : 'Payment confirmed in chat'}</span></div>
             <div className="product-service-strip">
               <span><Truck size={19} /><b>Free delivery</b></span>
               <span><PackageCheck size={19} /><b>Protective packing</b></span>
@@ -164,7 +165,7 @@ export function ProductPage() {
       <ProductStorySections />
 
       <section className="store-trust-band product-trust-band" aria-label="Purchase confidence">
-        <article><ShieldCheck /><b>Secure payment</b><p>Pay with UPI, cards, or netbanking through PayU checkout.</p></article>
+        <article><ShieldCheck /><b>{isPayUCheckout ? 'Secure payment' : 'WhatsApp order request'}</b><p>{isPayUCheckout ? 'Pay with UPI, cards, or netbanking through PayU checkout.' : 'Send your details on WhatsApp. Our team will confirm availability and payment instructions.'}</p></article>
         <article><PackageCheck /><b>Collector's Edition packing</b><p>The order is prepared as a display-ready drop with protective packing and care guidance.</p></article>
         <article><Check /><b>Clear policy links</b><p>Shipping, terms, payment, and contact details remain available before checkout.</p></article>
       </section>
