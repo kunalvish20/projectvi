@@ -12,7 +12,7 @@ import {go} from '../hooks/useRoute';
 import './ProductPage.css';
 
 export function ProductPage() {
-  const {preorder, setQty} = useStore();
+  const {addAndOpenCart, setQty} = useStore();
   const [active, setActive] = useState(0);
   const [quantity, setQuantity] = useState(1);
   const [stickyVisible, setStickyVisible] = useState(false);
@@ -58,14 +58,14 @@ export function ProductPage() {
     touchStart.current = null;
   };
 
-  const addToCart = () => preorder(PRODUCT.id, quantity);
+  const addToCart = () => addAndOpenCart(PRODUCT.id, quantity);
   const buyNow = () => {
     setQty(PRODUCT.id, quantity);
     go('/checkout');
   };
 
   return (
-    <main className="product-page preorder-product-page ecommerce-product-page">
+    <main className="product-page buy-now-product-page ecommerce-product-page">
       <section className="ecom-product-hero" aria-labelledby="product-title">
         <nav className="product-breadcrumbs" aria-label="Breadcrumb">
           <a href="/">Home</a><ChevronRight size={12} />
@@ -112,7 +112,7 @@ export function ProductPage() {
           </div>
 
           <div className="product-purchase-panel">
-            <div className="product-edition"><span>{SITE.shortName} COLLECTOR'S EDITION</span><span className="product-preorder-tag">PRE-ORDER</span></div>
+            <div className="product-edition"><span>{SITE.shortName} COLLECTOR'S EDITION</span><span className="product-buy-now-tag">BUY NOW</span></div>
             <h1 id="product-title">{PRODUCT.name}</h1>
 
             <div className="product-price-block">
@@ -143,7 +143,7 @@ export function ProductPage() {
               <button className="product-cart-button" onClick={addToCart}><ShoppingBag size={19} /> Add to cart <ArrowRight size={19} /></button>
               <button className="product-buy-button" onClick={buyNow}>Buy now <ArrowRight size={18} /></button>
             </div>
-            <p className="product-preorder-note">This is a pre-order. Dispatch updates are shared by email and SMS.</p>
+            <p className="product-buy-now-note">Buy now to send your order request. Dispatch updates are shared after confirmation.</p>
 
             <div className="product-payment-proof">{isPayUCheckout ? <LockKeyhole size={14} /> : <MessageCircle size={14} />}<span>{isPayUCheckout ? 'Secure checkout with PayU' : 'Order request via WhatsApp'}</span><span className="product-payment-methods">{isPayUCheckout ? 'UPI · Cards · Netbanking' : 'Payment confirmed in chat'}</span></div>
             <div className="product-service-strip">
@@ -173,7 +173,7 @@ export function ProductPage() {
       <Faq />
 
       <div className={`product-purchase-sticky ${stickyVisible ? 'is-visible' : ''}`} aria-hidden={!stickyVisible}>
-        <div className="product-sticky-info"><span>{quantity > 1 ? `${quantity} Collector's Boxes` : PRODUCT.shortName}</span><b>{format(PRODUCT.price * quantity)}</b><small>Free delivery · Pre-order</small></div>
+        <div className="product-sticky-info"><span>{quantity > 1 ? `${quantity} Collector's Boxes` : PRODUCT.shortName}</span><b>{format(PRODUCT.price * quantity)}</b><small>Free delivery · Buy now</small></div>
         <button className="product-cart-button" onClick={addToCart} tabIndex={stickyVisible ? 0 : -1}><ShoppingBag size={18} /> Add to cart <ArrowRight size={18} /></button>
       </div>
     </main>

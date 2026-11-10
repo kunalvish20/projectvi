@@ -1,9 +1,9 @@
-.preorder-product-page .product-story-sections {
+.buy-now-product-page .product-story-sections {
   background: #070609;
   scroll-margin-top: 90px;
 }
 
-.preorder-product-page .collector-item {
+.buy-now-product-page .collector-item {
   width: min(1280px, 100%);
   margin: 0 auto;
   padding: clamp(44px, 5vw, 72px) clamp(20px, 4vw, 56px);
@@ -15,30 +15,30 @@
 }
 
 @media (min-width: 821px) {
-  .preorder-product-page .collector-item {
+  .buy-now-product-page .collector-item {
     box-sizing: border-box;
     min-height: 100svh;
   }
 
-  .preorder-product-page .collector-item-media {
+  .buy-now-product-page .collector-item-media {
     width: min(100%, 70svh);
     margin-inline: auto;
   }
 }
 
-.preorder-product-page .collector-item:nth-child(even) .collector-item-media {
+.buy-now-product-page .collector-item:nth-child(even) .collector-item-media {
   grid-column: 1;
   grid-row: 1;
 }
 
-.preorder-product-page .collector-item:nth-child(even) .collector-item-copy {
+.buy-now-product-page .collector-item:nth-child(even) .collector-item-copy {
   grid-column: 2;
   grid-row: 1;
 }
 
-.preorder-product-page .collector-item-copy { min-width: 0; }
+.buy-now-product-page .collector-item-copy { min-width: 0; }
 
-.preorder-product-page .collector-item-eyebrow {
+.buy-now-product-page .collector-item-eyebrow {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -50,9 +50,9 @@
   letter-spacing: .14em;
 }
 
-.preorder-product-page .collector-item-eyebrow span { color: #c4acc0; }
+.buy-now-product-page .collector-item-eyebrow span { color: #c4acc0; }
 
-.preorder-product-page .collector-item h2 {
+.buy-now-product-page .collector-item h2 {
   max-width: 580px;
   margin: 16px 0 0;
   font-family: Outfit, Arial, sans-serif;
@@ -64,7 +64,7 @@
   text-wrap: balance;
 }
 
-.preorder-product-page .collector-item-description {
+.buy-now-product-page .collector-item-description {
   max-width: 55ch;
   margin: 20px 0 0;
   color: #baafb8;
@@ -72,7 +72,7 @@
   line-height: 1.75;
 }
 
-.preorder-product-page .collector-item-name {
+.buy-now-product-page .collector-item-name {
   display: flex;
   flex-wrap: wrap;
   gap: 6px 12px;
@@ -83,9 +83,9 @@
   font-size: 12px;
 }
 
-.preorder-product-page .collector-item-name b { color: #fff; }
+.buy-now-product-page .collector-item-name b { color: #fff; }
 
-.preorder-product-page .collector-item-media {
+.buy-now-product-page .collector-item-media {
   position: relative;
   min-width: 0;
   margin: 0;
@@ -96,24 +96,24 @@
   background: #0d0a0e;
 }
 
-.preorder-product-page .collector-item-media .product-art.large {
+.buy-now-product-page .collector-item-media .product-art.large {
   width: 100%;
   height: 100%;
   min-height: 0;
   aspect-ratio: 1;
 }
 
-.preorder-product-page .collector-item-media .product-art img {
+.buy-now-product-page .collector-item-media .product-art img {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
 
-.preorder-product-page .collector-item-media .product-art img.contain {
+.buy-now-product-page .collector-item-media .product-art img.contain {
   object-fit: contain;
 }
 
-.preorder-product-page .collector-item-media figcaption {
+.buy-now-product-page .collector-item-media figcaption {
   position: absolute;
   inset: auto 0 0;
   display: flex;
@@ -127,13 +127,13 @@
   font-weight: 700;
 }
 
-.preorder-product-page .collector-item-media figcaption span {
+.buy-now-product-page .collector-item-media figcaption span {
   flex: 0 0 auto;
   color: #e8b2d0;
   font-size: 11px;
 }
 
-.preorder-product-page .collector-item-placeholder {
+.buy-now-product-page .collector-item-placeholder {
   width: 100%;
   height: 100%;
   display: grid;
@@ -144,7 +144,7 @@
   color: #fff;
 }
 
-.preorder-product-page .collector-item-placeholder span {
+.buy-now-product-page .collector-item-placeholder span {
   color: #fff6fc;
   font-size: clamp(80px, 12vw, 150px);
   font-weight: 800;
@@ -152,7 +152,7 @@
   letter-spacing: -.07em;
 }
 
-.preorder-product-page .collector-item-placeholder small {
+.buy-now-product-page .collector-item-placeholder small {
   color: #e2b8d2;
   font-size: 12px;
   font-weight: 700;
@@ -161,27 +161,27 @@
 }
 
 @media (max-width: 820px) {
-  .preorder-product-page .collector-item {
+  .buy-now-product-page .collector-item {
     grid-template-columns: minmax(0, 1fr);
     gap: 25px;
     padding: 42px 20px;
   }
 
-  .preorder-product-page .collector-item:nth-child(even) .collector-item-copy,
-  .preorder-product-page .collector-item:nth-child(even) .collector-item-media {
+  .buy-now-product-page .collector-item:nth-child(even) .collector-item-copy,
+  .buy-now-product-page .collector-item:nth-child(even) .collector-item-media {
     grid-column: 1;
   }
 
-  .preorder-product-page .collector-item-copy,
-  .preorder-product-page .collector-item:nth-child(even) .collector-item-copy { grid-row: 1; }
+  .buy-now-product-page .collector-item-copy,
+  .buy-now-product-page .collector-item:nth-child(even) .collector-item-copy { grid-row: 1; }
 
-  .preorder-product-page .collector-item-media,
-  .preorder-product-page .collector-item:nth-child(even) .collector-item-media { grid-row: 2; }
+  .buy-now-product-page .collector-item-media,
+  .buy-now-product-page .collector-item:nth-child(even) .collector-item-media { grid-row: 2; }
 
-  .preorder-product-page .collector-item h2 { font-size: clamp(29px, 7vw, 39px); }
-  .preorder-product-page .collector-item-description { margin-top: 15px; font-size: 14px; }
+  .buy-now-product-page .collector-item h2 { font-size: clamp(29px, 7vw, 39px); }
+  .buy-now-product-page .collector-item-description { margin-top: 15px; font-size: 14px; }
 }
 
 @media (max-width: 390px) {
-  .preorder-product-page .collector-item { padding-inline: 16px; }
+  .buy-now-product-page .collector-item { padding-inline: 16px; }
 }

@@ -256,10 +256,10 @@ export function HomeSecondary() {
 
         <div className="secondary-hero-cta">
           <div className="secondary-price">
-            <span>PRE-ORDER PRICE</span>
+            <span>BUY NOW PRICE</span>
             <div className="secondary-price-values"><b>{format(PRODUCT.price)}</b><s>{format(PRODUCT.oldPrice)}</s></div>
           </div>
-          <button className="secondary-preorder-btn" onClick={openProduct}>
+          <button className="secondary-buy-now-btn" onClick={openProduct}>
             BUY NOW <ArrowRight size={20} />
           </button>
         </div>
@@ -274,7 +274,7 @@ export function HomeSecondary() {
         <article>
           <Truck />
           <b>Delivery updates</b>
-          <p>Pre-order status, dispatch, and tracking updates are shared through the contact details used at checkout.</p>
+          <p>Order, dispatch, and tracking updates are shared through the contact details used at checkout.</p>
         </article>
         <article>
           <BadgeCheck />
@@ -306,7 +306,7 @@ export function HomeSecondary() {
           <div className="secondary-final-proof">
             <span><Check size={15} /> One premium drop</span>
             <span><Check size={15} /> Smooth product gallery</span>
-            <span><Check size={15} /> Pre-order at {format(PRODUCT.price)}</span>
+            <span><Check size={15} /> Buy now for {format(PRODUCT.price)}</span>
           </div>
         </div>
         <img
@@ -318,7 +318,7 @@ export function HomeSecondary() {
           loading="lazy"
           decoding="async"
         />
-        <button className="secondary-preorder-btn" onClick={openProduct}>
+        <button className="secondary-buy-now-btn" onClick={openProduct}>
           BUY NOW <ArrowRight size={20} />
         </button>
       </section>
@@ -346,9 +346,9 @@ export function HomeSecondary() {
 
       <Faq />
 
-      <div className={`secondary-sticky-preorder ${stickyVisible ? 'is-visible' : ''}`}>
+      <div className={`secondary-sticky-buy-now ${stickyVisible ? 'is-visible' : ''}`}>
         <div>
-          <small>PRE-ORDER</small>
+          <small>BUY NOW</small>
           <b>{format(PRODUCT.price)}</b>
         </div>
         <button onClick={openProduct}>BUY NOW <ArrowRight size={17} /></button>

@@ -18,9 +18,9 @@ export const PRODUCT = {
   category: "11 Item Collector's Edition",
   price: 6999,
   oldPrice: 9999,
-  tag: 'Pre-Order Drop',
+  tag: 'Buy Now',
   description:
-    "An 11-piece pre-order collection of Vice-inspired apparel, accessories, artwork, and display pieces in one Collector's Box.",
+    "An 11-piece collection of Vice-inspired apparel, accessories, artwork, and display pieces in one Collector's Box.",
   highlights: [
     "11 Collector's Edition items",
     isPayUCheckout ? 'Secure PayU checkout' : 'Order via WhatsApp',

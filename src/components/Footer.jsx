@@ -59,7 +59,7 @@ export function Footer() {
         <div className="footer-brand">
           <BrandLogo />
           <h2>GTA VI <span>Collector's Box.</span></h2>
-          <p>11-item limited preorder.</p>
+          <p>11-item limited collection. Buy now.</p>
         </div>
 
         <section className="footer-newsletter" aria-labelledby="footer-newsletter-title">

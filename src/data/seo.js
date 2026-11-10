@@ -31,12 +31,12 @@ export function getSeoPage(path) {
   const graph = [organization, website];
 
   if (path === '/') {
-    title = "GTA VI Collector's Box Pre-Order | Project VI";
-    description = `Explore the 11-item GTA VI Collector's Box and ${isPayUCheckout ? 'pre-order with secure PayU checkout' : 'request an order on WhatsApp'} with free standard delivery.`;
+    title = "GTA VI Collector's Box | Buy Now | Project VI";
+    description = `Explore the 11-item GTA VI Collector's Box and ${isPayUCheckout ? 'buy now with secure PayU checkout' : 'buy now by requesting an order on WhatsApp'} with free standard delivery.`;
     heading = "GTA VI Collector's Edition";
   } else if (path === PRODUCT_PATH) {
-    title = `${PRODUCT.name} | Pre-Order for ${format(PRODUCT.price)} | ${SITE.name}`;
-    description = `Pre-order the 11-item ${PRODUCT.name} for ${format(PRODUCT.price)}. Explore the featured items, review delivery details, and ${isPayUCheckout ? 'check out securely with PayU' : 'send your order request on WhatsApp'}.`;
+    title = `${PRODUCT.name} | Buy Now for ${format(PRODUCT.price)} | ${SITE.name}`;
+    description = `Buy the 11-item ${PRODUCT.name} for ${format(PRODUCT.price)}. Explore the featured items, review delivery details, and ${isPayUCheckout ? 'check out securely with PayU' : 'send your order request on WhatsApp'}.`;
     heading = PRODUCT.name;
     graph.push({
       '@type': 'Product',
@@ -53,7 +53,7 @@ export function getSeoPage(path) {
         price: PRODUCT.price,
         priceCurrency: 'INR',
         itemCondition: 'https://schema.org/NewCondition',
-        availability: 'https://schema.org/PreOrder',
+        availability: 'https://schema.org/LimitedAvailability',
         seller: {'@id': organization['@id']}
       }
     });
@@ -93,7 +93,7 @@ export function getSeoPage(path) {
     heading = page.title;
   } else {
     title = `${SITE.name} | Checkout`;
-    description = isPayUCheckout ? 'Review your order and complete your pre-order securely.' : 'Review your order details and request confirmation on WhatsApp.';
+    description = isPayUCheckout ? 'Review your order and buy securely.' : 'Review your order details and request confirmation on WhatsApp.';
     heading = path === '/cart' ? 'Your cart' : 'Checkout';
     robots = 'noindex,follow';
   }

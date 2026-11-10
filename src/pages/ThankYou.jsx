@@ -37,7 +37,7 @@ export function ThankYou() {
         <div className="thank-you-icon"><Check size={34} strokeWidth={3} /></div>
         <span className="thank-you-eyebrow">{isPreview ? 'CHECKOUT DETAILS READY' : 'PAYMENT VERIFIED'}</span>
         <h1>Thank you, {receipt.customerName?.split(' ')[0] || 'collector'}.</h1>
-        <p className="thank-you-lead">{isPreview ? 'Your checkout details are ready to review.' : 'Your pre-order is confirmed. We’re getting your Collector’s Box ready.'}</p>
+        <p className="thank-you-lead">{isPreview ? 'Your checkout details are ready to review.' : 'Your order is confirmed. We’re getting your Collector’s Box ready.'}</p>
         {/* {isPreview && <p className="thank-you-no-payment">No payment was collected and no order was placed. This reference is saved only in this browser.</p>} */}
       </div>
 

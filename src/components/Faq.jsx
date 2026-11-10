@@ -6,10 +6,10 @@ export function Faq() {
   const [open, setOpen] = useState(0);
 
   return (
-    <section className="faq preorder-faq" id="faq">
+    <section className="faq buy-now-faq" id="faq">
       <div>
         <p className="eyebrow">FAQ</p>
-        <h2>Before you pre-order.</h2>
+        <h2>Before you buy.</h2>
       </div>
       <div className="faq-list">
         {FAQ_ITEMS.map(([title, answer], index) => (

@@ -26,10 +26,10 @@ export function CartDrawer() {
   return (
     <div className={`cart-drawer-shell ${isCartDrawerOpen ? 'is-open' : ''}`} aria-hidden={!isCartDrawerOpen}>
       <button className="cart-drawer-backdrop" onClick={closeCartDrawer} tabIndex={isCartDrawerOpen ? 0 : -1} aria-label="Close cart" />
-      <aside className="cart-drawer" role="dialog" aria-modal="true" aria-label="Pre-order cart">
+      <aside className="cart-drawer" role="dialog" aria-modal="true" aria-label="Shopping cart">
         <div className="cart-drawer-head">
           <div>
-            <p className="secondary-kicker">PRE-ORDER CART</p>
+            <p className="secondary-kicker">YOUR CART</p>
             <h2>Your drop is ready.</h2>
           </div>
           <button className="cart-drawer-close" onClick={closeCartDrawer} aria-label="Close cart"><X size={20} /></button>
@@ -64,7 +64,7 @@ export function CartDrawer() {
             </div>
 
             <div className="cart-drawer-actions">
-              <button className="secondary-preorder-btn cart-drawer-checkout" onClick={checkout}>
+              <button className="secondary-buy-now-btn cart-drawer-checkout" onClick={checkout}>
                 CHECKOUT NOW <ArrowRight size={20} />
               </button>
               <button className="cart-drawer-soft" onClick={closeCartDrawer}>Keep exploring</button>
@@ -73,7 +73,7 @@ export function CartDrawer() {
         ) : (
           <div className="cart-drawer-empty">
             <p>Your cart is empty.</p>
-            <button className="secondary-preorder-btn" onClick={() => setQty(PRODUCT.id, 1)}>ADD PRE-ORDER</button>
+            <button className="secondary-buy-now-btn" onClick={() => setQty(PRODUCT.id, 1)}>ADD TO CART</button>
           </div>
         )}
       </aside>

@@ -5,7 +5,9 @@ export const INFO_PAGES = {
   shipping: {
     eyebrow: 'Delivery',
     title: 'Shipping & Delivery',
-    copy: "The GTA VI Collector's Box is a pre-order. Check the delivery details shown during checkout and keep your contact and shipping information accurate. Contact support with your payment ID if you have a question about dispatch or delivery.",
+    copy: isPayUCheckout
+      ? "Buy the GTA VI Collector's Box through checkout. Keep your contact and shipping information accurate for dispatch and tracking updates."
+      : "Buy the GTA VI Collector's Box by sending an order request through checkout. Keep your contact and shipping information accurate. Our team will confirm availability and dispatch details before payment.",
     bullets: ["Standard delivery is free; a ₹299 handling charge is included in the order total", 'Review your delivery address before making payment', 'Contact support with your payment ID if an order is delayed or unfulfilled']
   },
   privacy: {
@@ -29,7 +31,7 @@ export const INFO_PAGES = {
   terms: {
     eyebrow: 'Policy',
     title: 'Terms of Service',
-    copy: "Review the Collector's Box details, INR price, quantity, and delivery information before placing a pre-order. Paid orders are final sale for a change of mind. Applicable consumer rights remain in place.",
+    copy: "Review the Collector's Box details, INR price, quantity, and delivery information before requesting an order. Paid orders are final sale for a change of mind. Applicable consumer rights remain in place.",
     bullets: ['Prices and order totals are shown in INR before payment', 'Change-of-mind returns and cancellations are not offered after payment', 'For a defective, incorrect, delayed, or unfulfilled order, contact support with your payment ID and photos where relevant']
   },
   payment: {
@@ -41,7 +43,7 @@ export const INFO_PAGES = {
   'order-status': {
     eyebrow: 'Orders',
     title: 'Track Order',
-    copy: 'Use your payment ID, email, or phone number when contacting support. Tracking details are sent after the preorder moves to dispatch.',
+    copy: 'Use your payment reference, email, or phone number when contacting support. Tracking details are sent after your order is confirmed and dispatched.',
     bullets: ['Payment ID helps verify order status faster', 'Dispatch updates are shared on email and SMS', 'Support can confirm payment and delivery details']
   },
   warranty: {

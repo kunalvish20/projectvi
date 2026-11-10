@@ -60,7 +60,7 @@ export function StoreProvider({children}) {
       setCart(current => addCartItem(current, id, qty));
     };
 
-    const preorder = (id, qty = 1) => {
+    const addAndOpenCart = (id, qty = 1) => {
       add(id, qty);
       window.clarity?.('event', 'add_to_cart');
       setCartDrawerOpen(true);
@@ -84,7 +84,7 @@ export function StoreProvider({children}) {
       cart,
       catalogRevision,
       add,
-      preorder,
+      addAndOpenCart,
       setQty,
       clearCart,
       count,

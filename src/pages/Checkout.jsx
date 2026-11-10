@@ -143,7 +143,7 @@ export function Checkout() {
         <section className="checkout-empty-card">
           <ShoppingBag aria-hidden="true" />
           <h1>Your cart is empty.</h1>
-          <p>Add the Collector’s Box to begin your pre-order.</p>
+          <p>Add the Collector’s Box to start your order.</p>
           <button type="button" onClick={() => go(PRODUCT_PATH)}>View Collector’s Box <ArrowRight size={18} /></button>
         </section>
       </main>

@@ -49,7 +49,7 @@ export function Home() {
 
       <section className="offer-section">
         <div className="section-title">
-          <p className="eyebrow">Trusted preorder flow</p>
+          <p className="eyebrow">Buy now with clear details</p>
           <h2>One box. Clear policies. Secure checkout.</h2>
         </div>
         <div className="offer-grid">

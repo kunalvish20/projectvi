@@ -205,7 +205,7 @@
 
 .ecommerce-product-page .product-purchase-panel { min-width: 0; padding: 2px 0 0; }
 .product-edition { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; font-size: 10px; font-weight: 800; letter-spacing: .13em; color: #b1a1ad; }
-.product-preorder-tag { padding: 6px 9px; border: 1px solid #ff4fb24d; border-radius: 3px; background: #ff2a9a12; color: #ff79c3; font-size: 9px; letter-spacing: .07em; }
+.product-buy-now-tag { padding: 6px 9px; border: 1px solid #ff4fb24d; border-radius: 3px; background: #ff2a9a12; color: #ff79c3; font-size: 9px; letter-spacing: .07em; }
 .ecommerce-product-page .product-purchase-panel h1 { margin: 16px 0 14px; font-family: Outfit, Arial, Helvetica, sans-serif; font-size: clamp(30px, 3.1vw, 46px); font-weight: 800; line-height: 1.12; letter-spacing: -.045em; text-transform: none; }
 .product-rating { display: inline-flex; align-items: center; flex-wrap: wrap; gap: 7px; color: #aaa0a8; text-decoration: none; font-size: 11px; line-height: 1.5; }
 .product-rating-stars { display: inline-flex; gap: 2px; color: #ffbd50; }
@@ -242,7 +242,7 @@
 .ecommerce-product-page .product-cart-button:hover { background: linear-gradient(105deg, #ed188b, #ff4eb0); box-shadow: 0 10px 28px #ff2a9a3d; }
 .ecommerce-product-page .product-buy-button { border: 1px solid #ffffff45; background: #111015; }
 .ecommerce-product-page .product-buy-button:hover { border-color: #ffffff80; background: #1a151c; }
-.product-preorder-note { margin: 11px 0 16px; color: #ac9fa8; font-size: 10px; line-height: 1.6; text-align: center; }
+.product-buy-now-note { margin: 11px 0 16px; color: #ac9fa8; font-size: 10px; line-height: 1.6; text-align: center; }
 .product-payment-proof { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 6px; color: #c5bcc2; font-size: 10px; line-height: 1.6; }
 .product-payment-proof svg { color: #9de3b4; }
 .product-payment-methods { color: #8e838b; }
@@ -312,7 +312,7 @@
   .product-intro { margin-top: 18px; font-size: 13px; }
   .product-buy-benefits { gap: 8px; margin-bottom: 20px; }
   .product-buy-benefits li { font-size: 11px; }
-  .product-preorder-note { font-size: 10px; }
+  .product-buy-now-note { font-size: 10px; }
   .product-service-strip { margin-top: 18px; }
   .product-purchase-sticky { padding-inline: 12px; gap: 10px; }
   .product-sticky-info > b { font-size: 21px; }

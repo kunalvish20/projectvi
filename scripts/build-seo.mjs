@@ -56,7 +56,7 @@ function renderHead(page) {
 }
 
 function renderFaq() {
-  return `<section aria-labelledby="seo-faq-title"><h2 id="seo-faq-title">Pre-order questions</h2>${FAQ_ITEMS.map(([question, answer]) =>
+  return `<section aria-labelledby="seo-faq-title"><h2 id="seo-faq-title">Buying questions</h2>${FAQ_ITEMS.map(([question, answer]) =>
     `<section><h3>${escapeHtml(question)}</h3><p>${escapeHtml(answer)}</p></section>`
   ).join('')}</section>`;
 }
@@ -65,7 +65,7 @@ function renderFallback(page) {
   let content = `<h1>${escapeHtml(page.heading)}</h1><p>${escapeHtml(page.description)}</p>`;
   if (page.path === '/' || page.path === PRODUCT_PATH) {
     content += `<img src="/assets/Gta-box.webp" alt="${escapeHtml(page.imageAlt)}" width="640" height="640" />`;
-    content += `<p>Pre-order price: ${escapeHtml(format(PRODUCT.price))}. The box includes 11 Collector's Edition items. Standard delivery is free.</p>`;
+    content += `<p>Buy now for ${escapeHtml(format(PRODUCT.price))}. The box includes 11 Collector's Edition items. Standard delivery is free.</p>`;
     content += `<a href="${PRODUCT_PATH}">Explore the Collector's Box</a>`;
     if (page.path === PRODUCT_PATH) {
       content += `<h2>Inside the box</h2><ul>${PRODUCT.highlights.map(item => `<li>${escapeHtml(item)}</li>`).join('')}</ul>`;
