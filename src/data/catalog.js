@@ -6,7 +6,7 @@ export const SITE = {
   origin: 'https://dndstores.com',
   supportEmail: '',
   creatorEmail: 'workdndstores@gmail.com',
-  orderWhatsApp: '919187220230',
+  orderWhatsApp: '919731202959',
   supportPhone: '',
   supportHours: 'Mon-Sat, 10 AM-7 PM IST'
 };

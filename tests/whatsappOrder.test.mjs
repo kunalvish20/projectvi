@@ -12,7 +12,7 @@ test('checkout opens the requested WhatsApp number with complete order details',
     customer, productName: "GTA VI Collector's Box", quantity: 2, amount: 14297
   }));
   assert.equal(url.origin, 'https://wa.me');
-  assert.equal(url.pathname, '/919187220230');
+  assert.equal(url.pathname, '/919731202959');
   const message = url.searchParams.get('text');
   assert.match(message, /Hi Project VI, I'd like to order GTA VI Collector's Box\./);
   assert.match(message, /Qty: 2 \| Estimated total: ₹14,297 \(including handling\)/);
