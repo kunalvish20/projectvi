@@ -57,6 +57,21 @@ create table if not exists public.checkout_submissions (
 create index if not exists checkout_submissions_created_at_idx on public.checkout_submissions(created_at desc);
 create index if not exists checkout_submissions_email_idx on public.checkout_submissions(customer_email);
 
+-- Partial checkout drafts use the same private, admin-only setup as checkout-drafts.sql.
+create table if not exists public.checkout_drafts (
+ id uuid primary key,
+ product_id text not null references public.products(id), product_name text not null,
+ quantity integer not null check (quantity between 1 and 10),
+ amount numeric(12,2) not null check (amount > 0),
+ customer_name text not null default '', customer_email text not null default '',
+ customer_phone text not null default '', address text not null default '',
+ city text not null default '', state text not null default '', pincode text not null default '',
+ status text not null default 'editing' check (status in ('editing','whatsapp_opened')),
+ created_at timestamptz not null default now(), updated_at timestamptz not null default now(),
+ whatsapp_opened_at timestamptz
+);
+create index if not exists checkout_drafts_updated_at_idx on public.checkout_drafts(updated_at desc);
+
 create table if not exists public.creator_applications (
  id uuid primary key default gen_random_uuid(), name text not null, email text not null,
  interest text not null, social_link text not null, second_link text not null default '',
@@ -128,6 +143,23 @@ end;$$;
 drop trigger if exists order_paid on public.orders;
 create trigger order_paid after update on public.orders for each row execute function public.order_paid_hook();
 
+create or replace function public.checkout_draft_before_update() returns trigger
+language plpgsql security definer set search_path = '' as $$
+begin
+ new.created_at := old.created_at;
+ new.updated_at := now();
+ if old.status = 'whatsapp_opened' then
+   new.status := 'whatsapp_opened';
+   new.whatsapp_opened_at := old.whatsapp_opened_at;
+ elsif new.status = 'whatsapp_opened' then
+   new.whatsapp_opened_at := now();
+ end if;
+ return new;
+end;$$;
+drop trigger if exists checkout_draft_update on public.checkout_drafts;
+create trigger checkout_draft_update before update on public.checkout_drafts
+for each row execute function public.checkout_draft_before_update();
+
 -- RLS: nobody can view customers/orders or mutate admin records without a verified admin identity.
 do $$ declare tbl text;begin
  foreach tbl in array array['products','orders','customers','collections','inventory_movements','returns','discounts','campaigns','content_blocks','reviews','tax_rates','tickets','notifications','settings'] loop
@@ -164,6 +196,7 @@ end $$;
 -- Public forms write through server functions only. Admins can review applications and read checkout submissions.
 alter table public.checkout_submissions enable row level security;
 alter table public.creator_applications enable row level security;
+alter table public.checkout_drafts enable row level security;
 drop policy if exists "projectvi admin read" on public.checkout_submissions;
 drop policy if exists "projectvi admin read" on public.creator_applications;
 drop policy if exists "projectvi admin update" on public.creator_applications;
@@ -174,4 +207,9 @@ revoke all on public.checkout_submissions, public.creator_applications from anon
 grant select on public.checkout_submissions to authenticated;
 grant select, update(status,notes,updated_at) on public.creator_applications to authenticated;
 grant all on public.checkout_submissions, public.creator_applications to service_role;
+drop policy if exists "projectvi admin read" on public.checkout_drafts;
+create policy "projectvi admin read" on public.checkout_drafts for select to authenticated using ((select public.is_admin()));
+revoke all on public.checkout_drafts from anon, authenticated;
+grant select on public.checkout_drafts to authenticated;
+grant all on public.checkout_drafts to service_role;
 -- No direct access to private admin data for unauthenticated visitors.

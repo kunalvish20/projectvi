@@ -1,5 +1,5 @@
 import {ArrowLeft, ArrowRight, ChevronDown, LockKeyhole, Loader2, MessageCircle, Minus, Plus, ShieldCheck, ShoppingBag, Truck} from 'lucide-react';
-import {useEffect, useState} from 'react';
+import {useEffect, useRef, useState} from 'react';
 import {BOX_ITEMS, MAX_ORDER_QUANTITY, PRODUCT, PRODUCT_PATH, SITE} from '../data/catalog';
 import {useStore} from '../context/StoreContext';
 import {format} from '../lib/format';
@@ -7,6 +7,7 @@ import {go} from '../hooks/useRoute';
 import {startPayUPayment,checkPayUStatus,getPendingPayU,clearPendingPayU} from '../lib/payuCheckout';
 import {isPreviewCheckout, saveOrderReceipt} from '../lib/orderReceipt';
 import {buildWhatsAppOrderUrl} from '../lib/whatsappOrder';
+import {getCheckoutDraftId, hasCheckoutDetails, releaseCheckoutDraftId, saveCheckoutDraft} from '../lib/checkoutDraft';
 import {HANDLING_FEE, getOrderTotal} from '../data/handling';
 import './Checkout.css';
 
@@ -21,8 +22,33 @@ export function Checkout() {
   const [whatsappUrl, setWhatsappUrl] = useState('');
   const [whatsappStatus, setWhatsappStatus] = useState('');
   const [pendingPayment, setPendingPayment] = useState(() => isPreviewCheckout ? null : getPendingPayU());
+  const draftId = useRef(isPreviewCheckout ? getCheckoutDraftId() : null);
+  const draftStatus = useRef('editing');
+  const draftSnapshot = useRef({quantity: qty, customer: form});
   const handlingFee = pendingPayment ? Number(pendingPayment.handlingFee ?? 0) : HANDLING_FEE;
   const total = pendingPayment?.amount ?? getOrderTotal(PRODUCT.price, qty);
+
+  useEffect(() => {
+    draftSnapshot.current = {quantity: qty, customer: form};
+    if (!isPreviewCheckout || !qty || !hasCheckoutDetails(form)) return;
+    const timer = window.setTimeout(() => {
+      saveCheckoutDraft({id: draftId.current, quantity: qty, customer: form, status: draftStatus.current}).catch(() => {});
+    }, 900);
+    return () => window.clearTimeout(timer);
+  }, [form, qty]);
+
+  useEffect(() => {
+    if (!isPreviewCheckout) return;
+    const saveOnLeave = () => {
+      const {quantity, customer} = draftSnapshot.current;
+      if (!quantity || !hasCheckoutDetails(customer)) return;
+      navigator.sendBeacon?.('/api/checkout-draft', new Blob([
+        JSON.stringify({id: draftId.current, quantity, customer, status: draftStatus.current})
+      ], {type: 'application/json'}));
+    };
+    window.addEventListener('pagehide', saveOnLeave);
+    return () => window.removeEventListener('pagehide', saveOnLeave);
+  }, []);
 
   const completePayment = (receipt) => {
     saveOrderReceipt(receipt);
@@ -93,8 +119,12 @@ export function Checkout() {
     try {
       if (isPreviewCheckout) {
         const url = buildWhatsAppOrderUrl(SITE.orderWhatsApp, {customer, productName: PRODUCT.name, quantity: qty, amount: total});
+        draftStatus.current = 'whatsapp_opened';
+        draftSnapshot.current = {quantity: qty, customer};
         setWhatsappUrl(url);
         setWhatsappStatus('Your message is ready. Send it in WhatsApp to request your order.');
+        const draftRequest = saveCheckoutDraft({id: draftId.current, quantity: qty, customer, status: 'whatsapp_opened'});
+        releaseCheckoutDraftId();
         const saveRequest = fetch('/api/checkout-preview', {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({quantity: qty, customer}), signal: AbortSignal.timeout(10000)});
         const link = document.createElement('a');
         link.href = url;
@@ -103,10 +133,8 @@ export function Checkout() {
         document.body.appendChild(link);
         link.click();
         link.remove();
-        try {
-          const response = await saveRequest;
-          if (!response.ok) throw new Error('Could not save checkout enquiry.');
-        } catch {
+        const results = await Promise.allSettled([draftRequest, saveRequest]);
+        if (!results.some(result => result.status === 'fulfilled' && result.value.ok)) {
           setError('WhatsApp is ready, but dashboard tracking could not be saved. Please send the prepared message so our team receives your details.');
         }
         return;
@@ -165,7 +193,7 @@ export function Checkout() {
             <section className="checkout-section" aria-labelledby="checkout-contact-title">
               <div className="checkout-section-heading">
                 <span className="checkout-section-number">01</span>
-                <div><h2 id="checkout-contact-title">Contact details</h2><p>We’ll use these for your order and delivery updates.</p></div>
+                <div><h2 id="checkout-contact-title">Contact details</h2><p>We’ll use these for your order and delivery updates. Details you enter may be saved for checkout follow-up.</p></div>
               </div>
               <div className="checkout-fields">
                 <label className="checkout-field checkout-field-wide" htmlFor="checkout-name">Full name
@@ -219,6 +247,7 @@ export function Checkout() {
               </button>}
               {isPreviewCheckout && whatsappUrl && <a className="checkout-whatsapp-fallback" href={whatsappUrl} target="_blank" rel="noopener noreferrer">WhatsApp did not open? Open the message here <ArrowRight size={15} /></a>}
               <p className="checkout-payment-help"><ShieldCheck size={16} aria-hidden="true" /> {isPreviewCheckout ? 'Send the message in WhatsApp to request your order. No payment is collected on this page.' : 'Payments are handled by PayU. We don’t store your card or UPI details.'}</p>
+              {isPreviewCheckout && <p className="checkout-payment-help">Details may be saved even if you leave before opening WhatsApp. See our <a href="/privacy">Privacy Policy</a>.</p>}
               <p className="checkout-terms">{isPreviewCheckout ? 'By continuing' : 'By paying'}, you agree to our <a href="/terms">Terms of Service</a> and <a href="/privacy">Privacy Policy</a>.</p>
             </section>
           </form>
