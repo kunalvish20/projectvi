@@ -4,7 +4,7 @@
 const url = (import.meta.env.VITE_SUPABASE_URL || '').replace(/\/$/, '');
 const anonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
 const SESSION = 'projectvi_admin_session';
-export const isConfigured = Boolean(url && anonKey);
+export const isConfigured = Boolean(url && anonKey && !/your-project|placeholder|paste_/i.test(`${url} ${anonKey}`));
 export const allowedEmails = ['workdndstores@gmail.com'];
 const toQuery = query => Object.entries(query).map(([k,v])=> `${encodeURIComponent(k)}=${encodeURIComponent(v)}`).join('&');
 const readSession = () => { try { return JSON.parse(sessionStorage.getItem(SESSION) || 'null'); } catch { return null; } };
@@ -68,6 +68,15 @@ export async function checkAdmin() {
 }
 export const readPublicProduct = id => apiRequest(`products?${toQuery({id:`eq.${id}`,select:'id,name,short_name,price,compare_at_price,description,image_url,inventory,active'})}`).then(rows=> rows?.[0] || null);
 export const adminList = (table, limit=300) => apiRequest(`${table}?${toQuery({select:'*',order:'created_at.desc',limit})}`,{authenticated:true});
+export async function adminListAll(table) {
+  const rows = [];
+  const pageSize = 1000;
+  for (let offset = 0; ; offset += pageSize) {
+    const page = await apiRequest(`${table}?${toQuery({select:'*',order:'created_at.desc',limit:pageSize,offset})}`, {authenticated:true});
+    rows.push(...page);
+    if (page.length < pageSize) return rows;
+  }
+}
 export const adminInsert = (table, row) => apiRequest(table,{method:'POST',data:row,authenticated:true,prefer:'return=representation'});
 export const adminUpdate = (table,id,row) => apiRequest(`${table}?id=eq.${encodeURIComponent(id)}`,{method:'PATCH',data:row,authenticated:true,prefer:'return=representation'});
 export const adminDelete = (table,id) => apiRequest(`${table}?id=eq.${encodeURIComponent(id)}`,{method:'DELETE',authenticated:true,prefer:'return=representation'});

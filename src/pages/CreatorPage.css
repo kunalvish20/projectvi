@@ -244,3 +244,4 @@
   .creator-path-card { position: relative; }
   .creator-path-card:nth-child(n) { top: auto; }
 }
+.creator-honeypot{position:absolute!important;width:1px!important;height:1px!important;overflow:hidden!important;clip-path:inset(50%)!important;white-space:nowrap!important}

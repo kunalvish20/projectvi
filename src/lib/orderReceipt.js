@@ -3,11 +3,11 @@ const RECEIPT_KEY = 'projectvi_last_order_receipt';
 // The video flow is the default until PayU is explicitly enabled at build time.
 export const isPreviewCheckout = import.meta.env?.VITE_PAYMENT_MODE !== 'payu';
 
-export function createPreviewReceipt({customer, quantity, amount, handlingFee}) {
+export function createPreviewReceipt({customer, quantity, amount, handlingFee, orderId}) {
   const suffix = Array.from(crypto.getRandomValues(new Uint8Array(5)), byte => byte.toString(16).padStart(2, '0')).join('').toUpperCase();
   return {
     kind: 'preview',
-    orderId: `PV-${suffix}`,
+    orderId: orderId || `PV-${suffix}`,
     customerName: customer.name,
     email: customer.email,
     quantity,

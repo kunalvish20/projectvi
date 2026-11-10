@@ -10,8 +10,8 @@ export const INFO_PAGES = {
   privacy: {
     eyebrow: 'Policy',
     title: 'Privacy Policy',
-    copy: `${SITE.name} uses checkout details to process pre-orders, verify payments, arrange delivery, provide support, and communicate with customers. We also use Microsoft Clarity to understand how visitors use this website.`,
-    bullets: ['Cart data stays in your browser', 'Payment is handled through PayU checkout', 'Customer details are used for order and support workflows', 'Microsoft Clarity collects usage data such as page visits, clicks, scrolling, and session recordings; checkout and creator form content is masked'],
+    copy: `${SITE.name} saves submitted creator applications and checkout contact and delivery details for review in a private admin dashboard. Real PayU orders are used to verify payments, arrange delivery, provide support, and communicate with customers. Preview checkout submissions do not collect payment or create an order. We also use Microsoft Clarity to understand how visitors use this website.`,
+    bullets: ['Cart data stays in your browser until you submit checkout', 'Submitted creator applications and checkout details are stored for admin review', 'Payment is handled through PayU when live checkout is enabled', 'Microsoft Clarity collects usage data such as page visits, clicks, scrolling, and session recordings; checkout and creator form content is masked'],
     sections: [{
       heading: 'Website analytics',
       copy: 'Microsoft Clarity may use cookies and similar technologies to measure website use. Clarity recordings help us improve the site. Form entries and payment IDs are masked from recordings. Microsoft processes the analytics data under its own privacy terms.'

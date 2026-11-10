@@ -1,6 +1,5 @@
 import {ArrowRight, Camera, Check, Megaphone, Store, Video} from 'lucide-react';
 import {useState} from 'react';
-import {SITE} from '../data/catalog';
 import './CreatorPage.css';
 
 const waysToJoin = [
@@ -38,14 +37,16 @@ function isSocialUrl(value) {
 export function CreatorPage() {
   const [error, setError] = useState('');
   const [status, setStatus] = useState('');
-  const applicationEmail = SITE.creatorEmail || SITE.supportEmail;
+  const [submitting, setSubmitting] = useState(false);
 
-  const submitApplication = event => {
+  const submitApplication = async event => {
     event.preventDefault();
+    if (submitting) return;
     setError('');
     setStatus('');
 
-    const form = new FormData(event.currentTarget);
+    const formElement = event.currentTarget;
+    const form = new FormData(formElement);
     const name = String(form.get('name') || '').trim();
     const email = String(form.get('email') || '').trim();
     const interest = String(form.get('interest') || '').trim();
@@ -57,25 +58,19 @@ export function CreatorPage() {
       setError('Paste a full Instagram or YouTube link starting with https://.');
       return;
     }
-    if (!applicationEmail) {
-      setError('Applications are not open yet. Please check back soon.');
-      return;
-    }
-
-    const subject = encodeURIComponent(`${SITE.name} creator application - ${name}`);
-    const body = encodeURIComponent([
-      `Name: ${name}`,
-      `Email: ${email}`,
-      `Interested in: ${interest}`,
-      `Social link: ${socialLink}`,
-      `Additional link: ${secondLink || 'Not provided'}`,
-      '',
-      'About my work:',
-      message || 'Not provided'
-    ].join('\n'));
-
-    setStatus('Your email app is opening. Send the prepared draft to complete your application.');
-    window.location.href = `mailto:${applicationEmail}?subject=${subject}&body=${body}`;
+    setSubmitting(true);
+    try {
+      const response = await fetch('/api/creator-apply', {
+        method: 'POST', headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({name, email, interest, socialLink, secondLink, message, website: form.get('website')})
+      });
+      const result = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(result.error || 'Could not send your application.');
+      formElement.reset();
+      setStatus('Application received. We will review your details and contact you by email.');
+    } catch (submitError) {
+      setError(submitError.message || 'Could not send your application. Please try again.');
+    } finally { setSubmitting(false); }
   };
 
   return (
@@ -90,6 +85,7 @@ export function CreatorPage() {
             <p className="creator-hero-note"><Check size={16} aria-hidden="true" /> One social link is enough to get started.</p>
           </div>
           <form id="apply" className="creator-form" data-clarity-mask="true" onSubmit={submitApplication} aria-labelledby="creator-form-title">
+            <label className="creator-honeypot" aria-hidden="true">Website<input name="website" tabIndex="-1" autoComplete="off" /></label>
             <div className="creator-form-heading">
               <span>CREATOR / PROMOTER / SELLER</span>
               <h2 id="creator-form-title">Let's work together.</h2>
@@ -127,10 +123,10 @@ export function CreatorPage() {
             </details>
             {error && <p className="creator-form-feedback is-error" role="alert">{error}</p>}
             {status && <p className="creator-form-feedback" role="status">{status}</p>}
-            <button className="creator-submit" type="submit" disabled={!applicationEmail}>
-              {applicationEmail ? 'Continue to email' : 'Applications opening soon'} <ArrowRight size={18} aria-hidden="true" />
+            <button className="creator-submit" type="submit" disabled={submitting}>
+              {submitting ? 'Sending...' : 'Send application'} <ArrowRight size={18} aria-hidden="true" />
             </button>
-            {applicationEmail && <p className="creator-form-hint">We prepare an email to {applicationEmail}. Press send in your email app to complete your application.</p>}
+            <p className="creator-form-hint">Your application is saved securely for our team to review.</p>
             <p className="creator-form-privacy">We use your details to review and reply to your enquiry. Read our <a href="/privacy">Privacy Policy</a>.</p>
           </form>
           <div className="creator-hero-visual" aria-hidden="true">

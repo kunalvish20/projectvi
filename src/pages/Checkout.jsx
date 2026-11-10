@@ -87,8 +87,10 @@ export function Checkout() {
     setLoading(true);
     try {
       if (isPreviewCheckout) {
-        await new Promise(resolve => window.setTimeout(resolve, 1000));
-        completePayment(createPreviewReceipt({customer, quantity: qty, amount: total, handlingFee}));
+        const response = await fetch('/api/checkout-preview', {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({quantity: qty, customer})});
+        const result = await response.json().catch(() => ({}));
+        if (!response.ok) throw new Error(result.error || 'Could not save your checkout details.');
+        completePayment(createPreviewReceipt({customer, quantity: qty, amount: result.amount, handlingFee: result.handlingFee, orderId: result.reference}));
         return;
       }
       await startPayUPayment({quantity: qty, customer});
@@ -137,11 +139,11 @@ export function Checkout() {
           <button className="checkout-back" type="button" onClick={() => go('/cart')}><ArrowLeft size={16} /> Back to cart</button>
           <p className="checkout-step">ONE STEP CHECKOUT</p>
           <h1>Almost yours.</h1>
-          <p>Enter your details, review your total, and pay securely.</p>
+          <p>{isPreviewCheckout ? 'Enter your details and save this checkout enquiry. No payment is collected.' : 'Enter your details, review your total, and pay securely.'}</p>
         </div>
 
         <div className="checkout-grid">
-          <form className="checkout-form" data-clarity-mask="true" onSubmit={payNow} noValidate={isPreviewCheckout}>
+          <form className="checkout-form" data-clarity-mask="true" onSubmit={payNow}>
             <section className="checkout-section" aria-labelledby="checkout-contact-title">
               <div className="checkout-section-heading">
                 <span className="checkout-section-number">01</span>
@@ -193,7 +195,7 @@ export function Checkout() {
                 {loading ? <><Loader2 className="spin" size={18} /> Checking payment…</> : <>Check payment status <ArrowRight size={18} /></>}
               </button>}
               {!pendingPayment && <button className="pay-now-btn" type="submit" disabled={loading}>
-                {loading ? <><Loader2 className="spin" size={19} /> {isPreviewCheckout ? 'Processing...' : 'Redirecting to PayU…'}</> : <><LockKeyhole size={18} /> Pay {format(total)} securely <ArrowRight size={18} /></>}
+                {loading ? <><Loader2 className="spin" size={19} /> {isPreviewCheckout ? 'Saving...' : 'Redirecting to PayU…'}</> : <><LockKeyhole size={18} /> {isPreviewCheckout ? 'Save checkout details' : `Pay ${format(total)} securely`} <ArrowRight size={18} /></>}
               </button>}
               <p className="checkout-payment-help"><ShieldCheck size={16} aria-hidden="true" /> {isPreviewCheckout ? 'No payment will be collected or order placed.' : 'Payments are handled by PayU. We don’t store your card or UPI details.'}</p>
               <p className="checkout-terms">{isPreviewCheckout ? 'By continuing' : 'By paying'}, you agree to our <a href="/terms">Terms of Service</a> and <a href="/privacy">Privacy Policy</a>.</p>
