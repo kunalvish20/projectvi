@@ -260,7 +260,7 @@ export function HomeSecondary() {
             <div className="secondary-price-values"><b>{format(PRODUCT.price)}</b><s>{format(PRODUCT.oldPrice)}</s></div>
           </div>
           <button className="secondary-preorder-btn" onClick={openProduct}>
-            PRE-ORDER BOX <ArrowRight size={20} />
+            BUY NOW <ArrowRight size={20} />
           </button>
         </div>
       </section>
@@ -319,7 +319,7 @@ export function HomeSecondary() {
           decoding="async"
         />
         <button className="secondary-preorder-btn" onClick={openProduct}>
-          PRE-ORDER BOX <ArrowRight size={20} />
+          BUY NOW <ArrowRight size={20} />
         </button>
       </section>
 
@@ -351,7 +351,7 @@ export function HomeSecondary() {
           <small>PRE-ORDER</small>
           <b>{format(PRODUCT.price)}</b>
         </div>
-        <button onClick={openProduct}>PRE-ORDER BOX <ArrowRight size={17} /></button>
+        <button onClick={openProduct}>BUY NOW <ArrowRight size={17} /></button>
       </div>
     </main>
   );

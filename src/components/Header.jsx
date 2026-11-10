@@ -17,7 +17,6 @@ export function Header() {
   const {count} = useStore();
   const [open, setOpen] = useState(false);
   const menuButtonRef = useRef(null);
-  const isPreorderRoute = ['/', '/home', '/homepage-secondary', '/home-secondary'].includes(route) || route === PRODUCT_PATH || route.startsWith('/product/');
 
   useEffect(() => setOpen(false), [route]);
 
@@ -74,7 +73,7 @@ export function Header() {
             <ShoppingBag size={19} />
             {count > 0 && <b>{count}</b>}
           </a>
-          <a className="buy-link" href={PRODUCT_PATH} onClick={event => followLink(event, PRODUCT_PATH)}>{isPreorderRoute ? 'Pre-Order' : 'Buy Now'}</a>
+          <a className="buy-link" href={PRODUCT_PATH} onClick={event => followLink(event, PRODUCT_PATH)}>Buy Now</a>
           <button
             ref={menuButtonRef}
             type="button"
