@@ -8,7 +8,6 @@ import {startPayUPayment,checkPayUStatus,getPendingPayU,clearPendingPayU} from '
 import {isPreviewCheckout, saveOrderReceipt} from '../lib/orderReceipt';
 import {buildWhatsAppOrderUrl} from '../lib/whatsappOrder';
 import {getCheckoutDraftId, hasCheckoutDetails, releaseCheckoutDraftId, saveCheckoutDraft} from '../lib/checkoutDraft';
-import {firstInvalidCheckoutField, isCheckoutFormComplete} from '../lib/checkoutForm';
 import {HANDLING_FEE, getOrderTotal} from '../data/handling';
 import './Checkout.css';
 
@@ -28,7 +27,6 @@ export function Checkout() {
   const draftSnapshot = useRef({quantity: qty, customer: form});
   const handlingFee = pendingPayment ? Number(pendingPayment.handlingFee ?? 0) : HANDLING_FEE;
   const total = pendingPayment?.amount ?? getOrderTotal(PRODUCT.price, qty);
-  const checkoutFormComplete = isCheckoutFormComplete(form);
 
   useEffect(() => {
     draftSnapshot.current = {quantity: qty, customer: form};
@@ -111,9 +109,9 @@ export function Checkout() {
     setError('');
     if (!qty) return;
     const customer = Object.fromEntries(Object.entries(form).map(([key, value]) => [key, value.trim()]));
-    const invalidField = firstInvalidCheckoutField(customer);
+    const invalidField = ['name', 'address', 'city', 'state'].find(key => customer[key].length < (key === 'address' ? 5 : 2));
     if (invalidField) {
-      setError('Please complete all contact and delivery details before continuing.');
+      setError('Please enter a complete name and delivery address.');
       event.currentTarget.elements.namedItem(invalidField)?.focus();
       return;
     }
@@ -244,8 +242,7 @@ export function Checkout() {
               {pendingPayment && <button className="checkout-retry-btn" type="button" onClick={retryConfirmation} disabled={loading}>
                 {loading ? <><Loader2 className="spin" size={18} /> Checking payment…</> : <>Check payment status <ArrowRight size={18} /></>}
               </button>}
-              {isPreviewCheckout && !checkoutFormComplete && <p className="checkout-form-gate" role="status">Complete all contact and delivery details to continue on WhatsApp.</p>}
-              {!pendingPayment && (!isPreviewCheckout || checkoutFormComplete) && <button className={`pay-now-btn ${isPreviewCheckout ? 'checkout-whatsapp-btn' : ''}`} type="submit" disabled={loading}>
+              {!pendingPayment && <button className={`pay-now-btn ${isPreviewCheckout ? 'checkout-whatsapp-btn' : ''}`} type="submit" disabled={loading}>
                 {loading ? <><Loader2 className="spin" size={19} /> {isPreviewCheckout ? 'Saving details...' : 'Redirecting to PayU…'}</> : <>{isPreviewCheckout ? <MessageCircle size={19} /> : <LockKeyhole size={18} />} {isPreviewCheckout ? 'Continue on WhatsApp' : `Pay ${format(total)} securely`} <ArrowRight size={18} /></>}
               </button>}
               {isPreviewCheckout && whatsappUrl && <a className="checkout-whatsapp-fallback" href={whatsappUrl} target="_blank" rel="noopener noreferrer">WhatsApp did not open? Open the message here <ArrowRight size={15} /></a>}
