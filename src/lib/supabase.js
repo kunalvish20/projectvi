@@ -66,6 +66,17 @@ export async function checkAdmin() {
     return allowed;
   } catch {return false;}
 }
+export async function adminFunctionRequest(path, data, method='POST') {
+  const jwt = await token();
+  if (!jwt) throw new Error('Please sign in again.');
+  const response = await fetch(`/api/${path}`, {
+    method, headers:{Authorization:`Bearer ${jwt}`, 'Content-Type':'application/json'},
+    ...(method !== 'GET' ? {body:JSON.stringify(data)} : {})
+  });
+  const result = await response.json().catch(() => ({}));
+  if (!response.ok) throw new Error(result.error || `Request failed (${response.status}).`);
+  return result;
+}
 export const readPublicProduct = id => apiRequest(`products?${toQuery({id:`eq.${id}`,select:'id,name,short_name,price,compare_at_price,description,image_url,inventory,active'})}`).then(rows=> rows?.[0] || null);
 export const adminList = (table, limit=300) => apiRequest(`${table}?${toQuery({select:'*',order:'created_at.desc',limit})}`,{authenticated:true});
 export async function adminListAll(table) {

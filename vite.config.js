@@ -7,7 +7,7 @@ const dir=path.dirname(fileURLToPath(import.meta.url));
 function localApi(){return {name:'local-vercel-functions',configureServer(server){
  server.middlewares.use(async(req,res,next)=>{
   const route=new URL(req.url,'http://localhost').pathname;
-  const routes={'/api/payu-create':'payu-create.js','/api/payu-callback':'payu-callback.js','/api/payu-status':'payu-status.js','/api/creator-apply':'creator-apply.js','/api/contact-email':'contact-email.js','/api/checkout-preview':'checkout-preview.js'};
+  const routes={'/api/payu-create':'payu-create.js','/api/payu-callback':'payu-callback.js','/api/payu-status':'payu-status.js','/api/creator-apply':'creator-apply.js','/api/contact-email':'contact-email.js','/api/send-order-confirmation':'send-order-confirmation.js','/api/checkout-preview':'checkout-preview.js'};
   if(!routes[route])return next();
   try{const {default:handler}=await import(pathToFileURL(path.join(dir,'api',routes[route])).href);await handler(req,res);}
   catch(e){console.error(e);if(!res.writableEnded){res.statusCode=500;res.end('Server error');}}
