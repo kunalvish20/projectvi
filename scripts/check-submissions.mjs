@@ -5,7 +5,7 @@ if (!base || !key || /your-project|placeholder|paste_/i.test(`${base} ${key}`)) 
   console.error('Configure real Supabase server credentials before checking submission tables.');
   process.exit(1);
 }
-for (const table of ['products', 'orders', 'customers', 'creator_applications', 'checkout_submissions', 'checkout_drafts']) {
+for (const table of ['products', 'orders', 'customers', 'creator_applications', 'checkout_submissions', 'checkout_drafts', 'contact_emails']) {
   try {
     const response = await fetch(`${base}/rest/v1/${table}?select=id&limit=0`, {
       headers: {apikey:key, Authorization:`Bearer ${key}`}

@@ -72,6 +72,13 @@ create table if not exists public.checkout_drafts (
 );
 create index if not exists checkout_drafts_updated_at_idx on public.checkout_drafts(updated_at desc);
 
+create table if not exists public.contact_emails (
+ id uuid primary key default gen_random_uuid(),
+ email text not null check (char_length(email) <= 180),
+ created_at timestamptz not null default now()
+);
+create index if not exists contact_emails_created_at_idx on public.contact_emails(created_at desc);
+
 create table if not exists public.creator_applications (
  id uuid primary key default gen_random_uuid(), name text not null, email text not null,
  interest text not null, social_link text not null, second_link text not null default '',
@@ -212,4 +219,10 @@ create policy "projectvi admin read" on public.checkout_drafts for select to aut
 revoke all on public.checkout_drafts from anon, authenticated;
 grant select on public.checkout_drafts to authenticated;
 grant all on public.checkout_drafts to service_role;
+alter table public.contact_emails enable row level security;
+drop policy if exists "projectvi admin read" on public.contact_emails;
+create policy "projectvi admin read" on public.contact_emails for select to authenticated using ((select public.is_admin()));
+revoke all on public.contact_emails from anon, authenticated;
+grant select on public.contact_emails to authenticated;
+grant all on public.contact_emails to service_role;
 -- No direct access to private admin data for unauthenticated visitors.

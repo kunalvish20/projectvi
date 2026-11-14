@@ -1024,6 +1024,19 @@ img { max-width: 100%; }
   gap: 16px;
   margin-top: 10px;
 }
+.contact-email-form { margin-top: 30px; padding-top: 26px; border-top: 1px solid var(--line); }
+.contact-email-form h3 { font-size: clamp(23px, 3vw, 32px); margin: 0 0 6px; }
+.contact-email-form > p { margin: 0 0 20px; }
+.contact-email-form > label:not(.contact-email-honeypot) { display: block; margin-bottom: 9px; font-weight: 800; }
+.contact-email-controls { display: flex; gap: 10px; max-width: 620px; }
+.contact-email-controls input { min-width: 0; flex: 1; border: 1px solid #655866; border-radius: 9px; background: #17151a; color: #fff; padding: 13px 15px; font: inherit; }
+.contact-email-controls input:focus { outline: 2px solid var(--green); outline-offset: 2px; }
+.contact-email-controls button { display: inline-flex; align-items: center; justify-content: center; gap: 8px; border: 0; border-radius: 9px; padding: 13px 19px; background: var(--green); color: #101311; font: inherit; font-weight: 900; cursor: pointer; }
+.contact-email-controls button:disabled { opacity: .6; cursor: wait; }
+.contact-email-form .contact-email-success { color: var(--green); margin: 13px 0 0; }
+.contact-email-form .contact-email-error { color: #ffaaa9; margin: 13px 0 0; }
+.contact-email-honeypot { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+@media (max-width: 640px) { .contact-email-controls { flex-direction: column; } .contact-email-controls button { width: 100%; } }
 
 .sticky-atc { display: none; }
 

@@ -235,7 +235,7 @@ export function Checkout() {
                 <span className="checkout-section-number">03</span>
                 <div><h2 id="checkout-payment-title">{isPreviewCheckout ? 'Order on WhatsApp' : 'Secure payment'}</h2><p>{isPreviewCheckout ? 'Review your estimated total before sending the request.' : 'Review your order total before opening secure PayU checkout.'}</p></div>
               </div>
-              {isPreviewCheckout && <div className="checkout-gateway-notice"><MessageCircle size={19} aria-hidden="true" /><span>Online payment is temporarily unavailable. Continue on WhatsApp and we will confirm your order and payment details there.</span></div>}
+              {isPreviewCheckout && <div className="checkout-gateway-notice"><MessageCircle size={19} aria-hidden="true" /><span>Due to heavy orders online payment is temporarily unavailable. Continue on WhatsApp and we will confirm your order and payment details there.</span></div>}
               <div className="checkout-pay-total"><span>{isPreviewCheckout ? 'Estimated total' : 'Total to pay'}</span><strong aria-live="polite">{format(total)}</strong></div>
               {error && <p className="checkout-error" role="alert">{error}</p>}
               {isPreviewCheckout && whatsappStatus && <p className="checkout-whatsapp-status" role="status">{whatsappStatus}</p>}

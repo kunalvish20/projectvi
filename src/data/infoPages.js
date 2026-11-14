@@ -13,8 +13,8 @@ export const INFO_PAGES = {
   privacy: {
     eyebrow: 'Policy',
     title: 'Privacy Policy',
-    copy: `${SITE.name} saves creator applications and checkout contact and delivery details for review in a private admin dashboard. Checkout details may be saved while you type, even if you leave before sending an order request. WhatsApp order requests share the prepared customer message with WhatsApp only when the customer sends it; our team confirms payment and fulfilment separately. Real PayU orders, when enabled, are used to verify payments and arrange delivery. We also use Microsoft Clarity to understand how visitors use this website.`,
-    bullets: ['Cart data stays in your browser; checkout form details may be saved for follow-up when the database is configured', 'Creator applications and checkout details are stored for admin review', 'WhatsApp order requests do not collect payment on this site', 'Microsoft Clarity collects usage data such as page visits, clicks, scrolling, and session recordings; checkout and creator form content is masked'],
+    copy: `${SITE.name} saves contact page email submissions, creator applications, and checkout contact and delivery details for review in a private admin dashboard. Checkout details may be saved while you type, even if you leave before sending an order request. WhatsApp order requests share the prepared customer message with WhatsApp only when the customer sends it; our team confirms payment and fulfilment separately. Real PayU orders, when enabled, are used to verify payments and arrange delivery. We also use Microsoft Clarity to understand how visitors use this website.`,
+    bullets: ['Cart data stays in your browser; checkout form details may be saved for follow-up when the database is configured', 'Contact emails, creator applications and checkout details are stored for admin review', 'WhatsApp order requests do not collect payment on this site', 'Microsoft Clarity collects usage data such as page visits, clicks, scrolling, and session recordings; contact, checkout and creator form content is masked'],
     sections: [{
       heading: 'Website analytics',
       copy: 'Microsoft Clarity may use cookies and similar technologies to measure website use. Clarity recordings help us improve the site. Form entries and payment IDs are masked from recordings. Microsoft processes the analytics data under its own privacy terms.'
@@ -23,10 +23,8 @@ export const INFO_PAGES = {
   contact: {
     eyebrow: 'Help',
     title: 'Contact Us',
-    copy: SITE.supportEmail || SITE.supportPhone
-      ? `Reach ${SITE.name} support for order help, delivery questions, payment confirmation, or product-care requests.`
-      : `Support contact details for ${SITE.name} will be published here soon. Keep your payment ID for any order enquiry.`,
-    bullets: [SITE.supportEmail, SITE.supportPhone, SITE.supportEmail || SITE.supportPhone ? SITE.supportHours : 'Support contact details will be published here soon.'].filter(Boolean)
+    copy: `Leave your email address and the ${SITE.name} team can get in touch with you. For an existing order, keep your payment or WhatsApp reference handy.`,
+    bullets: [SITE.supportEmail, SITE.supportPhone, SITE.supportEmail || SITE.supportPhone ? SITE.supportHours : 'Your email will be visible only to the admin team.'].filter(Boolean)
   },
   terms: {
     eyebrow: 'Policy',
