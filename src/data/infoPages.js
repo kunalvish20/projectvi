@@ -24,6 +24,10 @@ export const INFO_PAGES = {
     eyebrow: 'Help',
     title: 'Contact Us',
     copy: `Leave your email address and the ${SITE.name} team can get in touch with you. For an existing order, keep your payment or WhatsApp reference handy.`,
+    details: [
+      {label: 'Contact person', value: 'Vimla Shrivastava'},
+      {label: 'Business name', value: 'Dndstores and Enterprises'}
+    ],
     bullets: [SITE.supportEmail, SITE.supportPhone, SITE.supportEmail || SITE.supportPhone ? SITE.supportHours : 'Your email will be visible only to the admin team.'].filter(Boolean)
   },
   terms: {

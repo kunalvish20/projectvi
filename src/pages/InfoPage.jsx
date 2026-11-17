@@ -41,6 +41,14 @@ export function InfoPage({type = 'contact'}) {
           <p className="eyebrow">{SITE.name}</p>
           <h2>{page.title}</h2>
           <p>{page.copy}</p>
+          {type === 'contact' && <div className="contact-business-details" aria-label="Business contact details">
+            {page.details.map(({label, value}) => (
+              <div key={label}>
+                <span>{label}</span>
+                <strong>{value}</strong>
+              </div>
+            ))}
+          </div>}
           <ul>
             {page.bullets.map(item => (
               <li key={item}><CheckCircle size={17} /> {item}</li>
