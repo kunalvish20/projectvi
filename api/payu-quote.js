@@ -13,7 +13,7 @@ export default async function handler(req,res) {
     const quote=couponPrice(body.couponCode,product.price,quantity);
     return json(res,200,{amount:quote.amount,coupon:quote.coupon,subtotal:Number(product.price)*quantity});
   } catch(error) {
-    if(error.message==='Invalid coupon code.')return json(res,400,{error:error.message});
+    if(['Invalid coupon code.','Coupon codes are currently unavailable.'].includes(error.message))return json(res,400,{error:error.message});
     console.error('payu-quote',error.message);
     return json(res,503,{error:'Could not check coupon right now.'});
   }

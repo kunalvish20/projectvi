@@ -22,7 +22,7 @@ export default async function handler(req,res){
   const txnid=`PV${Date.now().toString(36).toUpperCase()}${crypto.randomBytes(4).toString('hex').toUpperCase()}`;
   const accessToken=crypto.randomBytes(24).toString('hex');
   let priced;
-  try{priced=couponPrice(body.couponCode,product.price,quantity)}catch{return json(res,400,{error:'Invalid coupon code.'})}
+  try{priced=couponPrice(body.couponCode,product.price,quantity)}catch(error){return json(res,400,{error:error.message})}
   const amount=priced.amount.toFixed(2);
   const fields={key:process.env.PAYU_MERCHANT_KEY,txnid,amount,productinfo:product.name,firstname:name.split(/\s+/)[0],email,phone,surl:`${site}/api/payu-callback`,furl:`${site}/api/payu-callback`,udf1:'',udf2:'',udf3:'',udf4:'',udf5:''};
   const hash=requestHash(fields);
