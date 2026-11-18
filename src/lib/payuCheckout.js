@@ -1,8 +1,11 @@
 /** PayU is initialized and verified ONLY by /api server functions. No merchant salt in React. */
 const STORAGE='projectvi_pending_payu';
+const RETRY_CUSTOMER='projectvi_retry_customer';
 const parseJson=async response => {const data=await response.json().catch(()=>({}));if(!response.ok)throw new Error(data.error||'Payment service unavailable.');return data;};
 export const getPendingPayU=()=>{try{return JSON.parse(sessionStorage.getItem(STORAGE)||'null')}catch{return null}};
 export const clearPendingPayU=()=>sessionStorage.removeItem(STORAGE);
+export const saveRetryPayUCustomer=customer=>sessionStorage.setItem(RETRY_CUSTOMER,JSON.stringify(customer));
+export const consumeRetryPayUCustomer=()=>{try{const customer=JSON.parse(sessionStorage.getItem(RETRY_CUSTOMER)||'null');sessionStorage.removeItem(RETRY_CUSTOMER);return customer&&typeof customer==='object'?customer:null}catch{return null}};
 export async function startPayUPayment({quantity,customer,couponCode}){
  const resp=await fetch('/api/payu-create',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({quantity,customer,couponCode})});
  const payu=await parseJson(resp);

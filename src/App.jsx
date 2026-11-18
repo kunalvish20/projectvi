@@ -15,6 +15,7 @@ import {HomeSecondary} from './pages/HomeSecondary';
 import {InfoPage} from './pages/InfoPage';
 import {ProductPage} from './pages/ProductPage';
 import {ThankYou} from './pages/ThankYou';
+import {PaymentResult} from './pages/PaymentResult';
 const AdminApp = lazy(() => import('./admin/Admin').then(module => ({default: module.AdminApp})));
 
 function RouteView() {
@@ -26,6 +27,7 @@ function RouteView() {
   if (route === '/cart') return <Cart />;
   if (route === '/checkout') return <Checkout />;
   if (route === '/thank-you') return <ThankYou />;
+  if (route === '/payment-result') return <PaymentResult />;
   if (route === '/join-as-a-creator') return <CreatorPage />;
   if (route === '/returns' || route === '/cancellation') return <InfoPage type="terms" />;
   if (['/shipping', '/privacy', '/contact', '/terms', '/payment', '/order-status', '/warranty'].includes(route)) return <InfoPage type={route.slice(1)} />;

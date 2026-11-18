@@ -85,6 +85,10 @@
       "destination": "/_seo/thank-you.html"
     },
     {
+      "source": "/payment-result",
+      "destination": "/index.html"
+    },
+    {
       "source": "/old-homepage",
       "destination": "/index.html"
     },

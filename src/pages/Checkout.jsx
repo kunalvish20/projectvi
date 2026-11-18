@@ -4,7 +4,7 @@ import {BOX_ITEMS, MAX_ORDER_QUANTITY, PRODUCT, PRODUCT_PATH, SITE} from '../dat
 import {useStore} from '../context/StoreContext';
 import {format} from '../lib/format';
 import {go} from '../hooks/useRoute';
-import {startPayUPayment,checkPayUStatus,getPendingPayU,clearPendingPayU} from '../lib/payuCheckout';
+import {startPayUPayment,checkPayUStatus,getPendingPayU,clearPendingPayU,consumeRetryPayUCustomer} from '../lib/payuCheckout';
 import {isPreviewCheckout, saveOrderReceipt} from '../lib/orderReceipt';
 import {buildWhatsAppOrderUrl} from '../lib/whatsappOrder';
 import {getCheckoutDraftId, hasCheckoutDetails, releaseCheckoutDraftId, saveCheckoutDraft} from '../lib/checkoutDraft';
@@ -17,7 +17,7 @@ const initialForm = {name: '', email: '', phone: '', pincode: '', address: '', c
 export function Checkout() {
   const {cart, subtotal, setQty, clearCart} = useStore();
   const qty = cart[PRODUCT.id] || 0;
-  const [form, setForm] = useState(initialForm);
+  const [form, setForm] = useState(() => ({...initialForm,...consumeRetryPayUCustomer()}));
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [whatsappUrl, setWhatsappUrl] = useState('');
