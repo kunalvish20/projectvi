@@ -44,6 +44,9 @@ create table if not exists public.orders (
 );
 create index if not exists orders_created_at_idx on public.orders(created_at desc);
 create index if not exists orders_email_idx on public.orders(customer_email);
+-- An unpaid attempt cannot be presented as a confirmed or fulfilled order.
+alter table public.orders add constraint orders_paid_before_fulfillment
+ check (payment_status in ('paid','refunded') or (order_status not in ('confirmed','processing','shipped','delivered') and fulfillment_status='unfulfilled'));
 
 create table if not exists public.checkout_submissions (
  id uuid primary key default gen_random_uuid(), reference text not null unique,

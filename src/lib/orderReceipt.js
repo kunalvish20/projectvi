@@ -4,7 +4,7 @@ const RECEIPT_KEY = 'projectvi_last_order_receipt';
 
 export const isPreviewCheckout = !isPayUCheckout;
 
-export function createPreviewReceipt({customer, quantity, amount, handlingFee, orderId}) {
+export function createPreviewReceipt({customer, quantity, amount, orderId}) {
   const suffix = Array.from(crypto.getRandomValues(new Uint8Array(5)), byte => byte.toString(16).padStart(2, '0')).join('').toUpperCase();
   return {
     kind: 'preview',
@@ -12,8 +12,7 @@ export function createPreviewReceipt({customer, quantity, amount, handlingFee, o
     customerName: customer.name,
     email: customer.email,
     quantity,
-    amount,
-    handlingFee
+    amount
   };
 }
 

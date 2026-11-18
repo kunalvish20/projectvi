@@ -1,4 +1,4 @@
-import {ArrowLeft, ArrowRight, ChevronDown, LockKeyhole, Loader2, MessageCircle, Minus, Plus, ShieldCheck, ShoppingBag, Truck} from 'lucide-react';
+import {ArrowLeft, ArrowRight, LockKeyhole, Loader2, MessageCircle, Minus, Plus, ShieldCheck, ShoppingBag, Truck} from 'lucide-react';
 import {useEffect, useRef, useState} from 'react';
 import {BOX_ITEMS, MAX_ORDER_QUANTITY, PRODUCT, PRODUCT_PATH, SITE} from '../data/catalog';
 import {useStore} from '../context/StoreContext';
@@ -8,7 +8,8 @@ import {startPayUPayment,checkPayUStatus,getPendingPayU,clearPendingPayU} from '
 import {isPreviewCheckout, saveOrderReceipt} from '../lib/orderReceipt';
 import {buildWhatsAppOrderUrl} from '../lib/whatsappOrder';
 import {getCheckoutDraftId, hasCheckoutDetails, releaseCheckoutDraftId, saveCheckoutDraft} from '../lib/checkoutDraft';
-import {HANDLING_FEE, getOrderTotal} from '../data/handling';
+import {getOrderTotal} from '../data/handling';
+import {formatOrderId} from '../lib/orderId';
 import './Checkout.css';
 
 const initialForm = {name: '', email: '', phone: '', pincode: '', address: '', city: '', state: ''};
@@ -22,11 +23,31 @@ export function Checkout() {
   const [whatsappUrl, setWhatsappUrl] = useState('');
   const [whatsappStatus, setWhatsappStatus] = useState('');
   const [pendingPayment, setPendingPayment] = useState(() => isPreviewCheckout ? null : getPendingPayU());
+  const [couponCode, setCouponCode] = useState('');
+  const [appliedCoupon, setAppliedCoupon] = useState(null);
+  const [couponBusy, setCouponBusy] = useState(false);
+  const [couponMessage, setCouponMessage] = useState('');
   const draftId = useRef(isPreviewCheckout ? getCheckoutDraftId() : null);
   const draftStatus = useRef('editing');
   const draftSnapshot = useRef({quantity: qty, customer: form});
-  const handlingFee = pendingPayment ? Number(pendingPayment.handlingFee ?? 0) : HANDLING_FEE;
-  const total = pendingPayment?.amount ?? getOrderTotal(PRODUCT.price, qty);
+  const total = pendingPayment?.amount ?? (appliedCoupon ? 1 : getOrderTotal(PRODUCT.price, qty));
+  const discount = appliedCoupon ? Math.max(0, subtotal - 1) : 0;
+
+  const applyCoupon = async () => {
+    if (!couponCode.trim() || couponBusy || loading || pendingPayment) return;
+    setCouponBusy(true);
+    setCouponMessage('');
+    try {
+      const response = await fetch('/api/payu-quote', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({quantity:qty,couponCode})});
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.error || 'Could not apply coupon.');
+      setAppliedCoupon(result.coupon);
+      setCouponMessage('Coupon applied. Your order total is ₹1.');
+    } catch (couponError) {
+      setAppliedCoupon(null);
+      setCouponMessage(couponError.message || 'Could not apply coupon.');
+    } finally {setCouponBusy(false)}
+  };
 
   useEffect(() => {
     draftSnapshot.current = {quantity: qty, customer: form};
@@ -56,18 +77,17 @@ export function Checkout() {
     go(`/thank-you?order=${encodeURIComponent(receipt.orderId)}`);
   };
 
-  const completePayU = (result, stored) => {
+  const completePayU = (result) => {
     clearPendingPayU();
     setPendingPayment(null);
     window.clarity?.('event', 'purchase_verified');
     completePayment({
-      orderId: result.orderNumber ? `PV-${result.orderNumber}` : result.txnid,
+      orderId: formatOrderId(result.orderNumber),
       transactionId: result.txnid,
-      customerName: stored?.customerName,
-      email: stored?.email,
-      quantity: stored?.quantity,
-      amount: stored?.amount,
-      handlingFee: stored?.handlingFee,
+      customerName: result.customerName,
+      email: result.email,
+      quantity: result.quantity,
+      amount: result.amount,
       paymentVerified: true
     });
   };
@@ -84,8 +104,9 @@ export function Checkout() {
     setPendingPayment(stored);
     checkPayUStatus().then(result => {
       if (result.status === 'paid') {
-        completePayU(result, stored);
+        completePayU(result);
       } else if (result.status === 'failed') {
+        if(stored.customer)setForm(stored.customer);
         clearPendingPayU();setPendingPayment(null);
         setError('PayU reported a failed payment. You can try again with a new transaction.');
       } else {
@@ -105,7 +126,7 @@ export function Checkout() {
 
   const payNow = async event => {
     event.preventDefault();
-    if (loading || pendingPayment) return;
+    if (loading || couponBusy || pendingPayment) return;
     setError('');
     if (!qty) return;
     const customer = Object.fromEntries(Object.entries(form).map(([key, value]) => [key, value.trim()]));
@@ -139,7 +160,7 @@ export function Checkout() {
         }
         return;
       }
-      await startPayUPayment({quantity: qty, customer});
+      await startPayUPayment({quantity: qty, customer, couponCode: appliedCoupon || undefined});
       setPendingPayment(getPendingPayU());
       // PayU Hosted Checkout navigates away. Never mark an order paid on redirect alone.
     } catch (paymentError) {
@@ -156,8 +177,9 @@ export function Checkout() {
     try {
       const verified = await checkPayUStatus();
       if (verified.status === 'paid') {
-        completePayU(verified, pendingPayment);
+        completePayU(verified);
       } else if (verified.status === 'failed') {
+        if(pendingPayment.customer)setForm(pendingPayment.customer);
         clearPendingPayU();setPendingPayment(null);
         setError('The payment failed. You can place a new payment attempt.');
       } else setError(`Confirmation is still pending for ${verified.txnid}. Do not pay again.`);
@@ -236,13 +258,14 @@ export function Checkout() {
                 <div><h2 id="checkout-payment-title">{isPreviewCheckout ? 'Order on WhatsApp' : 'Secure payment'}</h2><p>{isPreviewCheckout ? 'Review your estimated total before sending the request.' : 'Review your order total before opening secure PayU checkout.'}</p></div>
               </div>
               {isPreviewCheckout && <div className="checkout-gateway-notice"><MessageCircle size={19} aria-hidden="true" /><span>Due to heavy orders online payment is temporarily unavailable. Continue on WhatsApp and we will confirm your order and payment details there.</span></div>}
+              {!isPreviewCheckout && <div className="checkout-coupon"><label htmlFor="checkout-coupon-code">Coupon code</label><div className="checkout-coupon-controls"><input id="checkout-coupon-code" value={couponCode} onChange={event=>{setCouponCode(event.target.value);setAppliedCoupon(null);setCouponMessage('')}} onKeyDown={event=>{if(event.key==='Enter'){event.preventDefault();applyCoupon()}}} placeholder="Enter coupon code" autoComplete="off" disabled={Boolean(pendingPayment) || loading || couponBusy} /><button type="button" onClick={applyCoupon} disabled={!couponCode.trim() || couponBusy || loading || Boolean(pendingPayment)}>{couponBusy ? 'Checking…' : 'Apply'}</button></div>{couponMessage && <p className={appliedCoupon?'checkout-coupon-success':'checkout-coupon-error'} role="status">{couponMessage}</p>}</div>}
               <div className="checkout-pay-total"><span>{isPreviewCheckout ? 'Estimated total' : 'Total to pay'}</span><strong aria-live="polite">{format(total)}</strong></div>
               {error && <p className="checkout-error" role="alert">{error}</p>}
               {isPreviewCheckout && whatsappStatus && <p className="checkout-whatsapp-status" role="status">{whatsappStatus}</p>}
               {pendingPayment && <button className="checkout-retry-btn" type="button" onClick={retryConfirmation} disabled={loading}>
                 {loading ? <><Loader2 className="spin" size={18} /> Checking payment…</> : <>Check payment status <ArrowRight size={18} /></>}
               </button>}
-              {!pendingPayment && <button className={`pay-now-btn ${isPreviewCheckout ? 'checkout-whatsapp-btn' : ''}`} type="submit" disabled={loading}>
+              {!pendingPayment && <button className={`pay-now-btn ${isPreviewCheckout ? 'checkout-whatsapp-btn' : ''}`} type="submit" disabled={loading || couponBusy}>
                 {loading ? <><Loader2 className="spin" size={19} /> {isPreviewCheckout ? 'Saving details...' : 'Redirecting to PayU…'}</> : <>{isPreviewCheckout ? <MessageCircle size={19} /> : <LockKeyhole size={18} />} {isPreviewCheckout ? 'Continue on WhatsApp' : `Pay ${format(total)} securely`} <ArrowRight size={18} /></>}
               </button>}
               {isPreviewCheckout && whatsappUrl && <a className="checkout-whatsapp-fallback" href={whatsappUrl} target="_blank" rel="noopener noreferrer">WhatsApp did not open? Open the message here <ArrowRight size={15} /></a>}
@@ -268,16 +291,11 @@ export function Checkout() {
             </div>
             <div className="checkout-costs">
               <div><span>Subtotal</span><strong>{format(subtotal)}</strong></div>
-              <details className="checkout-price-details">
-                <summary>View price breakdown <ChevronDown size={15} aria-hidden="true" /></summary>
-                <div className="checkout-price-details-rows">
-                  <div><span>Delivery</span><strong className="checkout-free">FREE</strong></div>
-                  <div><span>Handling charge</span><strong className={handlingFee ? '' : 'checkout-free'}>{handlingFee ? format(handlingFee) : 'FREE'}</strong></div>
-                </div>
-              </details>
+              <div><span>Delivery</span><strong className="checkout-free">FREE</strong></div>
+              {appliedCoupon && <div><span>Coupon {appliedCoupon}</span><strong className="checkout-free">−{format(discount)}</strong></div>}
               <div className="checkout-cost-total"><span>Total</span><strong aria-live="polite">{format(total)}</strong></div>
             </div>
-            <p className="checkout-order-note"><ShieldCheck size={17} aria-hidden="true" /> {isPreviewCheckout ? 'Includes handling. We will confirm payment on WhatsApp.' : 'No surprise fees at payment.'}</p>
+            <p className="checkout-order-note"><ShieldCheck size={17} aria-hidden="true" /> {isPreviewCheckout ? 'We will confirm payment on WhatsApp.' : 'No surprise fees at payment.'}</p>
           </aside>
         </div>
       </div>

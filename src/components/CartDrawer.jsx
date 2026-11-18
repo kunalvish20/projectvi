@@ -1,17 +1,15 @@
-import {ArrowRight, ChevronDown, Minus, Plus, X} from 'lucide-react';
+import {ArrowRight, Minus, Plus, X} from 'lucide-react';
 import {useEffect} from 'react';
 import {BOX_ITEMS, PRODUCT} from '../data/catalog';
 import {useStore} from '../context/StoreContext';
 import {format} from '../lib/format';
 import {go} from '../hooks/useRoute';
 import {ProductArt} from './ProductArt';
-import {HANDLING_FEE} from '../data/handling';
 
 export function CartDrawer() {
   const {cart, setQty, subtotal, isCartDrawerOpen, closeCartDrawer} = useStore();
   const qty = cart[PRODUCT.id] || 0;
-  const handlingFee = qty ? HANDLING_FEE : 0;
-  const total = subtotal + handlingFee;
+  const total = subtotal;
 
   useEffect(() => {
     document.body.classList.toggle('drawer-lock', isCartDrawerOpen);
@@ -54,12 +52,6 @@ export function CartDrawer() {
             <div className="cart-drawer-summary">
               <div><span>Subtotal</span><b>{format(subtotal)}</b></div>
               <div className="cart-drawer-charge-row"><span>Delivery</span><b>FREE</b></div>
-              <div className="cart-drawer-charge-row"><span>Handling charge</span><b>{format(handlingFee)}</b></div>
-              <details className="cart-drawer-charge-details">
-                <summary>View delivery &amp; handling <ChevronDown size={16} aria-hidden="true" /></summary>
-                <div><span>Delivery</span><b>FREE</b></div>
-                <div><span>Handling charge</span><b>{format(handlingFee)}</b></div>
-              </details>
               <div className="total"><span>Total</span><b>{format(total)}</b></div>
             </div>
 

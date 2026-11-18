@@ -9,13 +9,13 @@ test('checkout opens the requested WhatsApp number with complete order details',
     address: '12 Market Street', city: 'Mumbai', state: 'Maharashtra', pincode: '400001'
   };
   const url = new URL(buildWhatsAppOrderUrl(SITE.orderWhatsApp, {
-    customer, productName: "GTA VI Collector's Box", quantity: 2, amount: 14297
+    customer, productName: "GTA VI Collector's Box", quantity: 2, amount: 13998
   }));
   assert.equal(url.origin, 'https://wa.me');
   assert.equal(url.pathname, '/919731202959');
   const message = url.searchParams.get('text');
   assert.match(message, /Hi Project VI, I'd like to order GTA VI Collector's Box\./);
-  assert.match(message, /Qty: 2 \| Estimated total: ₹14,297 \(including handling\)/);
+  assert.match(message, /Qty: 2 \| Estimated total: ₹13,998/);
   assert.match(message, /Name: A Customer/);
   assert.match(message, /Phone: 9876543210/);
   assert.match(message, /Email: customer@example\.com/);

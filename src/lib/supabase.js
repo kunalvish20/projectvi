@@ -38,7 +38,7 @@ export async function apiRequest(path, {method='GET', data, authenticated=false,
   if(authenticated && !bearer) throw new Error('Please sign in again.');
   const response = await fetch(`${url}/rest/v1/${path}`, {
     method,
-    headers:{apikey:anonKey, Authorization:`Bearer ${bearer}`, ...(data!==undefined?{'Content-Type':contentType}:{}), ...(prefer?{Prefer:prefer}:{})},
+    headers:{apikey:anonKey, ...(authenticated||!anonKey.startsWith('sb_publishable_')?{Authorization:`Bearer ${bearer}`}:{}), ...(data!==undefined?{'Content-Type':contentType}:{}), ...(prefer?{Prefer:prefer}:{})},
     ...(data!==undefined?{body:JSON.stringify(data)}:{})
   });
   const txt = await response.text();

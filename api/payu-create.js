@@ -2,11 +2,10 @@ import crypto from 'node:crypto';
 import {db,getProduct} from '../server/db.js';
 import {json,readBody,clean,errorMessage} from '../server/http.js';
 import {requestHash,payuBase,accessHash} from '../server/payu.js';
-import {HANDLING_FEE,getOrderTotal} from '../src/data/handling.js';
+import {couponPrice} from '../server/coupon.js';
 const PRODUCT_ID='gta-collector-box';
 export default async function handler(req,res){
  if(req.method!=='POST')return json(res,405,{error:'Method not allowed'});
- if(process.env.VITE_CHECKOUT_MODE!=='payu')return json(res,409,{error:'Online payment is temporarily unavailable. Please order on WhatsApp.'});
  try{
   const body=await readBody(req);const customer=body.customer||{};
   const quantity=Number(body.quantity);
@@ -17,14 +16,19 @@ export default async function handler(req,res){
   if(!product?.active||!Number.isFinite(Number(product.price))||Number(product.price)<=0)return json(res,409,{error:'This product is currently unavailable.'});
   if(Number(product.inventory)<quantity)return json(res,409,{error:'Insufficient stock for this order.'});
   const site=process.env.PUBLIC_SITE_URL?.replace(/\/$/,'');
-  if(!site || !/^https?:\/\//.test(site))throw new Error('Missing server configuration: PUBLIC_SITE_URL');
+  let origin;
+  try{origin=new URL(site)}catch{throw new Error('Missing server configuration: PUBLIC_SITE_URL')}
+  if(origin.protocol!=='https:'||origin.origin!==site||/YOUR-|example|placeholder|paste_/i.test(site))throw new Error('Missing server configuration: PUBLIC_SITE_URL');
   const txnid=`PV${Date.now().toString(36).toUpperCase()}${crypto.randomBytes(4).toString('hex').toUpperCase()}`;
   const accessToken=crypto.randomBytes(24).toString('hex');
-  const amount=getOrderTotal(product.price,quantity).toFixed(2);
+  let priced;
+  try{priced=couponPrice(body.couponCode,product.price,quantity)}catch{return json(res,400,{error:'Invalid coupon code.'})}
+  const amount=priced.amount.toFixed(2);
   const fields={key:process.env.PAYU_MERCHANT_KEY,txnid,amount,productinfo:product.name,firstname:name.split(/\s+/)[0],email,phone,surl:`${site}/api/payu-callback`,furl:`${site}/api/payu-callback`,udf1:'',udf2:'',udf3:'',udf4:'',udf5:''};
   const hash=requestHash(fields);
-  const rows=await db('orders',{method:'POST',body:{txnid,access_hash:accessHash(accessToken),customer_name:name,customer_email:email,customer_phone:phone,address,city,state,pincode,quantity,amount:Number(amount),product_id:product.id,product_name:product.name,order_status:'pending_payment',payment_status:'pending',payment_provider:'payu',notes:`Handling charge: INR ${HANDLING_FEE}`}});
+  const gateway=`${payuBase()}/_payment`;
+  const rows=await db('orders',{method:'POST',body:{txnid,access_hash:accessHash(accessToken),customer_name:name,customer_email:email,customer_phone:phone,address,city,state,pincode,quantity,amount:Number(amount),product_id:product.id,product_name:product.name,order_status:'pending_payment',payment_status:'pending',payment_provider:'payu',notes:priced.coupon?`Coupon ${priced.coupon} applied; original total INR ${Number(product.price)*quantity}`:''}});
   if(!rows?.[0])throw new Error('Unable to create the order.');
-  return json(res,200,{gateway:`${payuBase()}/_payment`,fields:{...fields,hash},txnid,accessToken,handlingFee:HANDLING_FEE});
+  return json(res,200,{gateway,fields:{...fields,hash},txnid,accessToken});
  }catch(err){console.error('payu-create',err.message);return json(res,500,{error:errorMessage(err)});}
 }

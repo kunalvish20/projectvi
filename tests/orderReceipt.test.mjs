@@ -9,14 +9,14 @@ test('confirmation ignores old browser-only receipts', () => {
     getItem: key => entries.get(key) ?? null
   };
 
-  saveOrderReceipt({orderId: 'PV-OLD', demo: true, amount: 7298});
+  saveOrderReceipt({orderId: 'PV-OLD', demo: true, amount: 6999});
   assert.equal(getOrderReceipt('PV-OLD'), null);
 
-  saveOrderReceipt({orderId: 'PV-REAL', transactionId: 'PVTX123', amount: 7298});
+  saveOrderReceipt({orderId: 'PV-REAL', transactionId: 'PVTX123', amount: 6999});
   assert.equal(getOrderReceipt('PV-REAL')?.transactionId, 'PVTX123');
   assert.equal(getOrderReceipt('PV-OTHER'), null);
 
-  const preview = createPreviewReceipt({customer: {name: 'Sam', email: 'sam@example.com'}, quantity: 1, amount: 7298, handlingFee: 299});
+  const preview = createPreviewReceipt({customer: {name: 'Sam', email: 'sam@example.com'}, quantity: 1, amount: 6999});
   assert.match(preview.orderId, /^PV-[A-F0-9]{10}$/);
   assert.equal(preview.transactionId, undefined);
   saveOrderReceipt(preview);

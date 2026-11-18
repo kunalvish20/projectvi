@@ -1,12 +1,21 @@
 import crypto from 'node:crypto';
 const SHA = value => crypto.createHash('sha512').update(value,'utf8').digest('hex');
-const required = name => {if(!process.env[name])throw new Error(`Missing server configuration: ${name}`);return process.env[name];};
+const required = name => {const value=process.env[name];if(!value||/YOUR-|example|placeholder|paste_/i.test(value))throw new Error(`Missing server configuration: ${name}`);return value;};
 const key = () => required('PAYU_MERCHANT_KEY');
 const salt = () => required('PAYU_MERCHANT_SALT');
-export const payuBase = () => process.env.PAYU_ENV==='production'?'https://secure.payu.in':'https://test.payu.in';
+export const payuBase = () => {
+ const environment=required('PAYU_ENV');
+ if(!['test','production'].includes(environment))throw new Error('Missing server configuration: PAYU_ENV');
+ return environment==='production'?'https://secure.payu.in':'https://test.payu.in';
+};
+export const payuVerificationUrl = () => {
+ const environment=required('PAYU_ENV');
+ if(!['test','production'].includes(environment))throw new Error('Missing server configuration: PAYU_ENV');
+ return `${environment==='production'?'https://info.payu.in':'https://test.payu.in'}/merchant/postservice.php?form=2`;
+};
 export function requestHash(fields){return SHA([key(),fields.txnid,fields.amount,fields.productinfo,fields.firstname,fields.email,'','','','','','','','','','',salt()].join('|'));}
 function safeEquals(left,right) {
- if(typeof right!=='string'||!/[a-f0-9]{128}/i.test(right))return false;
+ if(typeof right!=='string'||!(/^[a-f0-9]{128}$/i).test(right))return false;
  const a=Buffer.from(left,'hex'), b=Buffer.from(right,'hex');return a.length===b.length&&crypto.timingSafeEqual(a,b);
 }
 export function verifyResponseHash(fields){
@@ -19,12 +28,21 @@ export function verifyResponseHash(fields){
 export async function verifyPaymentWithPayU(txnid){
  const command='verify_payment';
  const hash=SHA(`${key()}|${command}|${txnid}|${salt()}`);
- const url=`${payuBase()}/merchant/postservice.php?form=2`;
+ const url=payuVerificationUrl();
  const response=await fetch(url,{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:new URLSearchParams({key:key(),command,var1:txnid,hash}),signal:AbortSignal.timeout(12000)});
  if(!response.ok) throw new Error('PayU verification service unavailable.');
  const payload=await response.json();
  const transaction=payload?.transaction_details?.[txnid];
  if(!transaction) throw new Error('PayU has not confirmed this transaction yet.');
  return transaction;
+}
+export function isVerifiedSuccess(transaction,order){
+ const amount=String(transaction?.amt??transaction?.amount??'');
+ const expected=Number(order.amount).toFixed(2);
+ return String(transaction?.status).toLowerCase()==='success'
+  && (!transaction.txnid || transaction.txnid===order.txnid)
+  && /^\d+\.\d{2}$/.test(amount)
+  && amount===expected
+  && Boolean(transaction.mihpayid && transaction.mihpayid!=='Not Found');
 }
 export const accessHash = value => crypto.createHash('sha256').update(value).digest('hex');

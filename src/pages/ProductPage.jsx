@@ -5,7 +5,6 @@ import {ProductArt} from '../components/ProductArt';
 import {ProductStorySections} from '../components/ProductStorySections';
 import {BOX_ITEMS, MAX_ORDER_QUANTITY, PRODUCT, SITE} from '../data/catalog';
 import {isPayUCheckout} from '../data/checkoutMode';
-import {HANDLING_FEE} from '../data/handling';
 import {useStore} from '../context/StoreContext';
 import {format} from '../lib/format';
 import {go} from '../hooks/useRoute';
@@ -125,7 +124,7 @@ export function ProductPage() {
                 <span className="product-delivery-badge">Free standard delivery</span>
               </div>
               <p>One Collector's Box. All 11 items included.</p>
-              <p className="product-handling-hint">Free delivery · {format(HANDLING_FEE)} handling charge shown at checkout.</p>
+              <p className="product-handling-hint">Free standard delivery.</p>
             </div>
             <p className="product-intro">Bring the Vice City mood to your setup and beyond with this <strong>unofficial, fan-made 10-piece collector’s box</strong>, featuring apparel, accessories, artwork, and a display lamp. <strong>More than just a collection, it’s a purchase with a purpose — 50% of all profits will be donated to charity.</strong></p>
 

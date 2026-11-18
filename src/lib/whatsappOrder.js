@@ -3,7 +3,7 @@ import {format} from './format.js';
 export function buildWhatsAppOrderMessage({customer, productName, quantity, amount, reference}) {
   return [
     `Hi Project VI, I'd like to order ${productName}.`,
-    `Qty: ${quantity} | Estimated total: ${format(amount)} (including handling)`,
+    `Qty: ${quantity} | Estimated total: ${format(amount)}`,
     `Name: ${customer.name}`,
     `Phone: ${customer.phone}`,
     `Email: ${customer.email}`,

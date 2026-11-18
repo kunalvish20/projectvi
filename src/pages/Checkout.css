@@ -179,6 +179,16 @@
   line-height: 1.5;
   text-align: center;
 }
+.checkout-coupon { margin: 0 0 18px; }
+.checkout-coupon > label { display: block; margin-bottom: 8px; color: #eadce8; font-size: 13px; font-weight: 700; }
+.checkout-coupon-controls { display: flex; gap: 8px; }
+.checkout-coupon-controls input { min-width: 0; flex: 1; min-height: 44px; padding: 0 12px; border: 1px solid #ffffff45; border-radius: 8px; outline: none; color: #fff; background: #ffffff0b; font: inherit; }
+.checkout-coupon-controls input:focus { border-color: #ff69b4; }
+.checkout-coupon-controls button { min-width: 76px; padding: 0 12px; border: 1px solid #ff69b4; border-radius: 8px; color: #fff; background: #9c075c; font-weight: 700; }
+.checkout-coupon-controls button:disabled { opacity: .55; cursor: not-allowed; }
+.checkout-coupon-success, .checkout-coupon-error { margin: 8px 0 0; font-size: 12px; }
+.checkout-coupon-success { color: #9df0b4; }
+.checkout-coupon-error { color: #ff9eaa; }
 .checkout-payment-help svg { flex: 0 0 auto; color: #a4e6b3; }
 .checkout-terms { margin: 15px 0 0; color: #9f929f; font-size: 12px; line-height: 1.5; text-align: center; }
 .checkout-terms a { color: #e8d1e1; text-underline-offset: 2px; }

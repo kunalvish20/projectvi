@@ -8,7 +8,7 @@ export const INFO_PAGES = {
     copy: isPayUCheckout
       ? "Buy the GTA VI Collector's Box through checkout. Keep your contact and shipping information accurate for dispatch and tracking updates."
       : "Buy the GTA VI Collector's Box by sending an order request through checkout. Keep your contact and shipping information accurate. Our team will confirm availability and dispatch details before payment.",
-    bullets: ["Standard delivery is free; a ₹299 handling charge is included in the order total", 'Review your delivery address before making payment', 'Contact support with your payment ID if an order is delayed or unfulfilled']
+    bullets: ['Standard delivery is free', 'Review your delivery address before making payment', 'Contact support with your payment ID if an order is delayed or unfulfilled']
   },
   privacy: {
     eyebrow: 'Policy',

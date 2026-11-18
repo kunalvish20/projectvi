@@ -11,7 +11,8 @@ if (!url.startsWith('https://') || isPlaceholder(url) || isPlaceholder(key) || i
  console.error('Add real SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, and ADMIN_INITIAL_PASSWORD values to .env.local before running setup:admins.');process.exit(1);
 }
 if(password.length<12) {console.error('Use an admin password of at least 12 characters.');process.exit(1);}
-const headers={apikey:key,Authorization:`Bearer ${key}`,'Content-Type':'application/json'};
+const headers={apikey:key,'Content-Type':'application/json'};
+if(!key.startsWith('sb_secret_'))headers.Authorization=`Bearer ${key}`;
 async function call(path,method='GET',data){
  const response=await fetch(`${url}/auth/v1/admin/${path}`,{method,headers,...(data?{body:JSON.stringify(data)}:{})});
  const result=await response.json().catch(()=>({}));
