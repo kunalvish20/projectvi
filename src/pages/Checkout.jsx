@@ -13,6 +13,7 @@ import {formatOrderId} from '../lib/orderId';
 import './Checkout.css';
 
 const initialForm = {name: '', email: '', phone: '', pincode: '', address: '', city: '', state: ''};
+const SHOW_COUPON_SECTION = false;
 
 export function Checkout() {
   const {cart, subtotal, setQty, clearCart} = useStore();
@@ -258,7 +259,7 @@ export function Checkout() {
                 <div><h2 id="checkout-payment-title">{isPreviewCheckout ? 'Order on WhatsApp' : 'Secure payment'}</h2><p>{isPreviewCheckout ? 'Review your estimated total before sending the request.' : 'Review your order total before opening secure PayU checkout.'}</p></div>
               </div>
               {isPreviewCheckout && <div className="checkout-gateway-notice"><MessageCircle size={19} aria-hidden="true" /><span>Due to heavy orders online payment is temporarily unavailable. Continue on WhatsApp and we will confirm your order and payment details there.</span></div>}
-              {!isPreviewCheckout && <div className="checkout-coupon"><label htmlFor="checkout-coupon-code">Coupon code</label><div className="checkout-coupon-controls"><input id="checkout-coupon-code" value={couponCode} onChange={event=>{setCouponCode(event.target.value);setAppliedCoupon(null);setCouponMessage('')}} onKeyDown={event=>{if(event.key==='Enter'){event.preventDefault();applyCoupon()}}} placeholder="Enter coupon code" autoComplete="off" disabled={Boolean(pendingPayment) || loading || couponBusy} /><button type="button" onClick={applyCoupon} disabled={!couponCode.trim() || couponBusy || loading || Boolean(pendingPayment)}>{couponBusy ? 'Checking…' : 'Apply'}</button></div>{couponMessage && <p className={appliedCoupon?'checkout-coupon-success':'checkout-coupon-error'} role="status">{couponMessage}</p>}</div>}
+              {SHOW_COUPON_SECTION && !isPreviewCheckout && <div className="checkout-coupon"><label htmlFor="checkout-coupon-code">Coupon code</label><div className="checkout-coupon-controls"><input id="checkout-coupon-code" value={couponCode} onChange={event=>{setCouponCode(event.target.value);setAppliedCoupon(null);setCouponMessage('')}} onKeyDown={event=>{if(event.key==='Enter'){event.preventDefault();applyCoupon()}}} placeholder="Enter coupon code" autoComplete="off" disabled={Boolean(pendingPayment) || loading || couponBusy} /><button type="button" onClick={applyCoupon} disabled={!couponCode.trim() || couponBusy || loading || Boolean(pendingPayment)}>{couponBusy ? 'Checking…' : 'Apply'}</button></div>{couponMessage && <p className={appliedCoupon?'checkout-coupon-success':'checkout-coupon-error'} role="status">{couponMessage}</p>}</div>}
               <div className="checkout-pay-total"><span>{isPreviewCheckout ? 'Estimated total' : 'Total to pay'}</span><strong aria-live="polite">{format(total)}</strong></div>
               {error && <p className="checkout-error" role="alert">{error}</p>}
               {isPreviewCheckout && whatsappStatus && <p className="checkout-whatsapp-status" role="status">{whatsappStatus}</p>}
