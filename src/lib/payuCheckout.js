@@ -16,8 +16,11 @@ export async function startPayUPayment({quantity,customer,couponCode}){
  document.body.appendChild(form);
  try{form.submit()}catch(error){clearPendingPayU();form.remove();throw error}
 }
-export async function checkPayUStatus(){
- const current=getPendingPayU();if(!current?.txnid||!current.accessToken)throw new Error('Payment session not found. Please contact support with your transaction reference.');
- const result=await fetch('/api/payu-status',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(current)});
+export async function checkPayUStatus({txnid,returnToken}={}){
+ const current=getPendingPayU();
+ const matchingSession=current?.txnid&&(!txnid||current.txnid===txnid);
+ const request=returnToken&&txnid?{txnid,returnToken,...(matchingSession?{accessToken:current.accessToken}:{})}:current;
+ if(!request?.txnid||(!request.accessToken&&!request.returnToken))throw new Error('Payment session not found. Please contact support with your transaction reference.');
+ const result=await fetch('/api/payu-status',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(request)});
  return parseJson(result);
 }

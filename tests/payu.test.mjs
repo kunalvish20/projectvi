@@ -1,7 +1,7 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import crypto from 'node:crypto';
-import {requestHash,verifyResponseHash,isVerifiedSuccess,payuVerificationUrl} from '../server/payu.js';
+import {requestHash,verifyResponseHash,isVerifiedSuccess,payuVerificationUrl,createReturnToken,verifyReturnToken} from '../server/payu.js';
 import {formatOrderId} from '../src/lib/orderId.js';
 const hash=t=>crypto.createHash('sha512').update(t).digest('hex');
 test('PayU v1 hash uses standard 11 separators after email',()=>{
@@ -43,4 +43,15 @@ test('PayU production verification uses the postservice host',()=>{
   process.env.PAYU_ENV='test';
   assert.equal(payuVerificationUrl(),'https://test.payu.in/merchant/postservice.php?form=2');
  }finally{if(previous===undefined)delete process.env.PAYU_ENV;else process.env.PAYU_ENV=previous}
+});
+
+test('signed PayU return works without browser storage and is bound to one order for one hour',()=>{
+ process.env.PAYU_MERCHANT_SALT='TESTSALT';
+ const now=1_800_000_000_000;
+ const token=createReturnToken('PV123',now);
+ assert.equal(verifyReturnToken('PV123',token,now),true);
+ assert.equal(verifyReturnToken('OTHER',token,now),false);
+ assert.equal(verifyReturnToken('PV123',`${token.slice(0,-1)}${token.endsWith('0')?'1':'0'}`,now),false);
+ assert.equal(verifyReturnToken('PV123',token,now+3_601_000),false);
+ assert.equal(verifyReturnToken('PV123','invalid',now),false);
 });

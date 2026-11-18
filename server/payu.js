@@ -46,3 +46,21 @@ export function isVerifiedSuccess(transaction,order){
   && Boolean(transaction.mihpayid && transaction.mihpayid!=='Not Found');
 }
 export const accessHash = value => crypto.createHash('sha256').update(value).digest('hex');
+
+// PayU has already signed the browser callback before this token is issued.
+// A short-lived token lets the return page verify the order even when UPI opens a new tab.
+export function createReturnToken(txnid,now=Date.now()) {
+ const expires=Math.floor(now/1000)+3600;
+ const signature=crypto.createHmac('sha256',salt()).update(`payu-return|${txnid}|${expires}`).digest('hex');
+ return `${expires}.${signature}`;
+}
+
+export function verifyReturnToken(txnid,token,now=Date.now()) {
+ if(typeof token!=='string'||!/^\d{10}\.[a-f0-9]{64}$/i.test(token))return false;
+ const [expiry,signature]=token.split('.');
+ const expires=Number(expiry);
+ const current=Math.floor(now/1000);
+ if(!Number.isSafeInteger(expires)||expires<current||expires>current+3600)return false;
+ const expected=crypto.createHmac('sha256',salt()).update(`payu-return|${txnid}|${expiry}`).digest('hex');
+ return crypto.timingSafeEqual(Buffer.from(expected,'hex'),Buffer.from(signature,'hex'));
+}

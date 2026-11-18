@@ -1,14 +1,16 @@
 import crypto from 'node:crypto';
 import {getOrder} from '../server/db.js';
 import {json,readBody,clean} from '../server/http.js';
-import {accessHash} from '../server/payu.js';
+import {accessHash,verifyReturnToken} from '../server/payu.js';
 import {settleOrder} from '../server/settleOrder.js';
 export default async function handler(req,res){
  if(req.method!=='POST')return json(res,405,{error:'Method not allowed'});
  try{
   const body=await readBody(req);const txnid=clean(body.txnid,32);const accessToken=clean(body.accessToken,100);
   const order=await getOrder(txnid);
-  if(!order||!accessToken||!/^[a-f0-9]{64}$/i.test(order.access_hash)||!crypto.timingSafeEqual(Buffer.from(accessHash(accessToken),'hex'),Buffer.from(order.access_hash,'hex')))return json(res,403,{error:'Invalid order verification token.'});
+  const browserTokenValid=Boolean(order&&accessToken&&/^[a-f0-9]{64}$/i.test(order.access_hash)&&crypto.timingSafeEqual(Buffer.from(accessHash(accessToken),'hex'),Buffer.from(order.access_hash,'hex')));
+  const returnTokenValid=Boolean(order&&verifyReturnToken(txnid,body.returnToken));
+  if(!browserTokenValid&&!returnTokenValid)return json(res,403,{error:'Invalid order verification token.'});
   let current=order;
   if(current.payment_status!=='paid'){
    try{current=await settleOrder(order)}catch(e){console.warn('PayU status verification pending',e.message)}
