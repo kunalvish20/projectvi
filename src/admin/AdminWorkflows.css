@@ -1,0 +1,40 @@
+.pv-orders-toolbar{align-items:flex-end;flex-wrap:wrap}
+.pv-orders-toolbar .pv-search{max-width:430px;min-height:40px}
+.pv-orders-tools{display:flex;align-items:flex-end;justify-content:flex-end;gap:10px;flex-wrap:wrap}
+.pv-orders-tools label{display:grid;gap:4px;color:#80848e;font-size:10px;font-weight:700}
+.pv-root .pv-orders-tools select,.pv-root .pv-table-toolbar-right select{width:auto;min-width:140px;min-height:35px;padding:6px 9px;font-size:11px}
+.pv-view-tabs{display:flex;align-items:center;gap:5px;flex-wrap:wrap;padding:0 20px 14px}
+.pv-view-tabs button{border:1px solid transparent;background:transparent;color:#777b86;border-radius:8px;padding:7px 11px;font-size:11px;font-weight:690}
+.pv-view-tabs button:hover{background:#f5f4ff;color:#6558e8}
+.pv-view-tabs button.is-active{background:#f0edff;border-color:#e5e1ff;color:#5e50cf}
+.pv-view-tabs span,.pv-results-count{margin-left:auto;font-size:11px;color:#989ca6}
+.pv-results-count{padding:0 20px 14px}
+.pv-cell-link{border:0;background:transparent;padding:0;color:#282b35;font-weight:730;text-align:left}
+.pv-cell-link:hover{text-decoration:underline;color:#6558e8}
+.pv-order-modal-actions{flex-wrap:wrap}
+.pv-order-modal-actions .pv-btn-dark{margin-left:auto}
+.pv-root .pv-orders-toolbar .pv-search input{border:0;padding:0;min-height:36px}
+.pv-workflow-list{width:100%;min-width:0}
+.pv-workflow-head,.pv-workflow-row{display:grid;align-items:center;gap:16px;padding:13px 20px;min-width:0}
+.pv-checkout-columns{grid-template-columns:minmax(0,1.8fr) minmax(0,1.15fr) minmax(0,.7fr) minmax(0,1.55fr)}
+.pv-order-columns{grid-template-columns:minmax(0,1.7fr) minmax(0,.9fr) minmax(0,.7fr) minmax(0,1.4fr)}
+.pv-workflow-head{background:#fafbfc;border-top:1px solid #e9ebef;border-bottom:1px solid #e9ebef;color:#989ba4;font-size:10px;font-weight:750;letter-spacing:.045em;text-transform:uppercase}
+.pv-workflow-row{border-bottom:1px solid #f0f1f4;color:#5f616c;font-size:12px}
+.pv-workflow-row:last-of-type{border-bottom:0}
+.pv-workflow-row:hover{background:#fdfdff}
+.pv-workflow-row>div{min-width:0;overflow-wrap:anywhere}
+.pv-workflow-row b,.pv-workflow-row strong{color:#30323a;font-size:12px}
+.pv-workflow-row small{display:block;color:#969ba6;font-size:10px;line-height:1.45;margin-top:4px;overflow-wrap:anywhere}
+.pv-workflow-primary{display:grid;justify-items:start;gap:2px}
+.pv-workflow-primary small{margin-top:0}
+.pv-workflow-amount{font-weight:720;color:#30323a}
+.pv-workflow-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.pv-root .pv-workflow-actions select{width:min(100%,200px);min-width:140px;min-height:36px;padding:6px 9px;font-size:11px;font-weight:650}
+.pv-workflow-actions .pv-btn{min-height:35px}
+.pv-pagination{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;padding:15px 20px;border-top:1px solid #e9ebef;color:#858a95;font-size:11px}
+.pv-pagination>div{display:flex;align-items:center;gap:9px}
+.pv-pagination button{background:#fff;border:1px solid #e4e6eb;border-radius:8px;padding:7px 10px;color:#44464e;font-size:11px;font-weight:670}
+.pv-pagination button:hover:not(:disabled){border-color:#aca4f2;color:#6558e8}
+@media(max-width:1100px){.pv-workflow-head{display:none}.pv-checkout-columns,.pv-order-columns{grid-template-columns:minmax(0,1.3fr) minmax(0,1fr)}.pv-workflow-row{align-items:start;padding:16px 18px}.pv-workflow-actions{justify-content:flex-start}}
+@media(max-width:600px){.pv-checkout-columns,.pv-order-columns{grid-template-columns:minmax(0,1fr)}.pv-workflow-row{gap:10px;padding:15px}.pv-workflow-row>div:not(.pv-workflow-primary){display:flex;align-items:center;gap:8px;flex-wrap:wrap}.pv-workflow-row small{margin:0}.pv-workflow-actions{width:100%}.pv-root .pv-workflow-actions select{flex:1;width:auto;min-width:0}.pv-pagination{padding:13px 15px}}
+@media(max-width:700px){.pv-orders-toolbar .pv-search,.pv-orders-tools{width:100%;max-width:none;justify-content:flex-start}.pv-orders-tools label{flex:1;min-width:125px}.pv-root .pv-orders-tools select{width:100%}.pv-view-tabs{padding:0 14px 12px}.pv-view-tabs span{width:100%;margin:3px 0 0}.pv-order-modal-actions .pv-btn-dark{margin-left:0}}

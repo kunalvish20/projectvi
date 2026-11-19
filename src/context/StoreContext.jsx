@@ -31,13 +31,16 @@ const readCart = () => {
 export function StoreProvider({children}) {
   const [cart, setCart] = useState(readCart);
   const [catalogRevision, setCatalogRevision] = useState(0);
+  const [productAvailable, setProductAvailable] = useState(null);
   const [isCartDrawerOpen, setCartDrawerOpen] = useState(false);
 
   useEffect(() => {
     if (!isConfigured) return;
     let active = true;
     readPublicProduct(PRODUCTS[0].id).then(remote => {
-      if (!active || !remote) return;
+      if (!active) return;
+      setProductAvailable(Boolean(remote?.active));
+      if (!remote) return;
       // Keep the original storefront layout intact, while reflecting changes to the seeded listing.
       const p=PRODUCTS[0];
       p.name=remote.name||p.name;
@@ -83,6 +86,7 @@ export function StoreProvider({children}) {
     return {
       cart,
       catalogRevision,
+      productAvailable,
       add,
       addAndOpenCart,
       setQty,
@@ -93,7 +97,7 @@ export function StoreProvider({children}) {
       openCartDrawer,
       closeCartDrawer
     };
-  }, [cart, isCartDrawerOpen, catalogRevision]);
+  }, [cart, isCartDrawerOpen, catalogRevision, productAvailable]);
 
   return <StoreContext.Provider value={value}>{children}</StoreContext.Provider>;
 }

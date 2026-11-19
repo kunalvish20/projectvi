@@ -12,7 +12,7 @@ import {go} from '../hooks/useRoute';
 import './ProductPage.css';
 
 export function ProductPage() {
-  const {addAndOpenCart, setQty} = useStore();
+  const {addAndOpenCart, setQty, productAvailable} = useStore();
   const [active, setActive] = useState(0);
   const [quantity, setQuantity] = useState(1);
   const [stickyVisible, setStickyVisible] = useState(false);
@@ -126,6 +126,7 @@ export function ProductPage() {
               </div>
               <p>One Collector's Box. All 11 items included.</p>
               <p className="product-handling-hint">Free delivery · {format(HANDLING_FEE)} handling charge shown at checkout.</p>
+              {productAvailable === false && <p className="product-handling-hint" role="status">This product is currently unavailable for new orders.</p>}
             </div>
             <p className="product-intro">Bring the Vice City mood to your setup and beyond with this <strong>unofficial, fan-made 10-piece collector’s box</strong>, featuring apparel, accessories, artwork, and a display lamp. <strong>More than just a collection, it’s a purchase with a purpose — 50% of all profits will be donated to charity.</strong></p>
 
@@ -140,8 +141,8 @@ export function ProductPage() {
             </div>
 
             <div className="product-purchase-actions" ref={purchaseActions}>
-              <button className="product-cart-button" onClick={addToCart}><ShoppingBag size={19} /> Add to cart <ArrowRight size={19} /></button>
-              <button className="product-buy-button" onClick={buyNow}>Buy now <ArrowRight size={18} /></button>
+              <button className="product-cart-button" onClick={addToCart} disabled={productAvailable === false}><ShoppingBag size={19} /> Add to cart <ArrowRight size={19} /></button>
+              <button className="product-buy-button" onClick={buyNow} disabled={productAvailable === false}>Buy now <ArrowRight size={18} /></button>
             </div>
             <p className="product-buy-now-note">Buy now to send your order request. Dispatch updates are shared after confirmation.</p>
 
@@ -174,7 +175,7 @@ export function ProductPage() {
 
       <div className={`product-purchase-sticky ${stickyVisible ? 'is-visible' : ''}`} aria-hidden={!stickyVisible}>
         <div className="product-sticky-info"><span>{quantity > 1 ? `${quantity} Collector's Boxes` : PRODUCT.shortName}</span><b>{format(PRODUCT.price * quantity)}</b><small>Free delivery · {format(HANDLING_FEE)} handling at checkout</small></div>
-        <button className="product-cart-button" onClick={addToCart} tabIndex={stickyVisible ? 0 : -1}><ShoppingBag size={18} /> Add to cart <ArrowRight size={18} /></button>
+        <button className="product-cart-button" onClick={addToCart} disabled={productAvailable === false} tabIndex={stickyVisible ? 0 : -1}><ShoppingBag size={18} /> Add to cart <ArrowRight size={18} /></button>
       </div>
     </main>
   );

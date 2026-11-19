@@ -16,7 +16,7 @@ const initialForm = {name: '', email: '', phone: '', pincode: '', address: '', c
 const SHOW_COUPON_SECTION = false;
 
 export function Checkout() {
-  const {cart, subtotal, setQty, clearCart} = useStore();
+  const {cart, subtotal, setQty, clearCart, productAvailable} = useStore();
   const qty = cart[PRODUCT.id] || 0;
   const [form, setForm] = useState(() => ({...initialForm,...consumeRetryPayUCustomer()}));
   const [loading, setLoading] = useState(false);
@@ -264,11 +264,12 @@ export function Checkout() {
               {SHOW_COUPON_SECTION && !isPreviewCheckout && <div className="checkout-coupon"><label htmlFor="checkout-coupon-code">Coupon code</label><div className="checkout-coupon-controls"><input id="checkout-coupon-code" value={couponCode} onChange={event=>{setCouponCode(event.target.value);setAppliedCoupon(null);setCouponMessage('')}} onKeyDown={event=>{if(event.key==='Enter'){event.preventDefault();applyCoupon()}}} placeholder="Enter coupon code" autoComplete="off" disabled={Boolean(pendingPayment) || loading || couponBusy} /><button type="button" onClick={applyCoupon} disabled={!couponCode.trim() || couponBusy || loading || Boolean(pendingPayment)}>{couponBusy ? 'Checking…' : 'Apply'}</button></div>{couponMessage && <p className={appliedCoupon?'checkout-coupon-success':'checkout-coupon-error'} role="status">{couponMessage}</p>}</div>}
               <div className="checkout-pay-total"><span>{isPreviewCheckout ? 'Estimated total' : 'Total to pay'}</span><strong aria-live="polite">{format(total)}</strong></div>
               {error && <p className="checkout-error" role="alert">{error}</p>}
+              {productAvailable === false && <p className="checkout-error" role="alert">This product is currently unavailable. Please contact support before placing an order.</p>}
               {isPreviewCheckout && whatsappStatus && <p className="checkout-whatsapp-status" role="status">{whatsappStatus}</p>}
               {pendingPayment && <button className="checkout-retry-btn" type="button" onClick={retryConfirmation} disabled={loading}>
                 {loading ? <><Loader2 className="spin" size={18} /> Checking payment…</> : <>Check payment status <ArrowRight size={18} /></>}
               </button>}
-              {!pendingPayment && <button className={`pay-now-btn ${isPreviewCheckout ? 'checkout-whatsapp-btn' : ''}`} type="submit" disabled={loading || couponBusy}>
+              {!pendingPayment && <button className={`pay-now-btn ${isPreviewCheckout ? 'checkout-whatsapp-btn' : ''}`} type="submit" disabled={loading || couponBusy || productAvailable === false}>
                 {loading ? <><Loader2 className="spin" size={19} /> {isPreviewCheckout ? 'Saving details...' : 'Redirecting to PayU…'}</> : <>{isPreviewCheckout ? <MessageCircle size={19} /> : <LockKeyhole size={18} />} {isPreviewCheckout ? 'Continue on WhatsApp' : `Pay ${format(total)} securely`} <ArrowRight size={18} /></>}
               </button>}
               {isPreviewCheckout && whatsappUrl && <a className="checkout-whatsapp-fallback" href={whatsappUrl} target="_blank" rel="noopener noreferrer">WhatsApp did not open? Open the message here <ArrowRight size={15} /></a>}

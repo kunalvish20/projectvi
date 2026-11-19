@@ -39,7 +39,7 @@ create table if not exists public.orders (
  payment_status text not null default 'pending' check(payment_status in ('pending','paid','failed','refunded')),
  payment_provider text not null default 'payu', payu_payment_id text,
  fulfillment_status text not null default 'unfulfilled',
- carrier text default '', tracking_number text default '', notes text default '',
+ carrier text default '', tracking_number text default '', notes text default '', archived_at timestamptz,
  created_at timestamptz not null default now(),updated_at timestamptz not null default now()
 );
 create index if not exists orders_created_at_idx on public.orders(created_at desc);
@@ -70,6 +70,8 @@ create table if not exists public.checkout_drafts (
  customer_phone text not null default '', address text not null default '',
  city text not null default '', state text not null default '', pincode text not null default '',
  status text not null default 'editing' check (status in ('editing','whatsapp_opened')),
+ review_status text not null default 'pending' check (review_status in ('pending','confirmed','archived')),
+ review_note text not null default '',
  created_at timestamptz not null default now(), updated_at timestamptz not null default now(),
  whatsapp_opened_at timestamptz
 );
@@ -157,7 +159,15 @@ create or replace function public.checkout_draft_before_update() returns trigger
 language plpgsql security definer set search_path = '' as $$
 begin
  new.created_at := old.created_at;
- new.updated_at := now();
+ if (select auth.role()) = 'authenticated' then
+   new.updated_at := old.updated_at;
+ else
+   new.updated_at := now();
+ end if;
+ if (select auth.role()) = 'service_role' then
+   new.review_status := old.review_status;
+   new.review_note := old.review_note;
+ end if;
  if old.status = 'whatsapp_opened' then
    new.status := 'whatsapp_opened';
    new.whatsapp_opened_at := old.whatsapp_opened_at;
@@ -189,7 +199,7 @@ create policy "projectvi public visible products" on public.products for select 
 -- Enforce server-only payment/order creation. Admins can edit only fulfillment/order-service columns.
 revoke insert,delete,update on public.orders from anon,authenticated;
 grant select on public.orders to authenticated;
-grant update(order_status,fulfillment_status,carrier,tracking_number,notes,updated_at) on public.orders to authenticated;
+grant update(order_status,fulfillment_status,carrier,tracking_number,notes,archived_at,updated_at) on public.orders to authenticated;
 -- Orders should be written by service_role from authenticated serverless functions.
 -- Ensure service_role maintains full access after the above revokes.
 grant all on public.orders to service_role;
@@ -219,8 +229,10 @@ grant select, update(status,notes,updated_at) on public.creator_applications to 
 grant all on public.checkout_submissions, public.creator_applications to service_role;
 drop policy if exists "projectvi admin read" on public.checkout_drafts;
 create policy "projectvi admin read" on public.checkout_drafts for select to authenticated using ((select public.is_admin()));
+drop policy if exists "projectvi admin update" on public.checkout_drafts;
+create policy "projectvi admin update" on public.checkout_drafts for update to authenticated using ((select public.is_admin())) with check ((select public.is_admin()));
 revoke all on public.checkout_drafts from anon, authenticated;
-grant select on public.checkout_drafts to authenticated;
+grant select, update(review_status,review_note) on public.checkout_drafts to authenticated;
 grant all on public.checkout_drafts to service_role;
 alter table public.contact_emails enable row level security;
 drop policy if exists "projectvi admin read" on public.contact_emails;
