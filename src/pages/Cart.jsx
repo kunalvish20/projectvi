@@ -1,4 +1,4 @@
-import {ArrowRight, Minus, Plus, ShoppingBag} from 'lucide-react';
+import {ArrowRight, ChevronDown, Minus, Plus, ShoppingBag} from 'lucide-react';
 import {BOX_ITEMS, PRODUCT, PRODUCT_PATH} from '../data/catalog';
 import {useStore} from '../context/StoreContext';
 import {format} from '../lib/format';
@@ -62,9 +62,12 @@ function OrderSummary({subtotal}) {
   return (
     <aside className="summary-card">
       <p className="eyebrow">Order summary</p>
-      <div><span>Subtotal</span><b>{format(subtotal)}</b></div>
-      <div><span>Delivery</span><b>FREE</b></div>
-      <div><span>Handling charge</span><b>{format(HANDLING_FEE)}</b></div>
+      <details className="summary-price-details">
+        <summary>Price breakdown <ChevronDown size={15} aria-hidden="true" /></summary>
+        <div><span>Subtotal</span><b>{format(subtotal)}</b></div>
+        <div><span>Delivery</span><b>FREE</b></div>
+        <div><span>Handling charge</span><b>{format(HANDLING_FEE)}</b></div>
+      </details>
       <div className="total"><span>Total</span><b>{format(subtotal + HANDLING_FEE)}</b></div>
       <button onClick={() => go('/checkout')}>Continue to Checkout <ArrowRight size={18} /></button>
       <a href={PRODUCT_PATH}>Back to product</a>

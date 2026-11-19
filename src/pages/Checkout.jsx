@@ -1,4 +1,4 @@
-import {ArrowLeft, ArrowRight, LockKeyhole, Loader2, MessageCircle, Minus, Plus, ShieldCheck, ShoppingBag, Truck} from 'lucide-react';
+import {ArrowLeft, ArrowRight, ChevronDown, LockKeyhole, Loader2, MessageCircle, Minus, Plus, ShieldCheck, ShoppingBag, Truck} from 'lucide-react';
 import {useEffect, useRef, useState} from 'react';
 import {BOX_ITEMS, MAX_ORDER_QUANTITY, PRODUCT, PRODUCT_PATH, SITE} from '../data/catalog';
 import {useStore} from '../context/StoreContext';
@@ -294,10 +294,15 @@ export function Checkout() {
               </div>
             </div>
             <div className="checkout-costs">
-              <div><span>Subtotal</span><strong>{format(subtotal)}</strong></div>
-              <div><span>Delivery</span><strong className="checkout-free">FREE</strong></div>
-              <div><span>Handling charge</span><strong className={handlingFee ? '' : 'checkout-free'}>{handlingFee ? format(handlingFee) : 'FREE'}</strong></div>
-              {activeCoupon && <div><span>Coupon {activeCoupon}</span><strong className="checkout-free">−{format(discount)}</strong></div>}
+              <details className="checkout-price-details">
+                <summary>Price breakdown <ChevronDown size={15} aria-hidden="true" /></summary>
+                <div className="checkout-price-details-rows">
+                  <div><span>Subtotal</span><strong>{format(subtotal)}</strong></div>
+                  <div><span>Delivery</span><strong className="checkout-free">FREE</strong></div>
+                  <div><span>Handling charge</span><strong className={handlingFee ? '' : 'checkout-free'}>{handlingFee ? format(handlingFee) : 'FREE'}</strong></div>
+                  {activeCoupon && <div><span>Coupon {activeCoupon}</span><strong className="checkout-free">−{format(discount)}</strong></div>}
+                </div>
+              </details>
               <div className="checkout-cost-total"><span>Total</span><strong aria-live="polite">{format(total)}</strong></div>
             </div>
             <p className="checkout-order-note"><ShieldCheck size={17} aria-hidden="true" /> {isPreviewCheckout ? 'We will confirm payment on WhatsApp.' : 'No surprise fees at payment.'}</p>

@@ -1,4 +1,4 @@
-import {ArrowRight, Minus, Plus, X} from 'lucide-react';
+import {ArrowRight, ChevronDown, Minus, Plus, X} from 'lucide-react';
 import {useEffect} from 'react';
 import {BOX_ITEMS, PRODUCT} from '../data/catalog';
 import {useStore} from '../context/StoreContext';
@@ -51,9 +51,12 @@ export function CartDrawer() {
             </article>
 
             <div className="cart-drawer-summary">
-              <div><span>Subtotal</span><b>{format(subtotal)}</b></div>
-              <div className="cart-drawer-charge-row"><span>Delivery</span><b>FREE</b></div>
-              <div className="cart-drawer-charge-row"><span>Handling charge</span><b>{format(HANDLING_FEE)}</b></div>
+              <details className="cart-drawer-charge-details">
+                <summary>Price breakdown <ChevronDown size={15} aria-hidden="true" /></summary>
+                <div><span>Subtotal</span><b>{format(subtotal)}</b></div>
+                <div><span>Delivery</span><b>FREE</b></div>
+                <div><span>Handling charge</span><b>{format(HANDLING_FEE)}</b></div>
+              </details>
               <div className="total"><span>Total</span><b>{format(total)}</b></div>
             </div>
 
