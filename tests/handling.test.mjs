@@ -3,10 +3,10 @@ import assert from 'node:assert/strict';
 import {getOrderTotal} from '../src/data/handling.js';
 import {couponPrice} from '../server/coupon.js';
 
-test('checkout has no handling charge and a hidden coupon cannot lower the PayU amount', () => {
-  assert.equal(getOrderTotal(6999, 1), 6999);
-  assert.equal(getOrderTotal(6999, 2), 13998);
-  assert.deepEqual(couponPrice('', 6999, 2), {amount: 13998, coupon: null});
+test('checkout and PayU quote include one fixed handling charge and a hidden coupon cannot lower the PayU amount', () => {
+  assert.equal(getOrderTotal(6999, 1), 7298);
+  assert.equal(getOrderTotal(6999, 2), 14297);
+  assert.deepEqual(couponPrice('', 6999, 2), {amount: 14297, coupon: null});
   const previousEnabled = process.env.ENABLE_PAYU_COUPON;
   const previousCode = process.env.PAYU_COUPON_CODE;
   try {

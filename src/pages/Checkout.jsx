@@ -8,7 +8,7 @@ import {startPayUPayment,checkPayUStatus,getPendingPayU,clearPendingPayU,consume
 import {isPreviewCheckout, saveOrderReceipt} from '../lib/orderReceipt';
 import {buildWhatsAppOrderUrl} from '../lib/whatsappOrder';
 import {getCheckoutDraftId, hasCheckoutDetails, releaseCheckoutDraftId, saveCheckoutDraft} from '../lib/checkoutDraft';
-import {getOrderTotal} from '../data/handling';
+import {HANDLING_FEE, getOrderTotal} from '../data/handling';
 import {formatOrderId} from '../lib/orderId';
 import './Checkout.css';
 
@@ -32,7 +32,9 @@ export function Checkout() {
   const draftStatus = useRef('editing');
   const draftSnapshot = useRef({quantity: qty, customer: form});
   const total = pendingPayment?.amount ?? (appliedCoupon ? 1 : getOrderTotal(PRODUCT.price, qty));
-  const discount = appliedCoupon ? Math.max(0, subtotal - 1) : 0;
+  const handlingFee = pendingPayment ? Number(pendingPayment.handlingFee ?? 0) : (appliedCoupon ? 0 : HANDLING_FEE);
+  const activeCoupon = pendingPayment?.coupon ?? appliedCoupon;
+  const discount = activeCoupon ? Math.max(0, subtotal + handlingFee - total) : 0;
 
   const applyCoupon = async () => {
     if (!couponCode.trim() || couponBusy || loading || pendingPayment) return;
@@ -293,7 +295,8 @@ export function Checkout() {
             <div className="checkout-costs">
               <div><span>Subtotal</span><strong>{format(subtotal)}</strong></div>
               <div><span>Delivery</span><strong className="checkout-free">FREE</strong></div>
-              {appliedCoupon && <div><span>Coupon {appliedCoupon}</span><strong className="checkout-free">−{format(discount)}</strong></div>}
+              <div><span>Handling charge</span><strong className={handlingFee ? '' : 'checkout-free'}>{handlingFee ? format(handlingFee) : 'FREE'}</strong></div>
+              {activeCoupon && <div><span>Coupon {activeCoupon}</span><strong className="checkout-free">−{format(discount)}</strong></div>}
               <div className="checkout-cost-total"><span>Total</span><strong aria-live="polite">{format(total)}</strong></div>
             </div>
             <p className="checkout-order-note"><ShieldCheck size={17} aria-hidden="true" /> {isPreviewCheckout ? 'We will confirm payment on WhatsApp.' : 'No surprise fees at payment.'}</p>

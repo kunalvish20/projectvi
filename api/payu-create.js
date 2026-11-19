@@ -3,6 +3,7 @@ import {db,getProduct} from '../server/db.js';
 import {json,readBody,clean,errorMessage} from '../server/http.js';
 import {requestHash,payuBase,accessHash} from '../server/payu.js';
 import {couponPrice} from '../server/coupon.js';
+import {HANDLING_FEE, getOrderTotal} from '../src/data/handling.js';
 const PRODUCT_ID='gta-collector-box';
 export default async function handler(req,res){
  if(req.method!=='POST')return json(res,405,{error:'Method not allowed'});
@@ -27,8 +28,8 @@ export default async function handler(req,res){
   const fields={key:process.env.PAYU_MERCHANT_KEY,txnid,amount,productinfo:product.name,firstname:name.split(/\s+/)[0],email,phone,surl:`${site}/api/payu-callback`,furl:`${site}/api/payu-callback`,udf1:'',udf2:'',udf3:'',udf4:'',udf5:''};
   const hash=requestHash(fields);
   const gateway=`${payuBase()}/_payment`;
-  const rows=await db('orders',{method:'POST',body:{txnid,access_hash:accessHash(accessToken),customer_name:name,customer_email:email,customer_phone:phone,address,city,state,pincode,quantity,amount:Number(amount),product_id:product.id,product_name:product.name,order_status:'pending_payment',payment_status:'pending',payment_provider:'payu',notes:priced.coupon?`Coupon ${priced.coupon} applied; original total INR ${Number(product.price)*quantity}`:''}});
+  const rows=await db('orders',{method:'POST',body:{txnid,access_hash:accessHash(accessToken),customer_name:name,customer_email:email,customer_phone:phone,address,city,state,pincode,quantity,amount:Number(amount),product_id:product.id,product_name:product.name,order_status:'pending_payment',payment_status:'pending',payment_provider:'payu',notes:priced.coupon?`Coupon ${priced.coupon} applied; original total INR ${getOrderTotal(product.price,quantity)}`:''}});
   if(!rows?.[0])throw new Error('Unable to create the order.');
-  return json(res,200,{gateway,fields:{...fields,hash},txnid,accessToken});
+  return json(res,200,{gateway,fields:{...fields,hash},txnid,accessToken,handlingFee:priced.coupon?0:HANDLING_FEE,coupon:priced.coupon});
  }catch(err){console.error('payu-create',err.message);return json(res,500,{error:errorMessage(err)});}
 }

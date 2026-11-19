@@ -5,6 +5,7 @@ import {ProductArt} from '../components/ProductArt';
 import {ProductStorySections} from '../components/ProductStorySections';
 import {BOX_ITEMS, MAX_ORDER_QUANTITY, PRODUCT, SITE} from '../data/catalog';
 import {isPayUCheckout} from '../data/checkoutMode';
+import {HANDLING_FEE} from '../data/handling';
 import {useStore} from '../context/StoreContext';
 import {format} from '../lib/format';
 import {go} from '../hooks/useRoute';
@@ -124,7 +125,7 @@ export function ProductPage() {
                 <span className="product-delivery-badge">Free standard delivery</span>
               </div>
               <p>One Collector's Box. All 11 items included.</p>
-              <p className="product-handling-hint">Free standard delivery.</p>
+              <p className="product-handling-hint">Free delivery · {format(HANDLING_FEE)} handling charge shown at checkout.</p>
             </div>
             <p className="product-intro">Bring the Vice City mood to your setup and beyond with this <strong>unofficial, fan-made 10-piece collector’s box</strong>, featuring apparel, accessories, artwork, and a display lamp. <strong>More than just a collection, it’s a purchase with a purpose — 50% of all profits will be donated to charity.</strong></p>
 
@@ -135,7 +136,7 @@ export function ProductPage() {
                 <output id="product-quantity" aria-live="polite" aria-describedby="product-quantity-limit">{quantity}</output>
                 <button type="button" aria-label="Increase product quantity" disabled={quantity >= MAX_ORDER_QUANTITY} onClick={() => setQuantity(value => Math.min(MAX_ORDER_QUANTITY, value + 1))}><Plus size={16} /></button>
               </div>
-              {quantity > 1 && <span className="product-quantity-total">Total <b>{format(PRODUCT.price * quantity)}</b></span>}
+              {quantity > 1 && <span className="product-quantity-total">Items total <b>{format(PRODUCT.price * quantity)}</b></span>}
             </div>
 
             <div className="product-purchase-actions" ref={purchaseActions}>
@@ -172,7 +173,7 @@ export function ProductPage() {
       <Faq />
 
       <div className={`product-purchase-sticky ${stickyVisible ? 'is-visible' : ''}`} aria-hidden={!stickyVisible}>
-        <div className="product-sticky-info"><span>{quantity > 1 ? `${quantity} Collector's Boxes` : PRODUCT.shortName}</span><b>{format(PRODUCT.price * quantity)}</b><small>Free delivery · Buy now</small></div>
+        <div className="product-sticky-info"><span>{quantity > 1 ? `${quantity} Collector's Boxes` : PRODUCT.shortName}</span><b>{format(PRODUCT.price * quantity)}</b><small>Free delivery · {format(HANDLING_FEE)} handling at checkout</small></div>
         <button className="product-cart-button" onClick={addToCart} tabIndex={stickyVisible ? 0 : -1}><ShoppingBag size={18} /> Add to cart <ArrowRight size={18} /></button>
       </div>
     </main>

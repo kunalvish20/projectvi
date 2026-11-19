@@ -5,11 +5,12 @@ import {useStore} from '../context/StoreContext';
 import {format} from '../lib/format';
 import {go} from '../hooks/useRoute';
 import {ProductArt} from './ProductArt';
+import {HANDLING_FEE} from '../data/handling';
 
 export function CartDrawer() {
   const {cart, setQty, subtotal, isCartDrawerOpen, closeCartDrawer} = useStore();
   const qty = cart[PRODUCT.id] || 0;
-  const total = subtotal;
+  const total = subtotal + (qty ? HANDLING_FEE : 0);
 
   useEffect(() => {
     document.body.classList.toggle('drawer-lock', isCartDrawerOpen);
@@ -52,6 +53,7 @@ export function CartDrawer() {
             <div className="cart-drawer-summary">
               <div><span>Subtotal</span><b>{format(subtotal)}</b></div>
               <div className="cart-drawer-charge-row"><span>Delivery</span><b>FREE</b></div>
+              <div className="cart-drawer-charge-row"><span>Handling charge</span><b>{format(HANDLING_FEE)}</b></div>
               <div className="total"><span>Total</span><b>{format(total)}</b></div>
             </div>
 

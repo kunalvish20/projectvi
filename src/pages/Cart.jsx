@@ -4,6 +4,7 @@ import {useStore} from '../context/StoreContext';
 import {format} from '../lib/format';
 import {go} from '../hooks/useRoute';
 import {ProductArt} from '../components/ProductArt';
+import {HANDLING_FEE} from '../data/handling';
 
 export function Cart() {
   const {cart, setQty, subtotal} = useStore();
@@ -63,7 +64,8 @@ function OrderSummary({subtotal}) {
       <p className="eyebrow">Order summary</p>
       <div><span>Subtotal</span><b>{format(subtotal)}</b></div>
       <div><span>Delivery</span><b>FREE</b></div>
-      <div className="total"><span>Total</span><b>{format(subtotal)}</b></div>
+      <div><span>Handling charge</span><b>{format(HANDLING_FEE)}</b></div>
+      <div className="total"><span>Total</span><b>{format(subtotal + HANDLING_FEE)}</b></div>
       <button onClick={() => go('/checkout')}>Continue to Checkout <ArrowRight size={18} /></button>
       <a href={PRODUCT_PATH}>Back to product</a>
     </aside>
